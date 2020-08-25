@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using RVCoreBoard.MVC.Models;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,13 @@ namespace RVCoreBoard.MVC.DataContext
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=localhost;Database=RVCoreBoardDb;User Id=sa;Password=vin931105;");
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("localDB"));
+            //optionsBuilder.UseSqlServer(@"Server=localhost;Database=RVCoreBoardDb;User Id=sa;Password=vin931105;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
