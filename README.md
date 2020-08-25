@@ -1,2 +1,2 @@
-# study_hard
-개인 공부용
+# 개인 공부용
+# 1_Core MVC Board
