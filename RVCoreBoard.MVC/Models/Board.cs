@@ -24,9 +24,15 @@ namespace RVCoreBoard.MVC.Models
         [Required(ErrorMessage = "내용을 입력하세요.")]  // Not Null 설정
         public string Content { get; set; }
 
+        /// <summary>
+        /// 게시물 등록 일시
+        /// </summary>
         [Required]
         public DateTime Reg_Date { get; set; }
         
+        /// <summary>
+        /// 게시물 조회수
+        /// </summary>
         [Required]
         public int Cnt_Read { get; set; }
 

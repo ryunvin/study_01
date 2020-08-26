@@ -1,0 +1,41 @@
+﻿@model RVCoreBoard.MVC.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="auth-wrapper d-flex no-block justify-content-center align-items-start position-relative">
+    <div class="row" style="margin:10rem!important;">
+        <div class="col-lg-5 bg-white center-block card shadow">
+            <div class="p-5 card-body">
+                <div class="text-center">
+                    <img src="/lib/adminmart-lite/assets/images/big/icon.png" alt="wrapkit">
+                </div>
+                <h2 class="mt-3 text-center">로그인</h2>
+                <form class="mt-4 form-horizontal" method="post" asp-controller="Account" asp-action="Login">
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <div class="form-group">
+                                <label class="text-dark">아이디</label>
+                                <input type="text" class="form-control" asp-for="Id" placeholder="아이디 입력" />
+                                <span class="text-danger" asp-validation-for="Id"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 mb-3">
+                            <div class="form-group">
+                                <label class="text-dark">비밀번호</label>
+                                <input type="password" class="form-control" asp-for="Password" placeholder="비밀번호 입력" />
+                                <span class="text-danger" asp-validation-for="Password"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 center-block text-center my-5">
+                            <button type="submit" class="btn btn-block btn-dark">로그인</button>
+                        </div>
+                        <div class="col-lg-12 text-center">
+                            아이디가 없으신가요 ?  <a class="text-danger" asp-controller="Account" asp-action="Register">회원가입</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

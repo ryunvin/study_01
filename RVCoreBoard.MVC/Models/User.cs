@@ -62,8 +62,8 @@ namespace RVCoreBoard.MVC.Models
         /// <summary>
         /// 사용자 이메일
         /// </summary>
-        [Required(ErrorMessage = "이메일을 입력하세요.")]  // Not Null 설정
         [EmailAddress]
+        [Required(ErrorMessage = "이메일을 입력하세요.")]  // Not Null 설정
         public string Email { get; set; }
 
     }

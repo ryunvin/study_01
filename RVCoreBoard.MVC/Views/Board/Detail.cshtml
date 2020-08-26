@@ -1,0 +1,80 @@
+﻿@using Microsoft.AspNetCore.Http
+@model RVCoreBoard.MVC.Models.Board
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 text-left">
+                        <h1 class="card-title m-auto">@Model.Title</h1>
+                    </div>
+                    <div class="col-6">
+                        <div class="row text-right">
+                            <div class="col-6">
+                                @using (var db = new RVCoreBoard.MVC.DataContext.RVCoreBoardDBContext())
+                                {
+                                    var user = db.Users.ToList().Where(u => u.UNo == Model.UNo).FirstOrDefault();
+                                    <p><b>글쓴이 </b>@user.Name</p>
+                                }
+                            </div>
+                            <div class="col-4">
+                                <p><b>등록일시 </b>@Model.Reg_Date.ToString("yyyy-MM-dd HH:mm")</p>
+                            </div>
+                            <div class="col-2">
+                                <p><b>조회수 </b>@Model.Cnt_Read</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="card-text">@Html.Raw(Model.Content)</p>
+                <div class="row">
+                    @*댓글 구현*@
+                </div>
+                <div class="row">
+                    <div class="col-4 center-block">
+                        @* 이전글 다음글 구현*@
+                    </div>
+                    <div class="col-8 text-right">
+                        @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (Model.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
+                        {
+                            <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.BNo">수정</a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDel">삭제</button>
+                        }
+                        <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalDel" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="danger-header-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-danger">
+                <h4 class="modal-title" id="danger-header-modalLabel">삭제</h4>
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    게시글을 삭제하시겠습니까?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-danger" asp-controller="Board" asp-action="Delete" asp-route-BNo="@Model.BNo">삭제</a>
+                <button type="button" class="btn btn-light"
+                        data-dismiss="modal">
+                    취소
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -1,0 +1,32 @@
+﻿@model RVCoreBoard.MVC.Models.Board
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="mx-5 card-body">
+                <form class="form-horizontal" method="post" asp-controller="Board" asp-action="Edit">
+                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" asp-for="BNo" value="@Model.BNo" />
+                        <input type="hidden" class="form-control" asp-for="Reg_Date" value="@Model.Reg_Date" />
+                        <input type="hidden" class="form-control" asp-for="Cnt_Read" value="@Model.Cnt_Read" />
+                        <label>제목</label>
+                        <input type="text" class="form-control" style="margin-bottom:30px;" asp-for="Title" placeholder="제목 입력" value="@Model.Title" />
+                        <span class="text-danger" asp-validation-for="Title"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>내용</label>
+                        <textarea class="form-control editor" asp-for="Content" placeholder="내용 입력">@Model.Content</textarea>
+                        <span class="text-danger" asp-validation-for="Content"></span>
+                    </div>
+                    <div class="mt-5 mb-3 text-right">
+                        <button type="submit" class="btn btn-primary">저장</button>
+                        <a class="btn btn-dark" asp-controller="Board" asp-action="Index">취소</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
