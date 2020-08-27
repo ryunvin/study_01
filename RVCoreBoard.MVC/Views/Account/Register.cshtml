@@ -3,74 +3,74 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="auth-wrapper d-flex no-block justify-content-center align-items-start position-relative">
+<div class="wrapper d-flex no-block justify-content-center align-items-start position-relative">
     <div class="row">
-        <div class="col-lg-9 bg-white center-block card shadow">
-            <div class="p-5 card-body">
-                <h2 class="mt-3 mb-3 text-center">회원가입</h2>
+        <div class="col-lg-6 center-block">
+            <div class="p-5">
+                <h2 class="my-3 text-center">회원가입</h2>
                 <form class="mt-4 form-horizontal" method="post" asp-controller="Account" asp-action="Register">
                     <div class="row">
                         <div class="col-lg-12 mb-3">
                             <div>@Html.ValidationMessage("UserIDDuplicates", new { @class = "text-danger" })</div>
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">아이디</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="Id" />
+                                <label class="text-dark">아이디</label>
+                                <input type="text" class="form-control" asp-for="Id" />
                                 <span class="text-danger" asp-validation-for="Id"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">비밀번호</label>
-                                <input type="password" class="form-control col-lg-9" asp-for="Password" />
+                                <label class="text-dark">비밀번호</label>
+                                <input type="password" class="form-control" asp-for="Password" />
                                 <span class="text-danger" asp-validation-for="Password"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
                                 <label class="text-dark  col-lg-3">이름</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="Name" />
+                                <input type="text" class="form-control" asp-for="Name" />
                                 <span class="text-danger" asp-validation-for="Name"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">생년월일</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="Birth" placeholder="1993-11-05" />
+                                <label class="text-dark">생년월일</label>
+                                <input type="text" class="form-control" asp-for="Birth" placeholder="1993-11-05" />
                                 <span class="text-danger" asp-validation-for="Birth"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">휴대폰 번호</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="Phone" placeholder="예)010-1234-5678" />
+                                <label class="text-dark">휴대폰 번호</label>
+                                <input type="text" class="form-control" asp-for="Phone" placeholder="예)010-1234-5678" />
                                 <span class="text-danger" asp-validation-for="Phone"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">전화번호</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="Tel" placeholder="예)051-123-5678" />
+                                <label class="text-dark">전화번호</label>
+                                <input type="text" class="form-control" asp-for="Tel" placeholder="예)051-123-5678" />
                                 <span class="text-danger" asp-validation-for="Tel"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">주소</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="Address" placeholder="주소" />
+                                <label class="text-dark">주소</label>
+                                <input type="text" class="form-control" asp-for="Address" placeholder="주소" />
                                 <span class="text-danger" asp-validation-for="Address"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">상세주소</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="DetailAddress" placeholder="상세주소" />
+                                <label class="text-dark">상세주소</label>
+                                <input type="text" class="form-control" asp-for="DetailAddress" placeholder="상세주소" />
                                 <span class="text-danger" asp-validation-for="DetailAddress"></span>
                             </div>
                         </div>
                         <div class="col-lg-12 mb-3">
                             <div class="form-group">
-                                <label class="text-dark col-lg-3">이메일</label>
-                                <input type="text" class="form-control col-lg-9" asp-for="Email" placeholder="이메일" />
+                                <label class="text-dark">이메일</label>
+                                <input type="text" class="form-control" asp-for="Email" placeholder="이메일" />
                                 <span class="text-danger" asp-validation-for="Email"></span>
                             </div>
                         </div>

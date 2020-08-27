@@ -18,6 +18,7 @@
     <!-- Custom styles for this template-->
     <link href="~/css/sb-admin-2.css" rel="stylesheet">
 
+    <link href="~/css/site.css" rel="stylesheet" >
 </head>
 
 <body id="page-top">
@@ -196,45 +197,48 @@
                         <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
                     </div>
                     <!-- End of Page Heading -->
-
+                    @{
+                        var accountCenter = (!ViewData["Title"].Equals("Login") && !ViewData["Title"].Equals("Register")) ? "" : "center-block";
+                    }
                     <div class="row">
-                        <main role="main" class="pb-3">
+                        <main role="main" class="pb-3 @accountCenter">
                             @RenderBody()
                         </main>
                     </div>
                     <!-- /.container-fluid -->
                 </div>
-            <!-- End of Main Content -->
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white" style="position: inherit; left: 0; bottom: 0; width: 100%">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; 아빈~~~~~~월드~~~~~~~~ 2020</span>
+                <!-- End of Main Content -->
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white" style="position: inherit; left: 0; bottom: 0; width: 100%">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; 아빈~~~~~~월드~~~~~~~~ 2020</span>
+                        </div>
                     </div>
-                </div>
-            </footer>
-            <!-- End of Footer -->
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
 
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Page Wrapper -->
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Bootstrap core JavaScript-->
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Core plugin JavaScript-->
+        <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Custom scripts for all pages-->
+        <script src="~/js/sb-admin-2.min.js"></script>
 
     </div>
-    <!-- End of Page Wrapper -->
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="~/js/sb-admin-2.min.js"></script>
 
 </body>
-
 </html>
