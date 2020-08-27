@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -163,20 +165,32 @@
                             </div>
                         </li>
 
-                        <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">
-                                로그인 해줘
-                            </a>
-                        </li>
+                        @if (Context.Session.GetInt32("USER_LOGIN_KEY") == null)
+                        {
+                            <!-- Nav Item - Alerts -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">
+                                    로그인 해줘
+                                </a>
+                            </li>
 
-                        <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">
-                                회원가입 해줘
-                            </a>
-                        </li>
+                            <!-- Nav Item - Messages -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">
+                                    회원가입 해줘
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Nav Item - Messages -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">
+                                    로그아웃 해줘
+                                </a>
+                            </li>
 
+                        }
                         <div class="topbar-divider d-none d-sm-block"></div>
 
                         <!-- Nav Item - User Information -->
