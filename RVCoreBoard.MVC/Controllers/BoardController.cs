@@ -1,31 +1,36 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
+using RVCoreBoard.MVC.Services;
 
 namespace RVCoreBoard.MVC.Controllers
 {
     public class BoardController : Controller
     {
         private readonly RVCoreBoardDBContext _db;
+        private IBoardService _boardService;
 
-        public BoardController(RVCoreBoardDBContext db)
+        public BoardController(RVCoreBoardDBContext db, IBoardService boardService)
         {
             _db = db;
+            _boardService = boardService;
         }
 
         /// <summary>
         /// 게시판 리스트
         /// </summary>
         /// <returns></returns>
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _db.Boards.ToList().OrderByDescending(b => b.BNo);
+            BoardListInfoModel boardListInfoModel = new BoardListInfoModel(_boardService);
+            await boardListInfoModel.GetList();
 
-            return View(list);
+            return View(boardListInfoModel);
         }
 
         /// <summary>

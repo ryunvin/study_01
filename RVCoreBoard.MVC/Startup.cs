@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RVCoreBoard.MVC.DataContext;
+using RVCoreBoard.MVC.Services;
 
 namespace RVCoreBoard.MVC
 {
@@ -31,6 +32,9 @@ namespace RVCoreBoard.MVC
             {
                 options.UseSqlServer(Configuration.GetConnectionString("localDB"));
             });
+
+            // NoteService 서비스 컨테이너 등록
+            services.AddTransient<IBoardService, BoardService>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

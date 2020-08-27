@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "게시판";
 }
-@model RVCoreBoard.MVC.Models.Board
+@model RVCoreBoard.MVC.Models.BoardListInfoModel
 
 <div class="row">
     <div class="col-12">
@@ -36,20 +36,14 @@
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            @*
-                                TODO : 일단 보류
-                            @foreach (var board in Model)
+                            @foreach (var board in Model.Data)
                             {
                             <tr>
                                 <td>@board.BNo</td>
                                 <td class="text-left">
                                     <a asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.Title</a>
                                 </td>
-                                @using (var db = new RVCoreBoard.MVC.DataContext.RVCoreBoardDBContext())
-                                {
-                                    var user = db.Users.ToList().Where(u => u.UNo == board.UNo).FirstOrDefault();
-                                    <td>@user.Name</td>
-                                }
+                                <td>@board.user.Name</td>
                                 @if (board.Reg_Date.ToString("yyyy-MM-dd").Equals(DateTime.Today.ToString("yyyy-MM-dd")))
                                 {
                                     <td>@board.Reg_Date.ToString("HH:mm")</td>
@@ -61,8 +55,6 @@
                                 <td>@board.Cnt_Read</td>
                             </tr>
                             }
-
-                            *@
                         </tbody class="text-center">
                     </table>
                     @* 페이징 구현 *@
