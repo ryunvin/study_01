@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
 using RVCoreBoard.MVC.Services;
@@ -53,26 +54,15 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 추가
         /// </summary>
         /// <returns></returns>
+        [CheckSession]
         public IActionResult Add()
         {
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
-            {
-                //로그인이 안된 상태
-                return RedirectToAction("Login", "Account");
-            }
-
             return View();
         }
 
-        [HttpPost]
+        [HttpPost, CheckSession]
         public IActionResult Add(Board model)
         {
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
-            {
-                //로그인이 안된 상태
-                return RedirectToAction("Login", "Account");
-            }
-
             model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
             model.Reg_Date = DateTime.Now;
             model.Cnt_Read = 0;
@@ -94,27 +84,17 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 수정
         /// </summary>
         /// <returns></returns>
+        [CheckSession]
         public IActionResult Edit(int BNo)
         {
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
-            {
-                //로그인이 안된 상태
-                return RedirectToAction("Login", "Account");
-            }
             var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
 
             return View(Board);
         }
 
-        [HttpPost]
+        [HttpPost, CheckSession]
         public IActionResult Edit(Board model)
         {
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") == null)
-            {
-                //로그인이 안된 상태
-                return RedirectToAction("Login", "Account");
-            }
-
             model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
 
             if (ModelState.IsValid)
