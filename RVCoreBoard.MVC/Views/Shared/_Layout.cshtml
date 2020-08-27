@@ -1,365 +1,240 @@
-﻿@using Microsoft.AspNetCore.Http;
+﻿<!DOCTYPE html>
+<html lang="en">
 
-<!DOCTYPE html>
-<html dir="ltr" lang="ko">
 <head>
-    <meta charset="utf-8" />
+
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>@ViewData["Title"] - RVCoreBoard.MVC</title>
 
-    <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
-        <!-- Favicon icon -->
-        <link rel="icon" type="image/png" sizes="16x16" href="~/lib/adminmart-lite/assets/images/favicon.png">
-        <!-- Custom CSS -->
-        <link href="~/lib/adminmart-lite/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
-        <link href="~/lib/adminmart-lite/assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">
-        <link href="~/lib/adminmart-lite/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
-        <!-- Custom CSS -->
-        <link href="~/lib/adminmart-lite/dist/css/style.min.css" rel="stylesheet">
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
+    <title>아빈 삼겹살</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="~/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="~/css/sb-admin-2.css" rel="stylesheet">
+
 </head>
-<body>
-    @if (!ViewData["Title"].Equals("Login") && !ViewData["Title"].Equals("Register"))
-    {
-        <!-- ============================================================== -->
-        <!-- Preloader - style you can find in spinners.css -->
-        <!-- ============================================================== -->
-        <div class="preloader">
-            <div class="lds-ripple">
-                <div class="lds-pos"></div>
-                <div class="lds-pos"></div>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-area="" asp-controller="Home" asp-action="Index">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-laugh-wink"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">웰컴 웰컴 아빈 월드~~~</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - 처음으로 -->
+            <li class="nav-item active">
+                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>처음으로</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                삼겸살 요정 하마 아빈님의 공간입니당
             </div>
-        </div>
-        <!-- ============================================================== -->
-        <!-- Main wrapper - style you can find in pages.scss -->
-        <!-- ============================================================== -->
-        <div id="main-wrapper" data-theme="light" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
-             data-sidebar-position="fixed" data-header-position="fixed" data-boxed-layout="full">
-            <!-- ============================================================== -->
-            <!-- Topbar header - style you can find in pages.scss -->
-            <!-- ============================================================== -->
-            <header class="topbar" data-navbarbg="skin6">
-                <nav class="navbar top-navbar navbar-expand-md">
-                    <div class="navbar-header" data-logobg="skin6">
-                        <!-- This is for the sidebar toggle which is visible on mobile only -->
-                        <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)">
-                            <i class="ti-menu ti-close"></i>
-                        </a>
-                        <!-- ============================================================== -->
-                        <!-- Logo -->
-                        <!-- ============================================================== -->
-                        <div class="navbar-brand">
-                            <!-- Logo icon -->
-                            <a asp-area="" asp-controller="Home" asp-action="Index">
-                                <b class="logo-icon">
-                                    <!-- Dark Logo icon -->
-                                    <img src="~/lib/adminmart-lite/assets/images/logo-icon.png" alt="homepage" class="dark-logo" />
-                                    <!-- Light Logo icon -->
-                                    <img src="~/lib/adminmart-lite/assets/images/logo-icon.png" alt="homepage" class="light-logo" />
-                                </b>
-                                <!--End Logo icon -->
-                                <!-- Logo text -->
-                                <span class="logo-text">
-                                    <!-- dark Logo text -->
-                                    <img src="~/lib/adminmart-lite/assets/images/logo-text.png" alt="homepage" class="dark-logo" />
-                                    <!-- Light Logo text -->
-                                    <img src="~/lib/adminmart-lite/assets/images/logo-light-text.png" class="light-logo" alt="homepage" />
-                                </span>
+
+            <!-- Nav Item - 포트폴리오 Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Web</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">웹프로젝트 입니당:</h6>
+                        <a class="collapse-item" href="buttons.html">ASP.NET</a>
+                        <a class="collapse-item" href="cards.html">JAVA</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - 맛집 컬렉션 Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>맛집정보</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">맛집정보 입니당:</h6>
+                        <a class="collapse-item" href="utilities-color.html">꼬기!</a>
+                        <a class="collapse-item" href="utilities-border.html">카페!</a>
+                        <a class="collapse-item" href="utilities-animation.html">술!</a>
+                        <a class="collapse-item" href="utilities-other.html">Other</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Addons
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>먹방 기록 일지</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">2020년:</h6>
+                        <a class="collapse-item" href="login.html">8월</a>
+                        <a class="collapse-item" href="register.html">9월</a>
+                        <a class="collapse-item" href="forgot-password.html">10월</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">2021년:</h6>
+                        <a class="collapse-item" href="404.html">1월</a>
+                        <a class="collapse-item" href="blank.html">2월</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+                        <li class="nav-item dropdown no-arrow d-sm-none">
+                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-search fa-fw"></i>
                             </a>
-                        </div>
-                        <!-- ============================================================== -->
-                        <!-- End Logo -->
-                        <!-- ============================================================== -->
-                        <!-- ============================================================== -->
-                        <!-- Toggle which is visible on mobile only -->
-                        <!-- ============================================================== -->
-                        <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
-                           data-toggle="collapse" data-target="#navbarSupportedContent"
-                           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <i class="ti-more"></i>
-                        </a>
-                    </div>
-                    <!-- ============================================================== -->
-                    <!-- End Logo -->
-                    <!-- ============================================================== -->
-                    <div class="navbar-collapse collapse" id="navbarSupportedContent">
-                        <!-- ============================================================== -->
-                        <!-- toggle and nav items -->
-                        <!-- ============================================================== -->
-                        <ul class="navbar-nav float-left mr-auto ml-3 pl-1">
-                            <!-- Notification -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle pl-md-3 position-relative" href="javascript:void(0)"
-                                   id="bell" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">
-                                    <span><i data-feather="bell" class="svg-icon"></i></span>
-                                    <span class="badge badge-primary notify-no rounded-circle">1</span>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-left mailbox animated bounceInDown">
-                                    <ul class="list-style-none">
-                                        <li>
-                                            <div class="message-center notifications position-relative">
-                                                <!-- Message -->
-                                                <a href="javascript:void(0)"
-                                                   class="message-item d-flex align-items-center border-bottom px-3 py-2">
-                                                    <div class="btn btn-danger rounded-circle btn-circle">
-                                                        <i data-feather="airplay" class="text-white"></i>
-                                                    </div>
-                                                    <div class="w-75 d-inline-block v-middle pl-2">
-                                                        <h6 class="message-title mb-0 mt-1">Luanch Admin</h6>
-                                                        <span class="font-12 text-nowrap d-block text-muted">
-                                                            Just see
-                                                            the my new
-                                                            admin!
-                                                        </span>
-                                                        <span class="font-12 text-nowrap d-block text-muted">9:30 AM</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <a class="nav-link pt-3 text-center text-dark" href="javascript:void(0);">
-                                                <strong>Check all notifications</strong>
-                                                <i class="fa fa-angle-right"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <!-- End Notification -->
-                            <!-- ============================================================== -->
-                            <!-- create new -->
-                            <!-- ============================================================== -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i data-feather="settings" class="svg-icon"></i>
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="#">Action</a>
-                                    <a class="dropdown-item" href="#">Another action</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#">Something else here</a>
-                                </div>
-                            </li>
-                        </ul>
-                        <!-- ============================================================== -->
-                        <!-- Right side toggle and nav items -->
-                        <!-- ============================================================== -->
-                        <ul class="navbar-nav float-right">
-                            <!-- ============================================================== -->
-                            <!-- User profile and search -->
-                            <!-- ============================================================== -->
-                            @if (Context.Session.GetInt32("USER_LOGIN_KEY") == null)
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link navbar-link" asp-area="" asp-controller="Account" asp-action="Register">
-                                        <i data-feather="lock"
-                                           class="feather-icon"></i><span class="hide-menu">
-                                            회원가입
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link navbar-link" asp-area="" asp-controller="Account" asp-action="Login">
-                                        <i data-feather="lock" class="feather-icon"></i><span class="hide-menu">
-                                            로그인
-                                        </span>
-                                    </a>
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
-                                       aria-haspopup="true" aria-expanded="false">
-                                        <img src="~/lib/adminmart-lite/assets/images/users/profile-pic.jpg" alt="user" class="rounded-circle"
-                                             width="40">
-                                        <span class="ml-2 d-none d-lg-inline-block">
-                                            @using (var db = new RVCoreBoard.MVC.DataContext.RVCoreBoardDBContext())
-                                            {
-                                                var user = db.Users.ToList().Where(u => u.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value).FirstOrDefault();
-                                                <span class="text-dark">@user.Name </span> <i data-feather="chevron-down" class="svg-icon"></i>
-                                            }
-                                        </span>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                                        <a class="dropdown-item" href="javascript:void(0)">
-                                            <i data-feather="user"
-                                               class="svg-icon mr-2 ml-1"></i>
-                                            My Profile
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:void(0)">
-                                            <i data-feather="credit-card"
-                                               class="svg-icon mr-2 ml-1"></i>
-                                            My Balance
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:void(0)">
-                                            <i data-feather="mail"
-                                               class="svg-icon mr-2 ml-1"></i>
-                                            Inbox
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" href="javascript:void(0)">
-                                            <i data-feather="settings"
-                                               class="svg-icon mr-2 ml-1"></i>
-                                            Account Setting
-                                        </a>
-                                        <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">
-                                            <i data-feather="power"
-                                               class="svg-icon mr-2 ml-1"></i>
-                                            로그아웃
-                                        </a>
+                            <!-- Dropdown - Messages -->
+                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                                <form class="form-inline mr-auto w-100 navbar-search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="button">
+                                                <i class="fas fa-search fa-sm"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                </li>
-                            }
-                            <!-- ============================================================== -->
-                            <!-- User profile and search -->
-                            <!-- ============================================================== -->
-                        </ul>
-                    </div>
+                                </form>
+                            </div>
+                        </li>
+
+                        <!-- Nav Item - Alerts -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">
+                                로그인 해줘
+                            </a>
+                        </li>
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">
+                                회원가입 해줘
+                            </a>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link text-dark">
+                                문의는 여기로~~ (아빈@삼겹살.com)
+                            </a>
+                        </li>
+
+                    </ul>
+
                 </nav>
-            </header>
-            <!-- ============================================================== -->
-            <!-- End Topbar header -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Left Sidebar - style you can find in sidebar.scss  -->
-            <!-- ============================================================== -->
-            <aside class="left-sidebar" data-sidebarbg="skin6">
-                <!-- Sidebar scroll-->
-                <div class="scroll-sidebar" data-sidebarbg="skin6">
-                    <!-- Sidebar navigation-->
-                    <nav class="sidebar-nav">
-                        <ul id="sidebarnav">
-                            <li class="sidebar-item">
-                                <a class="sidebar-link sidebar-link" asp-area="" asp-controller="Home" asp-action="Index"
-                                   aria-expanded="false">
-                                    <i data-feather="home" class="feather-icon"></i><span class="hide-menu">Dashboard</span>
-                                </a>
-                            </li>
-                            <li class="list-divider"></li>
-                            <li class="nav-small-cap"><span class="hide-menu">Board</span></li>
-                            <li class="sidebar-item">
-                                <a class="sidebar-link" asp-area="" asp-controller="Board" asp-action="Index"
-                                   aria-expanded="false">
-                                    <i data-feather="tag" class="feather-icon"></i><span class="hide-menu">
-                                        게시판
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <!-- End Sidebar navigation -->
-                </div>
-                <!-- End Sidebar scroll-->
-            </aside>
-            <!-- ============================================================== -->
-            <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-            <!-- ============================================================== -->
-            <!-- ============================================================== -->
-            <!-- Page wrapper  -->
-            <!-- ============================================================== -->
-            <div class="page-wrapper">
-                <!-- ============================================================== -->
-                <!-- End Bread crumb and right sidebar toggle -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-                <!-- Container fluid  -->
-                <!-- ============================================================== -->
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
                 <div class="container-fluid">
-                    @RenderBody()
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
+                    </div>
+                    <!-- End of Page Heading -->
+
+                    <div class="row">
+                        <main role="main" class="pb-3">
+                            @RenderBody()
+                        </main>
+                    </div>
+                    <!-- /.container-fluid -->
                 </div>
-                <!-- ============================================================== -->
-                <!-- End Container fluid  -->
-                <!-- ============================================================== -->
-                <!-- ============================================================== -->
-                <!-- footer -->
-                <!-- ============================================================== -->
-                <footer class="footer text-center text-muted">
-                    &copy; Rights Reserved by Adminmart. Designed and Developed by <a href="https://wrappixel.com">WrapPixel</a>.
-                </footer>
-                <!-- ============================================================== -->
-                <!-- End footer -->
-                <!-- ============================================================== -->
-            </div>
-            <!-- ============================================================== -->
-            <!-- End Page wrapper  -->
-            <!-- ============================================================== -->
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white" style="position: inherit; left: 0; bottom: 0; width: 100%">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; 아빈~~~~~~월드~~~~~~~~ 2020</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
         </div>
-        <!-- ============================================================== -->
-        <!-- End Wrapper -->
-    }
-    else
-    {
-        @RenderBody()
-    }
+        <!-- End of Content Wrapper -->
 
-    <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        
-        <!-- ============================================================== -->
-        <!-- All Jquery -->
-        <!-- ============================================================== -->
-        <script src="~/lib/adminmart-lite/assets/libs/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/libs/popper.js/dist/umd/popper.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
-        <!-- apps -->
-        <!-- apps -->
-        <script src="~/lib/adminmart-lite/dist/js/app-style-switcher.js"></script>
-        <script src="~/lib/adminmart-lite/dist/js/feather.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
-        <script src="~/lib/adminmart-lite/dist/js/sidebarmenu.js"></script>
-        <!--Custom JavaScript -->
-        <script src="~/lib/adminmart-lite/dist/js/custom.min.js"></script>
-        <!--This page JavaScript -->
-        <script src="~/lib/adminmart-lite/assets/extra-libs/c3/d3.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/extra-libs/c3/c3.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/libs/chartist/dist/chartist.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js"></script>
-        <script src="~/lib/adminmart-lite/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js"></script>
-        <script src="~/lib/adminmart-lite/dist/js/pages/dashboards/dashboard1.min.js"></script>
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
 
-    </environment>
-    <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    </environment>
+    <!-- Core plugin JavaScript-->
+    <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
 
-    @RenderSection("Scripts", required: false)
+    <!-- Custom scripts for all pages-->
+    <script src="~/js/sb-admin-2.min.js"></script>
+
 </body>
+
 </html>

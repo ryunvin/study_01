@@ -10,18 +10,22 @@ namespace RVCoreBoard.MVC.Controllers
 {
     public class BoardController : Controller
     {
+        private readonly RVCoreBoardDBContext _db;
+
+        public BoardController(RVCoreBoardDBContext db)
+        {
+            _db = db;
+        }
+
         /// <summary>
         /// 게시판 리스트
         /// </summary>
         /// <returns></returns>
         public IActionResult Index()
         {
-            using (var db = new RVCoreBoardDBContext())
-            {
-                var list = db.Boards.ToList().OrderByDescending(b => b.BNo);
+            var list = _db.Boards.ToList().OrderByDescending(b => b.BNo);
 
-                return View(list);
-            }
+            return View(list);
         }
 
         /// <summary>
@@ -31,17 +35,14 @@ namespace RVCoreBoard.MVC.Controllers
         /// <returns></returns>
         public IActionResult Detail(int BNo)
         {
-            using (var db = new RVCoreBoardDBContext())
-            {
-                Board board = db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
+            Board board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
 
-                board.Cnt_Read++;
+            board.Cnt_Read++;
 
-                db.Entry(board).State = EntityState.Modified;
-                db.SaveChanges();
+            _db.Entry(board).State = EntityState.Modified;
+            _db.SaveChanges();
 
-                return View(board);
-            }
+            return View(board);
         }
         /// <summary>
         /// 게시물 추가
@@ -73,14 +74,12 @@ namespace RVCoreBoard.MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                using (var db = new RVCoreBoardDBContext())
+                _db.Boards.Add(model);
+                if (_db.SaveChanges() > 0)
                 {
-                    db.Boards.Add(model);
-                    if (db.SaveChanges() > 0)
-                    {
-                        return Redirect("Index");
-                    }
+                    return Redirect("Index");
                 }
+
                 ModelState.AddModelError(string.Empty, "게시물을 등록할 수 없습니다.");
             }
             return View(model);
@@ -97,12 +96,9 @@ namespace RVCoreBoard.MVC.Controllers
                 //로그인이 안된 상태
                 return RedirectToAction("Login", "Account");
             }
-            using (var db = new RVCoreBoardDBContext())
-            {
-                var Board = db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
+            var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
 
-                return View(Board);
-            }
+            return View(Board);
         }
 
         [HttpPost]
@@ -118,13 +114,10 @@ namespace RVCoreBoard.MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                using (var db = new RVCoreBoardDBContext())
+                _db.Entry(model).State = EntityState.Modified;
+                if (_db.SaveChanges() > 0)
                 {
-                    db.Entry(model).State = EntityState.Modified;
-                    if (db.SaveChanges() > 0)
-                    {
-                        return Redirect($"Detail?BNo={model.BNo}");
-                    }
+                    return Redirect($"Detail?BNo={model.BNo}");
                 }
                 ModelState.AddModelError(string.Empty, "게시물을 수정할 수 없습니다.");
             }
@@ -137,15 +130,12 @@ namespace RVCoreBoard.MVC.Controllers
         /// <returns></returns>
         public IActionResult Delete(int BNo)
         {
-            using (var db = new RVCoreBoardDBContext())
-            {
-                var Board = db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
+            var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
 
-                db.Boards.Remove(Board);
-                if (db.SaveChanges() > 0)
-                {
-                    return Redirect("Index");
-                }
+            _db.Boards.Remove(Board);
+            if (_db.SaveChanges() > 0)
+            {
+                return Redirect("Index");
             }
             return Redirect($"Detail?BNo={BNo}");
         }

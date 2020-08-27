@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "게시판";
 }
+@model RVCoreBoard.MVC.Models.Board
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -34,6 +36,8 @@
                             </tr>
                         </thead>
                         <tbody class="text-center">
+                            @*
+                                TODO : 일단 보류
                             @foreach (var board in Model)
                             {
                             <tr>
@@ -57,6 +61,8 @@
                                 <td>@board.Cnt_Read</td>
                             </tr>
                             }
+
+                            *@
                         </tbody class="text-center">
                     </table>
                     @* 페이징 구현 *@

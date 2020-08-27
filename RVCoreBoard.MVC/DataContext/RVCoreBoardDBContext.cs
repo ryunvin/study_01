@@ -10,6 +10,12 @@ namespace RVCoreBoard.MVC.DataContext
 {
     public class RVCoreBoardDBContext : DbContext
     {
+        public RVCoreBoardDBContext(DbContextOptions<RVCoreBoardDBContext> options)
+            : base(options)
+        {
+            //
+        }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Board> Boards { get; set; }
