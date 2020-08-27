@@ -7,6 +7,6 @@ namespace RVCoreBoard.MVC.Services
     public interface IBoardService
     {
         Task<List<Board>> GetList();
-        Task<Board> GetDetail();
+        Task<Board> GetDetail(int BNo);
     }
 }

@@ -39,14 +39,10 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <param name="BNo"></param>
         /// <returns></returns>
-        public IActionResult Detail(int BNo)
+        public async Task<IActionResult> Detail(int BNo)
         {
-            Board board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
-
-            board.Cnt_Read++;
-
-            _db.Entry(board).State = EntityState.Modified;
-            _db.SaveChanges();
+            Board board = new Board(_boardService);
+            await board.GetDetail(BNo);
 
             return View(board);
         }

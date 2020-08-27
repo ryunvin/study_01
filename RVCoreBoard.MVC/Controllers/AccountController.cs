@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
-using RVCoreBoard.MVC.ViewModels;
 
 namespace RVCoreBoard.MVC.Controllers
 {
@@ -33,7 +31,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Login(LoginViewModel model)
+        public IActionResult Login(User model)
         {
             if (ModelState.IsValid)
             {

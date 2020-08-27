@@ -17,9 +17,16 @@
             _db = db;
         }
 
-        public Task<Board> GetDetail()
+        public async Task<Board> GetDetail(int BNo)
         {
-            throw new NotImplementedException();
+            var board = await _db.Boards.FirstOrDefaultAsync(b => b.BNo.Equals(BNo));
+
+            board.Cnt_Read++;
+
+            _db.Entry(board).State = EntityState.Modified;
+            _db.SaveChanges();
+
+            return board;
         }
 
         public async Task<List<Board>> GetList()
