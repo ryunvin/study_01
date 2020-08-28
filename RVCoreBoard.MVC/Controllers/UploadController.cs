@@ -21,12 +21,12 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        [HttpPost, Route("api/upload")]
+        [HttpPost("api/imageUpload")]
         public async Task<IActionResult> ImageUpload(IFormFile file)
         {
             var path = Path.Combine(_environment.WebRootPath, @"images\upload");
 
-            var fileFullName = file.FileName.Split('.');
+            var fileFullName = Path.GetTempFileName().Split('.');
             var fileName = $"{Guid.NewGuid()}.{fileFullName[1]}";
 
             using (var fileStream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
@@ -36,5 +36,6 @@ namespace RVCoreBoard.MVC.Controllers
 
             return Ok(new { file = "/images/upload/" + fileName, success = true });
         }
+        
     }
 }

@@ -44,8 +44,7 @@ namespace RVCoreBoard.MVC.Controllers
                     return RedirectToAction("Index", "Home");    //  로그인 성공 페이지로 이동
                 }
                 // 로그인 실패 시
-                ModelState.AddModelError(string.Empty, "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
-
+                ModelState.AddModelError("UserIDorPWNotCorrect", "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
             }
             return View(model);
         }
