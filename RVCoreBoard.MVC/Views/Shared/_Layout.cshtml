@@ -20,7 +20,10 @@
     <!-- Custom styles for this template-->
     <link href="~/css/sb-admin-2.css" rel="stylesheet">
 
-    <link href="~/css/site.css" rel="stylesheet" >
+    <link href="~/css/site.css" rel="stylesheet">
+
+    <link href="~/css/summernote.css" rel="stylesheet" />
+
 </head>
 
 <body id="page-top">
@@ -30,18 +33,18 @@
 
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <li class="nav-item">
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="fas fa-laugh-wink"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-3">웰컴 웰컴 아빈 월드~~~</div>
+                </a>
 
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-area="" asp-controller="Home" asp-action="Index">
-                <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
-                </div>
-                <div class="sidebar-brand-text mx-3">웰컴 웰컴 아빈 월드~~~</div>
-            </a>
-
+            </li>
             <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
+            <hr class="sidebar-divider my-0" />
             <!-- Nav Item - 처음으로 -->
             <li class="nav-item active">
                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
@@ -51,7 +54,7 @@
             </li>
 
             <!-- Divider -->
-            <hr class="sidebar-divider">
+            <hr class="sidebar-divider" />
 
             <!-- Heading -->
             <div class="sidebar-heading">
@@ -91,7 +94,7 @@
             </li>
 
             <!-- Divider -->
-            <hr class="sidebar-divider">
+            <hr class="sidebar-divider" />
 
             <!-- Heading -->
             <div class="sidebar-heading">
@@ -119,7 +122,7 @@
             </li>
 
             <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
+            <hr class="sidebar-divider d-none d-md-block" />
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
@@ -211,11 +214,11 @@
                         <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
                     </div>
                     <!-- End of Page Heading -->
-                    @{
+                    @*@{
                         var accountCenter = (!ViewData["Title"].Equals("Login") && !ViewData["Title"].Equals("Register")) ? "" : "center-block";
-                    }
+                    }*@
                     <div class="row">
-                        <main role="main" class="pb-3 @accountCenter">
+                        <main role="main" class="p-5 center-block" style="width:100%;">
                             @RenderBody()
                         </main>
                     </div>
@@ -252,6 +255,7 @@
         <!-- Custom scripts for all pages-->
         <script src="~/js/sb-admin-2.min.js"></script>
 
+        <script src="~/js/summernote.js"></script>
     </div>
 
 </body>
