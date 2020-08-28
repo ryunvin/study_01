@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RVCoreBoard.MVC.Models
 {
-    public class LogrinModel
+    public class LoginModel
     {
         /// <summary>
         /// 사용자 아이디

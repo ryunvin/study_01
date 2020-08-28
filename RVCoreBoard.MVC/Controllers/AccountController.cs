@@ -31,7 +31,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Login(LogrinModel model)
+        public IActionResult Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
