@@ -25,11 +25,27 @@
 
         public int RowCount { get; set; }
 
+        public bool HasPreviousPage
+        {
+            get { return (CurrentPage > 1); }
+        }
+        public bool HasNextPage
+        {
+            get { return (CurrentPage < Count); }
+        }
+
         public List<Board> Data { get; private set; }
 
-        public async Task GetList()
+        public async Task GetList(int currentPage)
         {
+            CurrentPage = currentPage;
+
             Data = await _boardService.GetList();
+
+            RowCount = Data.Count;
+            Count = (int)Math.Ceiling(RowCount / (double)PageSize);
+
+            Data = Data.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
         }
     }
 }

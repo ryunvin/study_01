@@ -26,10 +26,10 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시판 리스트
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? currentPage)
         {
             BoardListInfoModel boardListInfoModel = new BoardListInfoModel(_boardService);
-            await boardListInfoModel.GetList();
+            await boardListInfoModel.GetList(currentPage ?? 1);
 
             return View(boardListInfoModel);
         }
