@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\summernote\plugin\**" />
+    <Content Remove="wwwroot\lib\summernote\plugin\**" />
+    <EmbeddedResource Remove="wwwroot\lib\summernote\plugin\**" />
+    <None Remove="wwwroot\lib\summernote\plugin\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Migrations\20200825051725_First_Migration.cs" />
     <Compile Remove="Migrations\20200825051725_First_Migration.Designer.cs" />
     <Compile Remove="Migrations\20200825051917_First_Migration.cs" />
@@ -29,6 +36,12 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\upload\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\lib\summernote\font\summernote.woff2" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ko-KR.js" />
+    <None Include="wwwroot\lib\summernote\lang\summernote-ko-KR.min.js" />
   </ItemGroup>
 
   <ItemGroup>

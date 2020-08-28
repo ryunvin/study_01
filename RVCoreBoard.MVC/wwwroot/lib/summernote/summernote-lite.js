@@ -103,7 +103,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 52);
+/******/ 	return __webpack_require__(__webpack_require__.s = 51);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -9997,14 +9997,7 @@ external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summe
 
 /***/ }),
 
-/***/ 4:
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ 52:
+/***/ 51:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -10018,31 +10011,344 @@ var external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default = /
 // EXTERNAL MODULE: ./src/js/base/renderer.js
 var renderer = __webpack_require__(1);
 
-// CONCATENATED MODULE: ./src/js/bs3/ui.js
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+// CONCATENATED MODULE: ./src/js/lite/ui/TooltipUI.js
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
 
-var editor = renderer["a" /* default */].create('<div class="note-editor note-frame panel panel-default"/>');
-var toolbar = renderer["a" /* default */].create('<div class="panel-heading note-toolbar" role="toolbar"/>');
+var TooltipUI_TooltipUI = /*#__PURE__*/function () {
+  function TooltipUI($node, options) {
+    _classCallCheck(this, TooltipUI);
+
+    this.$node = $node;
+    this.options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, {
+      title: '',
+      target: options.container,
+      trigger: 'hover focus',
+      placement: 'bottom'
+    }, options); // create tooltip node
+
+    this.$tooltip = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(['<div class="note-tooltip">', '<div class="note-tooltip-arrow"></div>', '<div class="note-tooltip-content"></div>', '</div>'].join('')); // define event
+
+    if (this.options.trigger !== 'manual') {
+      var showCallback = this.show.bind(this);
+      var hideCallback = this.hide.bind(this);
+      var toggleCallback = this.toggle.bind(this);
+      this.options.trigger.split(' ').forEach(function (eventName) {
+        if (eventName === 'hover') {
+          $node.off('mouseenter mouseleave');
+          $node.on('mouseenter', showCallback).on('mouseleave', hideCallback);
+        } else if (eventName === 'click') {
+          $node.on('click', toggleCallback);
+        } else if (eventName === 'focus') {
+          $node.on('focus', showCallback).on('blur', hideCallback);
+        }
+      });
+    }
+  }
+
+  _createClass(TooltipUI, [{
+    key: "show",
+    value: function show() {
+      var $node = this.$node;
+      var offset = $node.offset();
+      var targetOffset = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.target).offset();
+      offset.top -= targetOffset.top;
+      offset.left -= targetOffset.left;
+      var $tooltip = this.$tooltip;
+      var title = this.options.title || $node.attr('title') || $node.data('title');
+      var placement = this.options.placement || $node.data('placement');
+      $tooltip.addClass(placement);
+      $tooltip.find('.note-tooltip-content').text(title);
+      $tooltip.appendTo(this.options.target);
+      var nodeWidth = $node.outerWidth();
+      var nodeHeight = $node.outerHeight();
+      var tooltipWidth = $tooltip.outerWidth();
+      var tooltipHeight = $tooltip.outerHeight();
+
+      if (placement === 'bottom') {
+        $tooltip.css({
+          top: offset.top + nodeHeight,
+          left: offset.left + (nodeWidth / 2 - tooltipWidth / 2)
+        });
+      } else if (placement === 'top') {
+        $tooltip.css({
+          top: offset.top - tooltipHeight,
+          left: offset.left + (nodeWidth / 2 - tooltipWidth / 2)
+        });
+      } else if (placement === 'left') {
+        $tooltip.css({
+          top: offset.top + (nodeHeight / 2 - tooltipHeight / 2),
+          left: offset.left - tooltipWidth
+        });
+      } else if (placement === 'right') {
+        $tooltip.css({
+          top: offset.top + (nodeHeight / 2 - tooltipHeight / 2),
+          left: offset.left + nodeWidth
+        });
+      }
+
+      $tooltip.addClass('in');
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      var _this = this;
+
+      this.$tooltip.removeClass('in');
+      setTimeout(function () {
+        _this.$tooltip.remove();
+      }, 200);
+    }
+  }, {
+    key: "toggle",
+    value: function toggle() {
+      if (this.$tooltip.hasClass('in')) {
+        this.hide();
+      } else {
+        this.show();
+      }
+    }
+  }]);
+
+  return TooltipUI;
+}();
+
+/* harmony default export */ var ui_TooltipUI = (TooltipUI_TooltipUI);
+// CONCATENATED MODULE: ./src/js/lite/ui/DropdownUI.js
+function DropdownUI_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function DropdownUI_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function DropdownUI_createClass(Constructor, protoProps, staticProps) { if (protoProps) DropdownUI_defineProperties(Constructor.prototype, protoProps); if (staticProps) DropdownUI_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var DropdownUI_DropdownUI = /*#__PURE__*/function () {
+  function DropdownUI($node, options) {
+    DropdownUI_classCallCheck(this, DropdownUI);
+
+    this.$button = $node;
+    this.options = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend({}, {
+      target: options.container
+    }, options);
+    this.setEvent();
+  }
+
+  DropdownUI_createClass(DropdownUI, [{
+    key: "setEvent",
+    value: function setEvent() {
+      var _this = this;
+
+      this.$button.on('click', function (e) {
+        _this.toggle();
+
+        e.stopImmediatePropagation();
+      });
+    }
+  }, {
+    key: "clear",
+    value: function clear() {
+      var $parent = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('.note-btn-group.open');
+      $parent.find('.note-btn.active').removeClass('active');
+      $parent.removeClass('open');
+    }
+  }, {
+    key: "show",
+    value: function show() {
+      this.$button.addClass('active');
+      this.$button.parent().addClass('open');
+      var $dropdown = this.$button.next();
+      var offset = $dropdown.offset();
+      var width = $dropdown.outerWidth();
+      var windowWidth = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(window).width();
+      var targetMarginRight = parseFloat(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this.options.target).css('margin-right'));
+
+      if (offset.left + width > windowWidth - targetMarginRight) {
+        $dropdown.css('margin-left', windowWidth - targetMarginRight - (offset.left + width));
+      } else {
+        $dropdown.css('margin-left', '');
+      }
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.$button.removeClass('active');
+      this.$button.parent().removeClass('open');
+    }
+  }, {
+    key: "toggle",
+    value: function toggle() {
+      var isOpened = this.$button.parent().hasClass('open');
+      this.clear();
+
+      if (isOpened) {
+        this.hide();
+      } else {
+        this.show();
+      }
+    }
+  }]);
+
+  return DropdownUI;
+}();
+
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document).on('click', function (e) {
+  if (!external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.target).closest('.note-btn-group').length) {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('.note-btn-group.open').removeClass('open');
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('.note-btn-group .note-btn.active').removeClass('active');
+  }
+});
+external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(document).on('click.note-dropdown-menu', function (e) {
+  external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.target).closest('.note-dropdown-menu').parent().removeClass('open');
+  external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.target).closest('.note-dropdown-menu').parent().find('.note-btn.active').removeClass('active');
+});
+/* harmony default export */ var ui_DropdownUI = (DropdownUI_DropdownUI);
+// CONCATENATED MODULE: ./src/js/lite/ui/ModalUI.js
+function ModalUI_classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function ModalUI_defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function ModalUI_createClass(Constructor, protoProps, staticProps) { if (protoProps) ModalUI_defineProperties(Constructor.prototype, protoProps); if (staticProps) ModalUI_defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var ModalUI_ModalUI = /*#__PURE__*/function () {
+  function ModalUI($node
+  /*, options */
+  ) {
+    ModalUI_classCallCheck(this, ModalUI);
+
+    this.$modal = $node;
+    this.$backdrop = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<div class="note-modal-backdrop"/>');
+  }
+
+  ModalUI_createClass(ModalUI, [{
+    key: "show",
+    value: function show() {
+      var _this = this;
+
+      this.$backdrop.appendTo(document.body).show();
+      this.$modal.addClass('open').show();
+      this.$modal.trigger('note.modal.show');
+      this.$modal.off('click', '.close').on('click', '.close', this.hide.bind(this));
+      this.$modal.on('keydown', function (event) {
+        if (event.which === 27) {
+          event.preventDefault();
+
+          _this.hide();
+        }
+      });
+    }
+  }, {
+    key: "hide",
+    value: function hide() {
+      this.$modal.removeClass('open').hide();
+      this.$backdrop.hide();
+      this.$modal.trigger('note.modal.hide');
+      this.$modal.off('keydown');
+    }
+  }]);
+
+  return ModalUI;
+}();
+
+/* harmony default export */ var ui_ModalUI = (ModalUI_ModalUI);
+// CONCATENATED MODULE: ./src/js/lite/ui.js
+
+
+
+
+
+var editor = renderer["a" /* default */].create('<div class="note-editor note-frame"/>');
+var toolbar = renderer["a" /* default */].create('<div class="note-toolbar" role="toolbar"/>');
 var editingArea = renderer["a" /* default */].create('<div class="note-editing-area"/>');
 var codable = renderer["a" /* default */].create('<textarea class="note-codable" aria-multiline="true"/>');
 var editable = renderer["a" /* default */].create('<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"/>');
-var statusbar = renderer["a" /* default */].create(['<output class="note-status-output" role="status" aria-live="polite"></output>', '<div class="note-statusbar" role="status">', '<div class="note-resizebar" aria-label="Resize">', '<div class="note-icon-bar"></div>', '<div class="note-icon-bar"></div>', '<div class="note-icon-bar"></div>', '</div>', '</div>'].join(''));
+var statusbar = renderer["a" /* default */].create(['<output class="note-status-output" role="status" aria-live="polite"></output>', '<div class="note-statusbar" role="status">', '<div class="note-resizebar" aria-label="resize">', '<div class="note-icon-bar"></div>', '<div class="note-icon-bar"></div>', '<div class="note-icon-bar"></div>', '</div>', '</div>'].join(''));
 var airEditor = renderer["a" /* default */].create('<div class="note-editor note-airframe"/>');
 var airEditable = renderer["a" /* default */].create(['<div class="note-editable" contentEditable="true" role="textbox" aria-multiline="true"></div>', '<output class="note-status-output" role="status" aria-live="polite"></output>'].join(''));
-var buttonGroup = renderer["a" /* default */].create('<div class="note-btn-group btn-group">');
-var dropdown = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu">', function ($node, options) {
+var buttonGroup = renderer["a" /* default */].create('<div class="note-btn-group">');
+var ui_button = renderer["a" /* default */].create('<button type="button" class="note-btn" tabindex="-1">', function ($node, options) {
+  // set button type
+  if (options && options.tooltip) {
+    $node.attr({
+      'aria-label': options.tooltip
+    });
+    $node.data('_lite_tooltip', new ui_TooltipUI($node, {
+      title: options.tooltip,
+      container: options.container
+    })).on('click', function (e) {
+      external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).data('_lite_tooltip').hide();
+    });
+  }
+
+  if (options.contents) {
+    $node.html(options.contents);
+  }
+
+  if (options && options.data && options.data.toggle === 'dropdown') {
+    $node.data('_lite_dropdown', new ui_DropdownUI($node, {
+      container: options.container
+    }));
+  }
+
+  if (options && options.codeviewKeepButton) {
+    $node.addClass('note-codeview-keep');
+  }
+});
+var dropdown = renderer["a" /* default */].create('<div class="note-dropdown-menu" role="list">', function ($node, options) {
   var markup = Array.isArray(options.items) ? options.items.map(function (item) {
     var value = typeof item === 'string' ? item : item.value || '';
     var content = options.template ? options.template(item) : item;
-    var option = _typeof(item) === 'object' ? item.option : undefined;
-    var dataValue = 'data-value="' + value + '"';
-    var dataOption = option !== undefined ? ' data-option="' + option + '"' : '';
-    return '<li aria-label="' + value + '"><a href="#" ' + (dataValue + dataOption) + '>' + content + '</a></li>';
-  }).join('') : options.items;
+    var $temp = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + value + '"></a>');
+    $temp.html(content).data('item', item);
+    return $temp;
+  }) : options.items;
   $node.html(markup).attr({
     'aria-label': options.title
+  });
+  $node.on('click', '> .note-dropdown-item', function (e) {
+    var $a = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this);
+    var item = $a.data('item');
+    var value = $a.data('value');
+
+    if (item.click) {
+      item.click($a);
+    } else if (options.itemClick) {
+      options.itemClick(e, item, value);
+    }
+  });
+
+  if (options && options.codeviewKeepButton) {
+    $node.addClass('note-codeview-keep');
+  }
+});
+var dropdownCheck = renderer["a" /* default */].create('<div class="note-dropdown-menu note-check" role="list">', function ($node, options) {
+  var markup = Array.isArray(options.items) ? options.items.map(function (item) {
+    var value = typeof item === 'string' ? item : item.value || '';
+    var content = options.template ? options.template(item) : item;
+    var $temp = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()('<a class="note-dropdown-item" href="#" data-value="' + value + '" role="listitem" aria-label="' + item + '"></a>');
+    $temp.html([icon(options.checkClassName), ' ', content]).data('item', item);
+    return $temp;
+  }) : options.items;
+  $node.html(markup).attr({
+    'aria-label': options.title
+  });
+  $node.on('click', '> .note-dropdown-item', function (e) {
+    var $a = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this);
+    var item = $a.data('item');
+    var value = $a.data('value');
+
+    if (item.click) {
+      item.click($a);
+    } else if (options.itemClick) {
+      options.itemClick(e, item, value);
+    }
   });
 
   if (options && options.codeviewKeepButton) {
@@ -10054,21 +10360,240 @@ var dropdownButtonContents = function dropdownButtonContents(contents, options) 
   return contents + ' ' + icon(options.icons.caret, 'span');
 };
 
-var dropdownCheck = renderer["a" /* default */].create('<ul class="note-dropdown-menu dropdown-menu note-check">', function ($node, options) {
-  var markup = Array.isArray(options.items) ? options.items.map(function (item) {
-    var value = typeof item === 'string' ? item : item.value || '';
-    var content = options.template ? options.template(item) : item;
-    return '<li aria-label="' + item + '"><a href="#" data-value="' + value + '">' + icon(options.checkClassName) + ' ' + content + '</a></li>';
-  }).join('') : options.items;
-  $node.html(markup).attr({
-    'aria-label': options.title
-  });
+var dropdownButton = function dropdownButton(opt, callback) {
+  return buttonGroup([ui_button({
+    className: 'dropdown-toggle',
+    contents: opt.title + ' ' + icon('note-icon-caret'),
+    tooltip: opt.tooltip,
+    data: {
+      toggle: 'dropdown'
+    }
+  }), dropdown({
+    className: opt.className,
+    items: opt.items,
+    template: opt.template,
+    itemClick: opt.itemClick
+  })], {
+    callback: callback
+  }).render();
+};
 
-  if (options && options.codeviewKeepButton) {
-    $node.addClass('note-codeview-keep');
+var dropdownCheckButton = function dropdownCheckButton(opt, callback) {
+  return buttonGroup([ui_button({
+    className: 'dropdown-toggle',
+    contents: opt.title + ' ' + icon('note-icon-caret'),
+    tooltip: opt.tooltip,
+    data: {
+      toggle: 'dropdown'
+    }
+  }), dropdownCheck({
+    className: opt.className,
+    checkClassName: opt.checkClassName,
+    items: opt.items,
+    template: opt.template,
+    itemClick: opt.itemClick
+  })], {
+    callback: callback
+  }).render();
+};
+
+var paragraphDropdownButton = function paragraphDropdownButton(opt) {
+  return buttonGroup([ui_button({
+    className: 'dropdown-toggle',
+    contents: opt.title + ' ' + icon('note-icon-caret'),
+    tooltip: opt.tooltip,
+    data: {
+      toggle: 'dropdown'
+    }
+  }), dropdown([buttonGroup({
+    className: 'note-align',
+    children: opt.items[0]
+  }), buttonGroup({
+    className: 'note-list',
+    children: opt.items[1]
+  })])]).render();
+};
+
+var ui_tableMoveHandler = function tableMoveHandler(event, col, row) {
+  var PX_PER_EM = 18;
+  var $picker = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target.parentNode); // target is mousecatcher
+
+  var $dimensionDisplay = $picker.next();
+  var $catcher = $picker.find('.note-dimension-picker-mousecatcher');
+  var $highlighted = $picker.find('.note-dimension-picker-highlighted');
+  var $unhighlighted = $picker.find('.note-dimension-picker-unhighlighted');
+  var posOffset; // HTML5 with jQuery - e.offsetX is undefined in Firefox
+
+  if (event.offsetX === undefined) {
+    var posCatcher = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target).offset();
+    posOffset = {
+      x: event.pageX - posCatcher.left,
+      y: event.pageY - posCatcher.top
+    };
+  } else {
+    posOffset = {
+      x: event.offsetX,
+      y: event.offsetY
+    };
   }
+
+  var dim = {
+    c: Math.ceil(posOffset.x / PX_PER_EM) || 1,
+    r: Math.ceil(posOffset.y / PX_PER_EM) || 1
+  };
+  $highlighted.css({
+    width: dim.c + 'em',
+    height: dim.r + 'em'
+  });
+  $catcher.data('value', dim.c + 'x' + dim.r);
+
+  if (dim.c > 3 && dim.c < col) {
+    $unhighlighted.css({
+      width: dim.c + 1 + 'em'
+    });
+  }
+
+  if (dim.r > 3 && dim.r < row) {
+    $unhighlighted.css({
+      height: dim.r + 1 + 'em'
+    });
+  }
+
+  $dimensionDisplay.html(dim.c + ' x ' + dim.r);
+};
+
+var tableDropdownButton = function tableDropdownButton(opt) {
+  return buttonGroup([ui_button({
+    className: 'dropdown-toggle',
+    contents: opt.title + ' ' + icon('note-icon-caret'),
+    tooltip: opt.tooltip,
+    data: {
+      toggle: 'dropdown'
+    }
+  }), dropdown({
+    className: 'note-table',
+    items: ['<div class="note-dimension-picker">', '<div class="note-dimension-picker-mousecatcher" data-event="insertTable" data-value="1x1"></div>', '<div class="note-dimension-picker-highlighted"></div>', '<div class="note-dimension-picker-unhighlighted"></div>', '</div>', '<div class="note-dimension-display">1 x 1</div>'].join('')
+  })], {
+    callback: function callback($node) {
+      var $catcher = $node.find('.note-dimension-picker-mousecatcher');
+      $catcher.css({
+        width: opt.col + 'em',
+        height: opt.row + 'em'
+      }).mousedown(opt.itemClick).mousemove(function (e) {
+        ui_tableMoveHandler(e, opt.col, opt.row);
+      });
+    }
+  }).render();
+};
+
+var palette = renderer["a" /* default */].create('<div class="note-color-palette"/>', function ($node, options) {
+  var contents = [];
+
+  for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
+    var eventName = options.eventName;
+    var colors = options.colors[row];
+    var colorsName = options.colorsName[row];
+    var buttons = [];
+
+    for (var col = 0, colSize = colors.length; col < colSize; col++) {
+      var color = colors[col];
+      var colorName = colorsName[col];
+      buttons.push(['<button type="button" class="note-btn note-color-btn"', 'style="background-color:', color, '" ', 'data-event="', eventName, '" ', 'data-value="', color, '" ', 'data-title="', colorName, '" ', 'aria-label="', colorName, '" ', 'data-toggle="button" tabindex="-1"></button>'].join(''));
+    }
+
+    contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
+  }
+
+  $node.html(contents.join(''));
+  $node.find('.note-color-btn').each(function () {
+    external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this).data('_lite_tooltip', new ui_TooltipUI(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this), {
+      container: options.container
+    }));
+  });
 });
-var dialog = renderer["a" /* default */].create('<div class="modal note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
+
+var ui_colorDropdownButton = function colorDropdownButton(opt, type) {
+  return buttonGroup({
+    className: 'note-color',
+    children: [ui_button({
+      className: 'note-current-color-button',
+      contents: opt.title,
+      tooltip: opt.lang.color.recent,
+      click: opt.currentClick,
+      callback: function callback($button) {
+        var $recentColor = $button.find('.note-recent-color');
+
+        if (type !== 'foreColor') {
+          $recentColor.css('background-color', '#FFFF00');
+          $button.attr('data-backColor', '#FFFF00');
+        }
+      }
+    }), ui_button({
+      className: 'dropdown-toggle',
+      contents: icon('note-icon-caret'),
+      tooltip: opt.lang.color.more,
+      data: {
+        toggle: 'dropdown'
+      }
+    }), dropdown({
+      items: ['<div>', '<div class="note-btn-group btn-background-color">', '<div class="note-palette-title">' + opt.lang.color.background + '</div>', '<div>', '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="backColor" data-value="transparent">', opt.lang.color.transparent, '</button>', '</div>', '<div class="note-holder" data-event="backColor"></div>', '<div class="btn-sm">', '<input type="color" id="html5bcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">', '<button type="button" class="note-color-reset btn" data-event="backColor" data-value="cpbackColor">', opt.lang.color.cpSelect, '</button>', '</div>', '</div>', '<div class="note-btn-group btn-foreground-color">', '<div class="note-palette-title">' + opt.lang.color.foreground + '</div>', '<div>', '<button type="button" class="note-color-reset note-btn note-btn-block" data-event="removeFormat" data-value="foreColor">', opt.lang.color.resetToDefault, '</button>', '</div>', '<div class="note-holder" data-event="foreColor"></div>', '<div class="btn-sm">', '<input type="color" id="html5fcp" class="note-btn btn-default" value="#21104A" style="width:100%;" data-value="cp">', '<button type="button" class="note-color-reset btn" data-event="foreColor" data-value="cpforeColor">', opt.lang.color.cpSelect, '</button>', '</div>', '</div>', '</div>'].join(''),
+      callback: function callback($dropdown) {
+        $dropdown.find('.note-holder').each(function () {
+          var $holder = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(this);
+          $holder.append(palette({
+            colors: opt.colors,
+            eventName: $holder.data('event')
+          }).render());
+        });
+
+        if (type === 'fore') {
+          $dropdown.find('.btn-background-color').hide();
+          $dropdown.css({
+            'min-width': '210px'
+          });
+        } else if (type === 'back') {
+          $dropdown.find('.btn-foreground-color').hide();
+          $dropdown.css({
+            'min-width': '210px'
+          });
+        }
+      },
+      click: function click(event) {
+        var $button = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(event.target);
+        var eventName = $button.data('event');
+        var value = $button.data('value');
+        var foreinput = document.getElementById('html5fcp').value;
+        var backinput = document.getElementById('html5bcp').value;
+
+        if (value === 'cp') {
+          event.stopPropagation();
+        } else if (value === 'cpbackColor') {
+          value = backinput;
+        } else if (value === 'cpforeColor') {
+          value = foreinput;
+        }
+
+        if (eventName && value) {
+          var key = eventName === 'backColor' ? 'background-color' : 'color';
+          var $color = $button.closest('.note-color').find('.note-recent-color');
+          var $currentButton = $button.closest('.note-color').find('.note-current-color-button');
+          $color.css(key, value);
+          $currentButton.attr('data-' + eventName, value);
+
+          if (type === 'fore') {
+            opt.itemClick('foreColor', value);
+          } else if (type === 'back') {
+            opt.itemClick('backColor', value);
+          } else {
+            opt.itemClick(eventName, value);
+          }
+        }
+      }
+    })]
+  }).render();
+};
+
+var dialog = renderer["a" /* default */].create('<div class="note-modal" aria-hidden="false" tabindex="-1" role="dialog"/>', function ($node, options) {
   if (options.fade) {
     $node.addClass('fade');
   }
@@ -10076,26 +10601,62 @@ var dialog = renderer["a" /* default */].create('<div class="modal note-modal" a
   $node.attr({
     'aria-label': options.title
   });
-  $node.html(['<div class="modal-dialog">', '<div class="modal-content">', options.title ? '<div class="modal-header">' + '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' + '<h4 class="modal-title">' + options.title + '</h4>' + '</div>' : '', '<div class="modal-body">' + options.body + '</div>', options.footer ? '<div class="modal-footer">' + options.footer + '</div>' : '', '</div>', '</div>'].join(''));
+  $node.html(['<div class="note-modal-content">', options.title ? '<div class="note-modal-header"><button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button><h4 class="note-modal-title">' + options.title + '</h4></div>' : '', '<div class="note-modal-body">' + options.body + '</div>', options.footer ? '<div class="note-modal-footer">' + options.footer + '</div>' : '', '</div>'].join(''));
+  $node.data('modal', new ui_ModalUI($node, options));
 });
-var popover = renderer["a" /* default */].create(['<div class="note-popover popover in">', '<div class="arrow"></div>', '<div class="popover-content note-children-container"></div>', '</div>'].join(''), function ($node, options) {
+
+var videoDialog = function videoDialog(opt) {
+  var body = '<div class="note-form-group">' + '<label for="note-dialog-video-url-' + opt.id + '" class="note-form-label">' + opt.lang.video.url + ' <small class="text-muted">' + opt.lang.video.providers + '</small></label>' + '<input id="note-dialog-video-url-' + opt.id + '" class="note-video-url note-input" type="text"/>' + '</div>';
+  var footer = ['<button type="button" href="#" class="note-btn note-btn-primary note-video-btn disabled" disabled>', opt.lang.video.insert, '</button>'].join('');
+  return dialog({
+    title: opt.lang.video.insert,
+    fade: opt.fade,
+    body: body,
+    footer: footer
+  }).render();
+};
+
+var imageDialog = function imageDialog(opt) {
+  var body = '<div class="note-form-group note-group-select-from-files">' + '<label for="note-dialog-image-file-' + opt.id + '" class="note-form-label">' + opt.lang.image.selectFromFiles + '</label>' + '<input id="note-dialog-image-file-' + opt.id + '" class="note-note-image-input note-input" type="file" name="files" accept="image/*" multiple="multiple"/>' + opt.imageLimitation + '</div>' + '<div class="note-form-group">' + '<label for="note-dialog-image-url-' + opt.id + '" class="note-form-label">' + opt.lang.image.url + '</label>' + '<input id="note-dialog-image-url-' + opt.id + '" class="note-image-url note-input" type="text"/>' + '</div>';
+  var footer = ['<button href="#" type="button" class="note-btn note-btn-primary note-btn-large note-image-btn disabled" disabled>', opt.lang.image.insert, '</button>'].join('');
+  return dialog({
+    title: opt.lang.image.insert,
+    fade: opt.fade,
+    body: body,
+    footer: footer
+  }).render();
+};
+
+var linkDialog = function linkDialog(opt) {
+  var body = '<div class="note-form-group">' + '<label for="note-dialog-link-txt-' + opt.id + '" class="note-form-label">' + opt.lang.link.textToDisplay + '</label>' + '<input id="note-dialog-link-txt-' + opt.id + '" class="note-link-text note-input" type="text"/>' + '</div>' + '<div class="note-form-group">' + '<label for="note-dialog-link-url-' + opt.id + '" class="note-form-label">' + opt.lang.link.url + '</label>' + '<input id="note-dialog-link-url-' + opt.id + '" class="note-link-url note-input" type="text" value="http://"/>' + '</div>' + (!opt.disableLinkTarget ? '<div class="checkbox"><label for="note-dialog-link-nw-' + opt.id + '"><input id="note-dialog-link-nw-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.openInNewWindow + '</label></div>' : '') + '<div class="checkbox"><label for="note-dialog-link-up-' + opt.id + '"><input id="note-dialog-link-up-' + opt.id + '" type="checkbox" checked> ' + opt.lang.link.useProtocol + '</label></div>';
+  var footer = ['<button href="#" type="button" class="note-btn note-btn-primary note-link-btn disabled" disabled>', opt.lang.link.insert, '</button>'].join('');
+  return dialog({
+    className: 'link-dialog',
+    title: opt.lang.link.insert,
+    fade: opt.fade,
+    body: body,
+    footer: footer
+  }).render();
+};
+
+var popover = renderer["a" /* default */].create(['<div class="note-popover bottom">', '<div class="note-popover-arrow"></div>', '<div class="popover-content note-children-container"></div>', '</div>'].join(''), function ($node, options) {
   var direction = typeof options.direction !== 'undefined' ? options.direction : 'bottom';
-  $node.addClass(direction);
+  $node.addClass(direction).hide();
 
   if (options.hideArrow) {
-    $node.find('.arrow').hide();
+    $node.find('.note-popover-arrow').hide();
   }
 });
 var ui_checkbox = renderer["a" /* default */].create('<div class="checkbox"></div>', function ($node, options) {
-  $node.html(['<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>', '<input type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''), options.checked ? ' checked' : '', ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>', options.text ? options.text : '', '</label>'].join(''));
+  $node.html(['<label' + (options.id ? ' for="note-' + options.id + '"' : '') + '>', '<input role="checkbox" type="checkbox"' + (options.id ? ' id="note-' + options.id + '"' : ''), options.checked ? ' checked' : '', ' aria-checked="' + (options.checked ? 'true' : 'false') + '"/>', options.text ? options.text : '', '</label>'].join(''));
 });
 
 var icon = function icon(iconClassName, tagName) {
   tagName = tagName || 'i';
-  return '<' + tagName + ' class="' + iconClassName + '"></' + tagName + '>';
+  return '<' + tagName + ' class="' + iconClassName + '"/>';
 };
 
-var ui_ui = function ui(editorOptions) {
+var ui = function ui(editorOptions) {
   return {
     editor: editor,
     toolbar: toolbar,
@@ -10106,64 +10667,24 @@ var ui_ui = function ui(editorOptions) {
     airEditor: airEditor,
     airEditable: airEditable,
     buttonGroup: buttonGroup,
+    button: ui_button,
     dropdown: dropdown,
-    dropdownButtonContents: dropdownButtonContents,
     dropdownCheck: dropdownCheck,
+    dropdownButton: dropdownButton,
+    dropdownButtonContents: dropdownButtonContents,
+    dropdownCheckButton: dropdownCheckButton,
+    paragraphDropdownButton: paragraphDropdownButton,
+    tableDropdownButton: tableDropdownButton,
+    colorDropdownButton: ui_colorDropdownButton,
+    palette: palette,
     dialog: dialog,
+    videoDialog: videoDialog,
+    imageDialog: imageDialog,
+    linkDialog: linkDialog,
     popover: popover,
     checkbox: ui_checkbox,
     icon: icon,
     options: editorOptions,
-    palette: function palette($node, options) {
-      return renderer["a" /* default */].create('<div class="note-color-palette"/>', function ($node, options) {
-        var contents = [];
-
-        for (var row = 0, rowSize = options.colors.length; row < rowSize; row++) {
-          var eventName = options.eventName;
-          var colors = options.colors[row];
-          var colorsName = options.colorsName[row];
-          var buttons = [];
-
-          for (var col = 0, colSize = colors.length; col < colSize; col++) {
-            var color = colors[col];
-            var colorName = colorsName[col];
-            buttons.push(['<button type="button" class="note-color-btn"', 'style="background-color:', color, '" ', 'data-event="', eventName, '" ', 'data-value="', color, '" ', 'title="', colorName, '" ', 'aria-label="', colorName, '" ', 'data-toggle="button" tabindex="-1"></button>'].join(''));
-          }
-
-          contents.push('<div class="note-color-row">' + buttons.join('') + '</div>');
-        }
-
-        $node.html(contents.join(''));
-
-        if (options.tooltip) {
-          $node.find('.note-color-btn').tooltip({
-            container: options.container || editorOptions.container,
-            trigger: 'hover',
-            placement: 'bottom'
-          });
-        }
-      })($node, options);
-    },
-    button: function button($node, options) {
-      return renderer["a" /* default */].create('<button type="button" class="note-btn btn btn-default btn-sm" tabindex="-1">', function ($node, options) {
-        if (options && options.tooltip) {
-          $node.attr({
-            title: options.tooltip,
-            'aria-label': options.tooltip
-          }).tooltip({
-            container: options.container || editorOptions.container,
-            trigger: 'hover',
-            placement: 'bottom'
-          }).on('click', function (e) {
-            external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default()(e.currentTarget).tooltip('hide');
-          });
-        }
-
-        if (options && options.codeviewButton) {
-          $node.addClass('note-codeview-keep');
-        }
-      })($node, options);
-    },
     toggleBtn: function toggleBtn($btn, isEnable) {
       $btn.toggleClass('disabled', !isEnable);
       $btn.attr('disabled', !isEnable);
@@ -10171,17 +10692,41 @@ var ui_ui = function ui(editorOptions) {
     toggleBtnActive: function toggleBtnActive($btn, isActive) {
       $btn.toggleClass('active', isActive);
     },
+    check: function check($dom, value) {
+      $dom.find('.checked').removeClass('checked');
+      $dom.find('[data-value="' + value + '"]').addClass('checked');
+    },
     onDialogShown: function onDialogShown($dialog, handler) {
-      $dialog.one('shown.bs.modal', handler);
+      $dialog.one('note.modal.show', handler);
     },
     onDialogHidden: function onDialogHidden($dialog, handler) {
-      $dialog.one('hidden.bs.modal', handler);
+      $dialog.one('note.modal.hide', handler);
     },
     showDialog: function showDialog($dialog) {
-      $dialog.modal('show');
+      $dialog.data('modal').show();
     },
     hideDialog: function hideDialog($dialog) {
-      $dialog.modal('hide');
+      $dialog.data('modal').hide();
+    },
+
+    /**
+     * get popover content area
+     *
+     * @param $popover
+     * @returns {*}
+     */
+    getPopoverContent: function getPopoverContent($popover) {
+      return $popover.find('.note-popover-content');
+    },
+
+    /**
+     * get dialog's body area
+     *
+     * @param $dialog
+     * @returns {*}
+     */
+    getDialogBody: function getDialogBody($dialog) {
+      return $dialog.find('.note-modal-body');
     },
     createLayout: function createLayout($note) {
       var $editor = (editorOptions.airMode ? airEditor([editingArea([codable(), airEditable()])]) : editorOptions.toolbarPosition === 'bottom' ? editor([editingArea([codable(), editable()]), toolbar(), statusbar()]) : editor([toolbar(), editingArea([codable(), editable()]), statusbar()])).render();
@@ -10199,30 +10744,39 @@ var ui_ui = function ui(editorOptions) {
     removeLayout: function removeLayout($note, layoutInfo) {
       $note.html(layoutInfo.editable.html());
       layoutInfo.editor.remove();
+      $note.off('summernote'); // remove summernote custom event
+
       $note.show();
     }
   };
 };
 
-/* harmony default export */ var bs3_ui = (ui_ui);
+/* harmony default export */ var lite_ui = (ui);
 // EXTERNAL MODULE: ./src/js/base/settings.js + 37 modules
 var settings = __webpack_require__(3);
 
-// EXTERNAL MODULE: ./src/styles/summernote-bs3.scss
-var summernote_bs3 = __webpack_require__(4);
+// EXTERNAL MODULE: ./src/styles/summernote-lite.scss
+var summernote_lite = __webpack_require__(6);
 
-// CONCATENATED MODULE: ./src/js/bs3/settings.js
+// CONCATENATED MODULE: ./src/js/lite/settings.js
 
 
 
 
 external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote = external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.extend(external_root_jQuery_commonjs2_jquery_commonjs_jquery_amd_jquery_default.a.summernote, {
-  ui_template: bs3_ui,
-  "interface": 'bs3'
+  ui_template: lite_ui,
+  "interface": 'lite'
 });
+
+/***/ }),
+
+/***/ 6:
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
 
 /***/ })
 
 /******/ });
 });
-//# sourceMappingURL=summernote.js.map
+//# sourceMappingURL=summernote-lite.js.map

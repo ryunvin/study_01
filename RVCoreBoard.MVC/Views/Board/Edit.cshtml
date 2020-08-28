@@ -3,7 +3,7 @@
     ViewData["Title"] = Model.Title;
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
-    <div class="col-lg-8 card center-block">
+    <div class="col-lg-9 card">
         <div class="card-body">
             <form class="form-horizontal" method="post" asp-controller="Board" asp-action="Edit">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
@@ -17,7 +17,7 @@
                 </div>
                 <div class="form-group">
                     <label>내용</label>
-                    <textarea class="form-control editor" rows="10" asp-for="Content" placeholder="내용 입력">@Model.Content</textarea>
+                    <textarea class="form-control" id="summernote" asp-for="Content" placeholder="내용 입력">@Model.Content</textarea>
                     <span class="text-danger" asp-validation-for="Content"></span>
                 </div>
                 <div class="mt-5 mb-3 text-right">
