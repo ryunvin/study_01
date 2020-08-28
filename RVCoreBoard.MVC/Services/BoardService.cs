@@ -19,7 +19,9 @@
 
         public async Task<Board> GetDetail(int BNo)
         {
-            var board = await _db.Boards.FirstOrDefaultAsync(b => b.BNo.Equals(BNo));
+            var board = await _db.Boards
+                                .Include("user")
+                                .FirstOrDefaultAsync(b => b.BNo.Equals(BNo));
 
             board.Cnt_Read++;
 

@@ -44,8 +44,9 @@ namespace RVCoreBoard.MVC.Controllers
             Board board = new Board(_boardService);
             await board.GetDetail(BNo);
 
-            return View(board);
+            return View(board.Data);
         }
+
         /// <summary>
         /// 게시물 추가
         /// </summary>
