@@ -36,6 +36,15 @@ namespace RVCoreBoard.MVC
             // NoteService 서비스 컨테이너 등록
             services.AddTransient<IBoardService, BoardService>();
 
+            // 세션 사용
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.

@@ -2,11 +2,75 @@
 @{
     ViewData["Title"] = "글쓰기";
 }
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        // summernote
+        $(function () {
+            $('#summernote').summernote({
+                lang: 'ko-kr',               // default: 'en-us'
+                placeholder: '내용 입력',
+                tabsize: 2,
+                height: 400,                 // set editor height
+                minheight: null,             // set minimum height of editor
+                maxheight: null,             // set maximum height of editor
+                focus: true,                 // set focus to editable area after initializing summernote
+                callbacks: {
+                    // 이미지 업로드시 처리, 해당 처리가 없는 경우 기본적으로 이미지 업로드시 base64인코딩 되어 처리 된다.
+                    onImageUpload: function (files, editor, weleditable) {
+                        for (var i = files.length - 1; i >= 0; i--) {
+                            sendFile(files[i], this);
+                        }
+                    }
+                },
+                toolbar: [
+                    // [groupname, [list of button]]
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['color', ['forecolor', 'color']],
+                    ['table', ['table']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert', ['picture', 'link', 'video']],
+                    ['view', ['fullscreen', 'help']]
+                ],
+                fontnames: ['arial', 'arial black', 'comic sans ms', 'courier new', '맑은 고딕', '궁서', '굴림체', '굴림', '돋음체', '바탕체'],
+                fontsizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36', '50', '72'],
+            });
+
+            $("#inputForm").submit(function () {
+                var content = $("#summernote").summernote("code");
+                $("#Contents").val(content);
+            });
+
+            // 이미지 업로드 /api/imageUpload 라우트 사용
+            function sendFile(file, el) {
+                var form_data = new FormData();
+                form_data.append('file', file);
+                $.ajax({
+                    data: form_data,
+                    type: "POST",
+                    url: '/api/imageUpload',
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    success: function (url) {
+                        $(el).summernote('editor.insertImage', url);
+                        $('#imageBoard > ul').append('<li><img src="' + url + '" width="auto" height="auto"/></li>');
+                    }
+                });
+            }
+        });
+    </script>
+}
 
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
         <div class="card-body">
-            <form id="inputForm" class="form-horizontal" method="post" asp-controller="Board" asp-action="Add">
+            <form id="inputForm" class="form-horizontal" method="post" enctype="multipart/form-data" asp-controller="Board" asp-action="Add">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div class="form-group col-lg-6">
                     <label>제목</label>
@@ -15,7 +79,10 @@
                 </div>
                 <div class="form-group col-lg-12">
                     <label>내용</label>
-                    <textarea class="form-control" id="summernote" asp-for="Content" placeholder="내용 입력"></textarea>
+                    <div id="summernote"></div>
+
+                    <input type="hidden" id="Contents" asp-for="Content" />
+
                     <span class="text-danger" asp-validation-for="Content"></span>
                 </div>
                 <div class="mt-5 mb-3 text-right col-lg-12">

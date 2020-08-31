@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -58,11 +59,13 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, CheckSession]
-        public IActionResult Add(Board model)
+        public IActionResult Add(Board model, List<IFormFile> file)
         {
             model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
             model.Reg_Date = DateTime.Now;
             model.Cnt_Read = 0;
+
+            // TODO : file 객체로 업로드된 파일정보도 저장 필요 [파일이름, 용량 등등]
 
             if (ModelState.IsValid)
             {

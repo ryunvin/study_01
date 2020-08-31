@@ -21,7 +21,8 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        [HttpPost("api/imageUpload")]
+        // TODO : 이 API도 인증 체크 해야지 아무나 파일 업로드 못함
+        [HttpPost, Route("api/imageUpload")]
         public async Task<IActionResult> ImageUpload(IFormFile file)
         {
             var path = Path.Combine(_environment.WebRootPath, @"images\upload");
@@ -34,8 +35,8 @@ namespace RVCoreBoard.MVC.Controllers
                 await file.CopyToAsync(fileStream);
             }
 
-            return Ok(new { file = "/images/upload/" + fileName, success = true });
+            //return Ok(new { file = "/images/upload/" + fileName, success = true });
+            return Ok("/images/upload/" + fileName);
         }
-        
     }
 }
