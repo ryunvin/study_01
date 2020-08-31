@@ -28,7 +28,9 @@ namespace RVCoreBoard.MVC.Controllers
             var path = Path.Combine(_environment.WebRootPath, @"images\upload");
 
             var fileFullName = Path.GetTempFileName().Split('.');
-            var fileName = $"{Guid.NewGuid()}.{fileFullName[1]}";
+            // TODO : 이미지 확장자를 tmp로 하면 웹서버에서 접근할 수 없음.
+            //var fileName = $"{Guid.NewGuid()}.{fileFullName[1]}";
+            var fileName = $"{Guid.NewGuid()}.png";
 
             using (var fileStream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
             {
