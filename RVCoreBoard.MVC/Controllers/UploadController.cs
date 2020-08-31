@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RVCoreBoard.MVC.Attributes;
 
 namespace RVCoreBoard.MVC.Controllers
 {
@@ -23,14 +24,15 @@ namespace RVCoreBoard.MVC.Controllers
         /// <returns></returns>
         // TODO : 이 API도 인증 체크 해야지 아무나 파일 업로드 못함
         [HttpPost, Route("api/imageUpload")]
+        [CheckSession]
         public async Task<IActionResult> ImageUpload(IFormFile file)
         {
             var path = Path.Combine(_environment.WebRootPath, @"images\upload");
 
-            var fileFullName = Path.GetTempFileName().Split('.');
+            var fileFullName = file.FileName.Split('.');
             // TODO : 이미지 확장자를 tmp로 하면 웹서버에서 접근할 수 없음.
-            //var fileName = $"{Guid.NewGuid()}.{fileFullName[1]}";
-            var fileName = $"{Guid.NewGuid()}.png";
+            var fileName = $"{Guid.NewGuid()}.{fileFullName[1]}";
+            //var fileName = $"{Guid.NewGuid()}.png";
 
             using (var fileStream = new FileStream(Path.Combine(path, fileName), FileMode.Create))
             {

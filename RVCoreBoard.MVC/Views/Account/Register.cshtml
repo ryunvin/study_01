@@ -11,35 +11,35 @@
                     <div class="col-lg-12 mb-3">
                         <div class="form-group">
                             <div>@Html.ValidationMessage("UserIDDuplicates", new { @class = "text-danger" })</div>
-                            <label class="text-dark">아이디</label>
-                            <input type="text" class="form-control" asp-for="Id" />
+                            <label class="text-dark d-inline">아이디</label><label class="text-danger">*</label>
+                            <input type="text" class="form-control" asp-for="Id" placeholder="아이디"/>
                             <span class="text-danger" asp-validation-for="Id"></span>
                         </div>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="form-group">
-                            <label class="text-dark">비밀번호</label>
-                            <input type="password" class="form-control" asp-for="Password" />
+                            <label class="text-dark d-inline">비밀번호</label><label class="text-danger">*</label>
+                            <input type="password" class="form-control" asp-for="Password" placeholder="비밀번호" />
                             <span class="text-danger" asp-validation-for="Password"></span>
                         </div>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="form-group">
-                            <label class="text-dark">이름</label>
-                            <input type="text" class="form-control" asp-for="Name" />
+                            <label class="text-dark d-inline">이름</label><label class="text-danger">*</label>
+                            <input type="text" class="form-control" asp-for="Name" placeholder="이름"/>
                             <span class="text-danger" asp-validation-for="Name"></span>
                         </div>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="form-group">
-                            <label class="text-dark">생년월일</label>
+                            <label class="text-dark d-inline">생년월일</label><label class="text-danger">*</label>
                             <input type="datetime" class="form-control" asp-for="Birth" placeholder="1993-11-05" />
                             <span class="text-danger" asp-validation-for="Birth"></span>
                         </div>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="form-group">
-                            <label class="text-dark">휴대폰 번호</label>
+                            <label class="text-dark d-inline">휴대폰 번호</label><label class="text-danger">*</label>
                             <input type="text" class="form-control" asp-for="Phone" placeholder="예)010-1234-5678" />
                             <span class="text-danger" asp-validation-for="Phone"></span>
                         </div>

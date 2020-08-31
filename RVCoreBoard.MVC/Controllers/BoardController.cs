@@ -59,22 +59,38 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, CheckSession]
-        public IActionResult Add(Board model, List<IFormFile> file)
+        public IActionResult Add(Board model/*, List<IFormFile> file*/)
         {
             model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
             model.Reg_Date = DateTime.Now;
             model.Cnt_Read = 0;
 
             // TODO : file 객체로 업로드된 파일정보도 저장 필요 [파일이름, 용량 등등]
-
             if (ModelState.IsValid)
             {
                 _db.Boards.Add(model);
                 if (_db.SaveChanges() > 0)
                 {
+                    if (Request.Form.Files.Count != 0)
+                    {
+                        var Board = _db.Boards.OrderByDescending(b => b.BNo).FirstOrDefault();
+
+                        foreach(var file in Request.Form.Files)
+                        {
+                            var attach = new Attach
+                            {
+                                FileFullName = file.FileName,
+                                FileSize = (int)file.Length,
+                                BNo = Board.BNo,
+                                Reg_Date = Board.Reg_Date
+                            };
+
+                            _db.Attachs.Add(attach);
+                            _db.SaveChanges();
+                        }
+                    }
                     return Redirect("Index");
                 }
-
                 ModelState.AddModelError(string.Empty, "게시물을 등록할 수 없습니다.");
             }
             return View(model);

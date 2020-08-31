@@ -27,6 +27,7 @@ namespace RVCoreBoard.MVC.Models
         /// 게시물 제목
         /// </summary>
         [Required(ErrorMessage = "제목을 입력하세요.")]  // Not Null 설정
+        [StringLength(150)]
         public string Title { get; set; }
 
         /// <summary>
@@ -39,6 +40,8 @@ namespace RVCoreBoard.MVC.Models
         /// 게시물 등록 일시
         /// </summary>
         [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime Reg_Date { get; set; }
         
         /// <summary>

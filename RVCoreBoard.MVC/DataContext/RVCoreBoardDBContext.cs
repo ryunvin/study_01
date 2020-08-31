@@ -22,6 +22,8 @@ namespace RVCoreBoard.MVC.DataContext
 
         public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<Attach> Attachs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
