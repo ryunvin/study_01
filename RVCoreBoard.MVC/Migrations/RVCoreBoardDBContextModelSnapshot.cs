@@ -19,6 +19,28 @@ namespace RVCoreBoard.MVC.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("RVCoreBoard.MVC.Models.Attach", b =>
+                {
+                    b.Property<int>("ANo")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BNo");
+
+                    b.Property<string>("FileFullName")
+                        .IsRequired();
+
+                    b.Property<int>("FileSize");
+
+                    b.Property<DateTime>("Reg_Date");
+
+                    b.HasKey("ANo");
+
+                    b.HasIndex("BNo");
+
+                    b.ToTable("Attachs");
+                });
+
             modelBuilder.Entity("RVCoreBoard.MVC.Models.Board", b =>
                 {
                     b.Property<int>("BNo")
@@ -35,7 +57,8 @@ namespace RVCoreBoard.MVC.Migrations
                     b.Property<DateTime>("Reg_Date");
 
                     b.Property<string>("Title")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(150);
 
                     b.Property<int>("UNo");
 
@@ -57,7 +80,8 @@ namespace RVCoreBoard.MVC.Migrations
                     b.Property<int>("BNo");
 
                     b.Property<string>("Content")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(400);
 
                     b.Property<DateTime>("Reg_Date");
 
@@ -79,34 +103,46 @@ namespace RVCoreBoard.MVC.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
-                        .IsRequired();
+                        .HasMaxLength(300);
 
                     b.Property<DateTime>("Birth");
 
                     b.Property<string>("DetailAddress")
-                        .IsRequired();
+                        .HasMaxLength(300);
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .HasMaxLength(100);
 
                     b.Property<string>("Id")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.Property<string>("Name")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(15);
 
                     b.Property<string>("Password")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.Property<string>("Phone")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(20);
 
                     b.Property<string>("Tel")
-                        .IsRequired();
+                        .HasMaxLength(20);
 
                     b.HasKey("UNo");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("RVCoreBoard.MVC.Models.Attach", b =>
+                {
+                    b.HasOne("RVCoreBoard.MVC.Models.Board", "board")
+                        .WithMany()
+                        .HasForeignKey("BNo")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("RVCoreBoard.MVC.Models.Board", b =>

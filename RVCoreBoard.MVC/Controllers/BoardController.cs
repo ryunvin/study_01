@@ -84,8 +84,7 @@ namespace RVCoreBoard.MVC.Controllers
                             var filename = Path.GetFileName(file.FileName);
                             var attach = new Attach
                             {
-                                FileName = filename,
-                                FileGuidName = $"{Guid.NewGuid()}.{filename}",
+                                FileFullName = $"{Guid.NewGuid()}.{filename}",
                                 FileSize = (int)file.Length,
                                 BNo = Board.BNo,
                                 Reg_Date = Board.Reg_Date
