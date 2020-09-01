@@ -6,17 +6,23 @@ namespace RVCoreBoard.MVC.Models
 {
     public class Attach
     {
-        /// <summary>
+                /// <summary>
         /// 파일 인덱스
         /// </summary>
         [Key]
         public int ANo { get; set; }
 
         /// <summary>
+        /// 저장된 파일 이름
+        /// </summary>
+        [Required]
+        public string FileGuidName { get; set; }
+
+        /// <summary>
         /// 파일 이름
         /// </summary>
         [Required]
-        public string FileFullName { get; set; }
+        public string FileName { get; set; }
 
         /// <summary>
         /// 파일 사이즈

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -59,7 +61,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, CheckSession]
-        public IActionResult Add(Board model/*, List<IFormFile> file*/)
+        public async Task<IActionResult> Add(Board model, List<IFormFile> files)
         {
             model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
             model.Reg_Date = DateTime.Now;
@@ -71,19 +73,28 @@ namespace RVCoreBoard.MVC.Controllers
                 _db.Boards.Add(model);
                 if (_db.SaveChanges() > 0)
                 {
-                    if (Request.Form.Files.Count != 0)
+                    if (files.Count != 0)
                     {
                         var Board = _db.Boards.OrderByDescending(b => b.BNo).FirstOrDefault();
+                        var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                        var path = Path.Combine(rootPath, @"files\upload");
 
-                        foreach(var file in Request.Form.Files)
+                        foreach (var file in files)
                         {
+                            var filename = Path.GetFileName(file.FileName);
                             var attach = new Attach
                             {
-                                FileFullName = file.FileName,
+                                FileName = filename,
+                                FileGuidName = $"{Guid.NewGuid()}.{filename}",
                                 FileSize = (int)file.Length,
                                 BNo = Board.BNo,
                                 Reg_Date = Board.Reg_Date
                             };
+
+                            using (var fileStream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
 
                             _db.Attachs.Add(attach);
                             _db.SaveChanges();

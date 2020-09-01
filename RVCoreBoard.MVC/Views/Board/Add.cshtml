@@ -6,6 +6,7 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
+        Dropzone.autoDiscover = false;
         // summernote
         $(function () {
             $('#summernote').summernote({
@@ -63,18 +64,52 @@
                     }
                 });
             }
+
+            var myDropzone = new Dropzone("#inputForm", {
+                previewsContainer: '#previewDropContainer',
+                autoProcessQueue: false,
+                thumbnailHeight: 50,
+                thumbnailWidth: 50,
+                addRemoveLinks: true,
+                dictRemoveFile: '삭제',
+                parallelUploads: 10,
+                maxFilesize: 5,
+                filesizeBase: 1000,
+                uploadMultiple: true,
+                clickable: '#fileDropzone'
+            });
+
+            myDropzone.on("dragover drop", function (e) {
+                e.preventDefault();
+            }).on("drop", function (e) {
+                $("input[type='file']")
+                    .prop("files", e.originalEvent.dataTransfer.files)
+                    .closest("form")
+                    .submit();
+                }).on("addedfiles", function (files) {
+                    if (files.length >= 1 && $('#fileDropzone').hasClass('dz-started') == false) {
+                    $('#fileDropzone').addClass('dz-started');
+                }
+                $("input[type='file']")
+                    .prop("files", files)
+                    .closest("form");
+            }).on("removedfile", function (file) {
+                if (myDropzone.files.length == 0) {
+                    $('#fileDropzone').removeClass('dz-started');
+                }
+            });
         });
     </script>
 }
 
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
-        <div class="card-body">
+        <div class="card-body my-3">
             <form id="inputForm" class="form-horizontal" method="post" enctype="multipart/form-data" asp-controller="Board" asp-action="Add">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div class="form-group col-lg-6">
                     <label>제목</label>
-                    <input type="text" class="form-control" style="margin-bottom:30px;" asp-for="Title" placeholder="제목 입력" />
+                    <input type="text" class="form-control mb-3" asp-for="Title" placeholder="제목 입력" />
                     <span class="text-danger" asp-validation-for="Title"></span>
                 </div>
                 <div class="form-group col-lg-12">
@@ -82,6 +117,16 @@
                     <div id="summernote"></div>
                     <input type="hidden" id="Contents" asp-for="Content" />
                     <span class="text-danger" asp-validation-for="Content"></span>
+                </div>
+                <div class="form-group col-lg-12">
+                    <label>첨부 파일</label>
+                    <div class="dropzone dz-clickable" id="fileDropzone">
+                        <div class="dz-message">
+                            <button type="button" class="dz-button">파일을 끌어다 놓거나 클릭하세요.</button>
+                        </div>
+                        <div id="previewDropContainer"></div>
+                    </div>
+                    <input type="file" style="display:none;" name="flles" class="form-control"/>
                 </div>
                 <div class="mt-5 mb-3 text-right col-lg-12">
                     <button type="submit" class="btn btn-primary">저장</button>
