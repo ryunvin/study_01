@@ -120,7 +120,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, CheckSession]
-        public IActionResult Edit(Board model)
+        public async Task<IActionResult> Edit(Board model)
         {
             model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
 

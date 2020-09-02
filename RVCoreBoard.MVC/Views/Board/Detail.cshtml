@@ -29,11 +29,11 @@
                 @if (Model.AttachInfoList.Count > 0)
                 {
                     <div class="dropdown">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                        <button class="btn btn-facebook dropdown-toggle" type="button" data-toggle="dropdown">
                             첨부 파일
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-right">
                             <li><a class="dropdown-item" asp-controller="api" asp-action="AllDownload" asp-route-id="@Model.BNo">한꺼번에 받기</a></li>
                             <li class="dropdown-divider"></li>
                             @foreach (var attachInfo in Model.AttachInfoList)

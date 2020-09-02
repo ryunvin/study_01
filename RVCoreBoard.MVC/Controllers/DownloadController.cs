@@ -55,6 +55,7 @@
             return File(memory, "application/octet-stream", attach.FileFullName.Substring(attach.FileFullName.IndexOf(".")+1));
         }
 
+        // 압축파일로 한꺼번에 다운받기
         [HttpGet("api/AllDownload/{id}")]
         public async Task<IActionResult> AllDownload(int id)
         {

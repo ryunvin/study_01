@@ -72,10 +72,10 @@
                         var minPage = 1;
                         var maxPage = Model.PageRimitCount < Model.Count ? Model.PageRimitCount : Model.Count;
 
-                        if (Model.CurrentPage - prevPageCount >= 1)
+                        if (Model.CurrentPage - prevPageCount > 1)
                         {
-                            minPage = Model.CurrentPage + nextPageCount <= Model.Count ? Model.CurrentPage - prevPageCount : Model.Count - Model.PageRimitCount +1;
-                            maxPage = Model.CurrentPage + nextPageCount <= Model.Count ? Model.CurrentPage + nextPageCount : Model.Count;
+                            minPage = Model.CurrentPage + nextPageCount < Model.Count ? Model.CurrentPage - prevPageCount : Model.Count - Model.PageRimitCount +1;
+                            maxPage = Model.CurrentPage + nextPageCount < Model.Count ? Model.CurrentPage + nextPageCount : Model.Count;
                         }
                        
                         for (int i = minPage; i <= maxPage; i++)
