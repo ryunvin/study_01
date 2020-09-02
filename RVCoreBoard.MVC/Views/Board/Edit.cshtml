@@ -2,10 +2,111 @@
 @{
     ViewData["Title"] = Model.Title;
 }
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        Dropzone.autoDiscover = false;
+        // summernote
+        $(function () {
+            $('#summernote').summernote({
+                lang: 'ko-kr',               // default: 'en-us'
+                placeholder: '내용 입력',
+                tabsize: 2,
+                height: 400,                 // set editor height
+                minheight: null,             // set minimum height of editor
+                maxheight: null,             // set maximum height of editor
+                focus: true,                 // set focus to editable area after initializing summernote
+                callbacks: {
+                    // 이미지 업로드시 처리, 해당 처리가 없는 경우 기본적으로 이미지 업로드시 base64인코딩 되어 처리 된다.
+                    onImageUpload: function (files, editor, weleditable) {
+                        for (var i = files.length - 1; i >= 0; i--) {
+                            sendFile(files[i], this);
+                        }
+                    }
+                },
+                toolbar: [
+                    // [groupname, [list of button]]
+                    ['fontname', ['fontname']],
+                    ['fontsize', ['fontsize']],
+                    ['style', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+                    ['color', ['forecolor', 'color']],
+                    ['table', ['table']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']],
+                    ['insert', ['picture', 'link', 'video']],
+                    ['view', ['fullscreen', 'help']]
+                ],
+                fontnames: ['arial', 'arial black', 'comic sans ms', 'courier new', '맑은 고딕', '궁서', '굴림체', '굴림', '돋음체', '바탕체'],
+                fontsizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36', '50', '72'],
+            });
+
+            $("#inputForm").submit(function () {
+                var content = $("#summernote").summernote("code");
+                $("#Contents").val(content);
+            });
+
+            // 이미지 업로드 /api/imageUpload 라우트 사용
+            function sendFile(file, el) {
+                var form_data = new FormData();
+                form_data.append('file', file);
+                $.ajax({
+                    data: form_data,
+                    type: "POST",
+                    url: '/api/imageUpload',
+                    cache: false,
+                    contentType: false,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    success: function (url) {
+                        $(el).summernote('editor.insertImage', url);
+                        $('#imageBoard > ul').append('<li><img src="' + url + '" width="auto" height="auto"/></li>');
+                    }
+                });
+            }
+
+            var myDropzone = new Dropzone("#inputForm", {
+                previewsContainer: '#previewDropContainer',
+                autoProcessQueue: false,
+                thumbnailHeight: 50,
+                thumbnailWidth: 50,
+                addRemoveLinks: true,
+                dictRemoveFile: '삭제',
+                parallelUploads: 10,
+                maxFilesize: 5,
+                filesizeBase: 1000,
+                uploadMultiple: true,
+                clickable: '#fileDropzone'
+            });
+
+            myDropzone.on("dragover drop", function (e) {
+                e.preventDefault();
+            }).on("drop", function (e) {
+                $("input[type='file']")
+                    .prop("files", e.originalEvent.dataTransfer.files)
+                    .closest("form")
+                    .submit();
+                }).on("addedfiles", function (files) {
+                    if (files.length >= 1 && $('#fileDropzone').hasClass('dz-started') == false) {
+                    $('#fileDropzone').addClass('dz-started');
+                }
+                $("input[type='file']")
+                    .prop("files", files)
+                    .closest("form");
+            }).on("removedfile", function (file) {
+                if (myDropzone.files.length == 0) {
+                    $('#fileDropzone').removeClass('dz-started');
+                }
+            });
+        });
+    </script>
+}
+
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
         <div class="card-body">
-            <form class="form-horizontal" method="post" asp-controller="Board" asp-action="Edit">
+            <form id="inputForm" class="form-horizontal" method="post" asp-controller="Board" asp-action="Edit">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div class="form-group">
                     <input type="hidden" class="form-control" asp-for="BNo" value="@Model.BNo" />
@@ -17,8 +118,19 @@
                 </div>
                 <div class="form-group">
                     <label>내용</label>
-                    <textarea class="form-control" id="summernote" asp-for="Content" placeholder="내용 입력">@Model.Content</textarea>
+                    <div id="summernote"></div>
+                    <input type="hidden" id="Contents" asp-for="Content" />
                     <span class="text-danger" asp-validation-for="Content"></span>
+                </div>
+                <div class="form-group col-lg-12">
+                    <label>첨부 파일</label>
+                    <div class="dropzone dz-clickable" id="fileDropzone">
+                        <div class="dz-message">
+                            <button type="button" class="dz-button">파일을 끌어다 놓거나 클릭하세요.</button>
+                        </div>
+                        <div id="previewDropContainer"></div>
+                    </div>
+                    <input type="file" style="display:none;" name="flles" class="form-control" />
                 </div>
                 <div class="mt-5 mb-3 text-right">
                     <button type="submit" class="btn btn-primary">저장</button>

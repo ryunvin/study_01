@@ -24,6 +24,7 @@
                     </div>
                 </div>
             </div>
+            <p class="card-text p-2">@Html.Raw(Model.Content)</p>
             <div class="row">
                 @*첨부파일 다운로드 구현*@
                 <table id="zero_config" class="table table-striped table-bordered no-wrap">
@@ -53,7 +54,6 @@
                     </tbody>
                 </table>
             </div>
-            <p class="card-text p-2">@Html.Raw(Model.Content)</p>
             <div class="row">
                 @*댓글 구현*@
             </div>

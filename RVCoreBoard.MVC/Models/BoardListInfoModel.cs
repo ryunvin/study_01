@@ -23,6 +23,8 @@
 
         public int PageSize { get; set; } = 10;
 
+        public int PageRimitCount { get; set; } = 5;
+
         public int RowCount { get; set; }
 
         public bool HasPreviousPage

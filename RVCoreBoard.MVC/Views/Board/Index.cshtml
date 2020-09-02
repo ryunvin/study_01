@@ -65,9 +65,20 @@
                     <li class="page-item @prevDisabled">
                         <a class="page-link" tabindex="-1" asp-action="Index" asp-controller="Board" asp-route-currentPage="@(Model.CurrentPage - 1)">이전</a>
                     </li>
-                    @for (int i = Model.CurrentPage - 2; i < Model.CurrentPage + 2; i++)
-                    {
-                        if (i >= 1 && i <= Model.Count)
+                    @{
+                        var prevPageCount = Model.PageRimitCount / 2;
+                        var nextPageCount = Model.PageRimitCount % 2 == 0 ? Model.PageRimitCount / 2 - 1 : Model.PageRimitCount / 2;
+
+                        var minPage = 1;
+                        var maxPage = Model.PageRimitCount < Model.Count ? Model.PageRimitCount : Model.Count;
+
+                        if (Model.CurrentPage - prevPageCount >= 1)
+                        {
+                            minPage = Model.CurrentPage + nextPageCount <= Model.Count ? Model.CurrentPage - prevPageCount : Model.Count - Model.PageRimitCount +1;
+                            maxPage = Model.CurrentPage + nextPageCount <= Model.Count ? Model.CurrentPage + nextPageCount : Model.Count;
+                        }
+                       
+                        for (int i = minPage; i <= maxPage; i++)
                         {
                             var pageActive = i == Model.CurrentPage ? "active" : "";
                             <li class="page-item @pageActive">
