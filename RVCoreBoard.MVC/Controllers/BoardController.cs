@@ -90,7 +90,7 @@ namespace RVCoreBoard.MVC.Controllers
                                 Reg_Date = Board.Reg_Date
                             };
 
-                            using (var fileStream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                            using (var fileStream = new FileStream(Path.Combine(path, attach.FileFullName), FileMode.Create))
                             {
                                 await file.CopyToAsync(fileStream);
                             }
