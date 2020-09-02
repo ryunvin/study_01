@@ -5,8 +5,8 @@
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
-        <div class="card-body">
-            <div class="row p-2">
+        <div class="card-body m-3">
+            <div class="row">
                 <div class="col-6 text-left mb-5">
                     <h1 class="card-title">@Model.Title</h1>
                 </div>
@@ -24,37 +24,31 @@
                     </div>
                 </div>
             </div>
-            <p class="card-text p-2">@Html.Raw(Model.Content)</p>
-            <div class="row">
+            <div class="col-lg-12 text-right">
                 @*첨부파일 다운로드 구현*@
-                <table id="zero_config" class="table table-striped table-bordered no-wrap">
-                    <colgroup>
-                        <col style="width:100px;" />
-                        <col style="width:auto;" />
-                        <col style="width:150px;" />
-                        <col style="width:150px;" />
-                        <col style="width:150px;" />
-                    </colgroup>
-                    <thead class="text-center">
-                        <tr>
-                            <th>파일이름</th>
-                            <th>용량(kb)</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-center">
-                        @foreach (var attachInfo in Model.AttachInfoList)
-                        {
-                            <tr>
-                                <td class="text-left">
-                                    <a asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@attachInfo.FileFullName</a>
-                                </td>
-                                <td class="text-left">@attachInfo.FileSize</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                @if (Model.AttachInfoList.Count > 0)
+                {
+                    <div class="dropdown">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                            첨부 파일
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="api" asp-action="AllDownload" asp-route-id="@Model.BNo">한꺼번에 받기</a></li>
+                            <li class="dropdown-divider"></li>
+                            @foreach (var attachInfo in Model.AttachInfoList)
+                            {
+                                <li><a class="dropdown-item" asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@attachInfo.FileFullName.Substring(attachInfo.FileFullName.IndexOf(".")+1) (@attachInfo.FileSize KB)</a></li>
+                            }
+                        </ul>
+                    </div>
+                }
             </div>
             <div class="row">
+
+            </div>
+            <p class="card-text mb-3">@Html.Raw(Model.Content)</p>
+            <div class="row my-3">
                 @*댓글 구현*@
             </div>
             <div class="row mt-5 mb-3 p-2">

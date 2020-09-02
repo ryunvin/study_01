@@ -27,7 +27,7 @@ namespace RVCoreBoard.MVC.Controllers
         [CheckSession]
         public async Task<IActionResult> ImageUpload(IFormFile file)
         {
-            var path = Path.Combine(_environment.WebRootPath, @"images\upload");
+            var path = Path.Combine(_environment.WebRootPath, @"upload\images");
 
             var fileFullName = file.FileName.Split('.');
             // TODO : 이미지 확장자를 tmp로 하면 웹서버에서 접근할 수 없음.
@@ -40,7 +40,7 @@ namespace RVCoreBoard.MVC.Controllers
             }
 
             //return Ok(new { file = "/images/upload/" + fileName, success = true });
-            return Ok("/images/upload/" + fileName);
+            return Ok("/upload/images/" + fileName);
         }
     }
 }

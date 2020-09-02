@@ -42,10 +42,11 @@
                 fontsizes: ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '28', '30', '36', '50', '72'],
             });
 
-            $("#inputForm").submit(function () {
+            $("#editInputForm").submit(function () {
                 var content = $("#summernote").summernote("code");
                 $("#Contents").val(content);
             });
+
 
             // 이미지 업로드 /api/imageUpload 라우트 사용
             function sendFile(file, el) {
@@ -66,7 +67,7 @@
                 });
             }
 
-            var myDropzone = new Dropzone("#inputForm", {
+            var myDropzone = new Dropzone("#editInputForm", {
                 previewsContainer: '#previewDropContainer',
                 autoProcessQueue: false,
                 thumbnailHeight: 50,
@@ -106,7 +107,7 @@
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
         <div class="card-body">
-            <form id="inputForm" class="form-horizontal" method="post" asp-controller="Board" asp-action="Edit">
+            <form id="editInputForm" class="form-horizontal" method="post" asp-controller="Board" asp-action="Edit">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div class="form-group">
                     <input type="hidden" class="form-control" asp-for="BNo" value="@Model.BNo" />
@@ -118,7 +119,7 @@
                 </div>
                 <div class="form-group">
                     <label>내용</label>
-                    <div id="summernote"></div>
+                    <div id="summernote">@Html.Raw(Model.Content)</div>
                     <input type="hidden" id="Contents" asp-for="Content" />
                     <span class="text-danger" asp-validation-for="Content"></span>
                 </div>

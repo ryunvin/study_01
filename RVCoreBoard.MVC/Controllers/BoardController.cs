@@ -77,7 +77,7 @@ namespace RVCoreBoard.MVC.Controllers
                     {
                         var Board = _db.Boards.OrderByDescending(b => b.BNo).FirstOrDefault();
                         var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                        var path = Path.Combine(rootPath, @"files\upload");
+                        var path = Path.Combine(rootPath, @"upload\files");
 
                         foreach (var file in files)
                         {

@@ -8,9 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\files\**" />
     <Compile Remove="wwwroot\lib\summernote\plugin\**" />
+    <Content Remove="wwwroot\files\**" />
     <Content Remove="wwwroot\lib\summernote\plugin\**" />
+    <EmbeddedResource Remove="wwwroot\files\**" />
     <EmbeddedResource Remove="wwwroot\lib\summernote\plugin\**" />
+    <None Remove="wwwroot\files\**" />
     <None Remove="wwwroot\lib\summernote\plugin\**" />
   </ItemGroup>
 
@@ -28,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\files\upload\" />
     <Folder Include="wwwroot\images\upload\" />
+    <Folder Include="wwwroot\upload\files\" />
   </ItemGroup>
 
   <ItemGroup>
