@@ -6,7 +6,7 @@ namespace RVCoreBoard.MVC.Models
 {
     public class Attach
     {
-                /// <summary>
+        /// <summary>
         /// 파일 인덱스
         /// </summary>
         [Key]

@@ -1,5 +1,6 @@
 ﻿using RVCoreBoard.MVC.Services;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
@@ -58,6 +59,9 @@ namespace RVCoreBoard.MVC.Models
 
         [ForeignKey("UNo")]
         public virtual User user { get; set; }
+
+        // TODO : 첨부파일 정보 리스트 속성 추가     2020. 09. 02
+        public ICollection<Attach> AttachInfoList { get; set; }
 
         public Board Data { get; private set; }
 

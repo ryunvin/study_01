@@ -21,6 +21,8 @@
         {
             var board = await _db.Boards
                                 .Include("user")
+                                // TODO : 첨부 파일 정보 Include해서 데이터 Get    2020. 09. 02
+                                .Include(p => p.AttachInfoList).ThenInclude( p => p.board)
                                 .FirstOrDefaultAsync(b => b.BNo.Equals(BNo));
 
             board.Cnt_Read++;

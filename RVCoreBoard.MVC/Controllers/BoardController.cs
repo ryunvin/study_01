@@ -90,7 +90,8 @@ namespace RVCoreBoard.MVC.Controllers
                                 Reg_Date = Board.Reg_Date
                             };
 
-                            using (var fileStream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                            // TODO : 파일 저장 이름 버그 수정    2020. 09. 02
+                            using (var fileStream = new FileStream(Path.Combine(path, attach.FileFullName), FileMode.Create))
                             {
                                 await file.CopyToAsync(fileStream);
                             }

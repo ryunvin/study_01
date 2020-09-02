@@ -25,7 +25,33 @@
                 </div>
             </div>
             <div class="row">
-                @*첨부파일 다운로드 구현*@ 
+                @*첨부파일 다운로드 구현*@
+                <table id="zero_config" class="table table-striped table-bordered no-wrap">
+                    <colgroup>
+                        <col style="width:100px;" />
+                        <col style="width:auto;" />
+                        <col style="width:150px;" />
+                        <col style="width:150px;" />
+                        <col style="width:150px;" />
+                    </colgroup>
+                    <thead class="text-center">
+                        <tr>
+                            <th>파일이름</th>
+                            <th>용량(kb)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        @foreach (var attachInfo in Model.AttachInfoList)
+                        {
+                            <tr>
+                                <td class="text-left">
+                                    <a asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@attachInfo.FileFullName</a>
+                                </td>
+                                <td class="text-left">@attachInfo.FileSize</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
             <p class="card-text p-2">@Html.Raw(Model.Content)</p>
             <div class="row">
