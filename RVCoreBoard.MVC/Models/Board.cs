@@ -63,6 +63,8 @@ namespace RVCoreBoard.MVC.Models
         // TODO : 첨부파일 정보 리스트 속성 추가     2020. 09. 02
         public ICollection<Attach> AttachInfoList { get; set; }
 
+        public List<Comment> CommentList { get; set; }
+
         public Board Data { get; private set; }
 
         public async Task GetDetail(int BNo)

@@ -25,6 +25,7 @@ namespace RVCoreBoard.MVC.Controllers
             _boardService = boardService;
         }
 
+
         /// <summary>
         /// 게시판 리스트
         /// </summary>
@@ -46,6 +47,13 @@ namespace RVCoreBoard.MVC.Controllers
         {
             Board board = new Board(_boardService);
             await board.GetDetail(BNo);
+
+            ViewBag.User = null;
+            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") != null)
+            {
+                User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString()));
+                ViewBag.User = currentUser;
+            }
 
             return View(board.Data);
         }

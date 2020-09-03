@@ -2,6 +2,296 @@
 @model RVCoreBoard.MVC.Models.Board
 @{
     ViewData["Title"] = Model.Title;
+    var currentUser = (dynamic)null;
+    if (ViewBag.User != null)
+    {
+        currentUser = ViewBag.User;
+    }
+}
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script>
+        var currentUser = @Html.Raw(Json.Serialize(currentUser));
+
+        $("#commentSave").click(function () {
+        var check = false;
+        if (currentUser == null) {
+            return false;
+        }
+
+            //널 검사
+            if ($("#commentContent").val().trim() == "") {
+                alert("내용을 입력하세요.");
+                $("#commentContent").focus();
+                return false;
+            }
+
+            var CContent = $("#commentContent").val().replace("\n", "<br>"); //개행처리
+
+            //값 셋팅
+            var objParams = {
+                BNo: @Html.Raw(Model.BNo),
+                UNo: currentUser.uNo,
+                Content: CContent,
+            };
+
+            var comment = null;
+
+            //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
+            $.ajax({
+                url: "/api/commentAdd",
+                dataType: "json",
+                method: "post",
+                async: false, //동기: false, 비동기: ture
+                data: objParams,
+                success: function (result) {
+                    comment = result;
+                    check = true;
+                    alert("댓글이 등록되었습니다.");
+                },
+                error: function (request, status, error) {
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+        if (check) {
+            var strCommentBtn = null;
+
+            if (currentUser != null) {
+                strCommentBtn =
+                    '   <div class="col-lg-12 mb-3">' +
+                    '       <a class="btn btn-success text-white" name="commentModify">수정</a>' +
+                    '       <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
+                    '   </div>';
+
+            }
+
+            var strCommentAdd =
+                '<li id="comment' + comment.cNo + '">' +
+                '   <div class="row">' +
+                '       <div class="col-lg-3 mb-3">' +
+                '           <span class="text-dark font-weight-bold cname">' + currentUser.name+'</span><br />' +
+                '           <span class="text-dark cregdate">' + comment.reg_Date + '</span>' +
+                '       </div>' +
+                '       <div class="col-lg-9 mb-3 text-right">' +
+                '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
+                '       </div>'+
+                '   </div>' +
+                + strCommentBtn +
+                '</li>';
+
+            if ($('#commentList').children('ul').length == 0) {
+                $('#commentList').children('ul').append(strCommentAdd);
+            } else {
+                $('#commentList ul li').last().after(strCommentAdd);
+            }
+
+            $("#commentContent").val("");
+        }
+        });
+
+        //댓글 취소
+        $("#commentCancel").click(function () {
+            $("#commentContent").val("");
+        });
+
+        //댓글 삭제
+        $(document).on("click", "a[name='commentDelete']", function () {
+
+            var check = false;
+            var CNo = $(this).parent().parent().parent().attr('id').replace('comment', '');
+
+            //값 셋팅
+            var objParams = {
+                CNo: CNo
+            };
+
+            //ajax 호출
+
+            $.ajax({
+                url         :   "/api/commentDelete",
+                dataType    :   "json",
+                method      :   "post",
+                async       :   false, //동기: false, 비동기: ture
+                data        :   objParams,
+                success: function (message) {
+                    alert(message);
+                    check = true;
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+
+            if (check) {
+                $(this).parent().parent().parent().remove();
+            }
+        });
+
+        //댓글 수정 입력
+        $(document).on("click", "a[name='commentModify']", function () {
+
+            var check = false;
+            var CLiId = $(this).parent().parent().parent().attr('id');
+            var CNo = $(this).parent().parent().parent().attr('id').replace("comment","");
+            var CName = $(this).parent().parent().parent().children('.cname').html().trim();
+            var CContent = $(this).parent().parent().parent().children('.ccontent').html().trim();
+            var CRegDate = $(this).parent().parent().parent().children('.cregdate').html().trim();
+
+            if (currentUser == null) return false;
+
+            if (CName !== currentUser.Name) {
+                return false;
+            } else {
+                check = true;
+            }
+
+            if (check) {
+                //입력받는 창 등록
+                var commentEditor =
+                    '<li id="' + CLiId + '">' +
+                    '   <div class="row">' +
+                    '       <div class="col-lg-3 mb-3">' +
+                    '           <span class="text-dark font-weight-bold">' + CName + '</span>' +
+                    '       </div>' +
+                    '       <div class="col-lg-9 mb-3">' +
+                    '           <textarea class="form-control" rows="5" id="commentModifyContent' + CNo+'">' + CContent + '</textarea>' +
+                    '       </div>' +
+                    '       <div class="text-right col-lg-12 text-right">' +
+                    '           <a class="btn btn-primary" name="commentModifySave">저장</a>' +
+                    '           <a class="btn btn-dark" name="commentModifyCancel" cRegDate="' + CRegDate + '" cContent="' + CContent + '"> 취소</a> ' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</li>';
+
+                var prevLi = $(this).parent().parent().parent();
+                //자기 위에 붙이기
+                prevLi.after(commentEditor);
+
+                //자기 자신 삭제
+                $(this).parent().parent().parent().remove();
+            }
+        });
+
+            //댓글 수정 취소
+            $(document).on("click", "a[name='commentModifyCancel']", function () {
+            //원래 데이터를 가져온다.
+                var CLiId = $(this).parent().parent().parent().attr('id');
+                var CName = $(this).parent().parent().parent().children('.cname').html().trim();
+                var CContent = $(this).attr("cContent");
+                var CRegDate = $(this).attr("cRegDate");
+
+                if (currentUser == null) return false;
+
+            if (CName !== currentUser.name) {
+                return false;
+            } else {
+                check = true;
+                }
+
+                var strComment =
+                    '<li id="' + CLiId + '">' +
+                    '   <div class="row">'+
+                    '       <div class="col-lg-3 mb-3">' +
+                    '           <span class="text-dark font-weight-bold">' + CName +'</span><br />' +
+                    '           <span class="text-dark">' + CRegDate + '</span>' +
+                    '       </div>' +
+                    '       <div class="col-lg-9 mb-3">' +
+                    '           <sapn class="text-dark">' + CContent + '</sapn>' +
+                    '       </div>' +
+                    '       <div class="col-lg-12 mb-3">' +
+                    '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
+                    '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</li>';
+
+                var prevTr = $(this).parent().parent().parent();
+            //자기 위에 붙이기
+                prevTr.after(strComment);
+
+            //자기 자신 삭제
+                $(this).parent().parent().parent().remove();
+
+        });
+
+        //댓글 수정 저장
+        $(document).on("click", "a[name='commentModifySave']", function () {
+
+            var check = false;
+            var CNo = $(this).parent().parent().parent().attr('id').replace("comment", "");
+
+            if (currentUser == null) return false;
+
+            if ($("#commentModifyContent" + CNo) == "") {
+                alert("내용을 입력하세요.");
+                $("#commentModifyContent" + CNo).focus();
+                return false;
+            }
+
+            var CContent = $("#commentModifyContent" + CNo).val().replace("\n", "<br>"); //개행처리
+
+            //값 셋팅
+            var objParams = {
+                BNo: @Html.Raw(Model.BNo),
+                UNo: currentUser.uNo,
+                Content: CContent
+            };
+
+            var comment = null;
+
+            $.ajax({
+                url         :   "/api/commentModify",
+                dataType    :   "json",
+                method      :   "post",
+                async: false, //동기: false, 비동기: ture
+                data : objParams,
+                success     :   function(result){
+                    comment = result;
+                    check = true;
+                    alert("댓글이 수정되었습니다.");
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                var strCommentBtn = null;
+
+                if (currentUser != null) {
+                    strCommentBtn =
+                        '   <div class="col-lg-12 mb-3">' +
+                        '       <a class="btn btn-success text-white" name="commentModify">수정</a>' +
+                        '       <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
+                        '   </div>';
+                }
+
+                var strCommentAdd =
+                    '<li id="comment' + comment.CNo + '">' +
+                    '   <div class="row">'+
+                    '       <div class="col-lg-3 mb-3">' +
+                    '           <span class="text-dark font-weight-bold cname">' + comment.user.Name + '</span><br />' +
+                    '           <span class="text-dark cregdate">' + comment.Reg_Date + '</span>' +
+                    '       </div>' +
+                    '       <div class="col-lg-9 mb-3">' +
+                    '           <sapn class="text-dark ccontent">' + comment.Content + '</sapn>' +
+                    '       </div>' +
+                    '   </div>' +
+                    + strCommentBtn +f
+                    '</li>';
+
+                var prevLi = $(this).parent().parent().parent();
+                //자기 위에 붙이기
+                prevLi.after(strCommentAdd);
+
+                //자기 자신 삭제
+                $(this).parent().parent().parent().remove();
+            }
+        });
+    </script>
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
@@ -38,31 +328,76 @@
                             <li class="dropdown-divider"></li>
                             @foreach (var attachInfo in Model.AttachInfoList)
                             {
-                                <li><a class="dropdown-item" asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@attachInfo.FileFullName.Substring(attachInfo.FileFullName.IndexOf(".")+1) (@attachInfo.FileSize KB)</a></li>
+                                <li><a class="dropdown-item" asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@attachInfo.FileFullName.Substring(attachInfo.FileFullName.IndexOf(".") + 1) (@attachInfo.FileSize KB)</a></li>
                             }
                         </ul>
                     </div>
                 }
             </div>
-            <div class="row">
-
-            </div>
-            <p class="card-text mb-3">@Html.Raw(Model.Content)</p>
-            <div class="row my-3">
-                @*댓글 구현*@
-            </div>
-            <div class="row mt-5 mb-3 p-2">
-                <div class="col-4 center-block">
-                    @* 이전글 다음글 구현*@
+            <p class="card-text mb-5">@Html.Raw(Model.Content)</p>
+            <p class="text-dark font-weight-bold mt-5">댓글</p>
+            @*댓글 구현*@
+            <div id="commentArea">
+                <div id="commentList">
+                    <ul class="list-unstyled">
+                        @foreach (var comment in Model.CommentList)
+                        {
+                            var liId = "comment" + comment.CNo;
+                            <li id="@liId">
+                                <div class="row">
+                                    <div class="col-lg-3 mb-3">
+                                        <span class="text-dark font-weight-bold cname">@comment.user.Name</span><br />
+                                        <span class="text-dark cregdate">@comment.Reg_Date</span>
+                                    </div>
+                                    <div class="col-lg-9 mb-3">
+                                        <sapn class="text-dark ccontent">@comment.Content</sapn>
+                                    </div>
+                                    @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (currentUser.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
+                                    {
+                                        <div class="col-lg-12 mb-3 text-right">
+                                            <a class="btn btn-success text-white" name="commentModify">수정</a>
+                                            <a class="btn btn-danger text-white" name="commentDelete">삭제</a>
+                                        </div>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-                <div class="col-8 text-right">
-                    @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (Model.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
+                <div id="commentInput">
+                    @if (Context.Session.GetInt32("USER_LOGIN_KEY") != null)
                     {
-                        <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.BNo">수정</a>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDel">삭제</button>
+                        <div class="col-12">
+                            <span class="text-dark font-weight-bold">@currentUser.Name</span>
+                        </div>
+                        <div class="col-12 my-3">
+                            <textarea class="form-control" rows="5" id="commentContent"></textarea>
+                        </div>
+                        <div class="text-right col-lg-12">
+                            <a class="btn btn-primary text-white" id="commentSave">저장</a>
+                            <a class="btn btn-dark text-white" id="commentCancel">취소</a>
+                        </div>
                     }
-                    <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록</a>
+                    else
+                    {
+                        <div class="col-lg-12 text-center align-self-center" style="height:100px;">
+                            <p class="text-dark">댓글을 작성하시려면 로그인이 필요합니다.</p> @*박스 중앙으로*@
+                        </div>
+                    }
                 </div>
+            </div>
+        </div>
+        <div class="row mt-5 mb-3 p-2">
+            <div class="col-4 center-block">
+                @* 이전글 다음글 구현*@
+            </div>
+            <div class="col-4 text-right">
+                @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (Model.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
+                {
+                    <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.BNo">수정</a>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDel">삭제</button>
+                }
+                <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록</a>
             </div>
         </div>
     </div>

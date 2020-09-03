@@ -52,7 +52,7 @@
                 form_data.append('file', file);
                 $.ajax({
                     data: form_data,
-                    type: "POST",
+                    method: "post",
                     url: '/api/imageUpload',
                     cache: false,
                     contentType: false,
