@@ -6,7 +6,7 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    <script>
+<script>
         Dropzone.autoDiscover = false;
         // summernote
         $(function () {
@@ -79,8 +79,26 @@
                 filesizeBase: 1000,
                 uploadMultiple: true,
                 clickable: '#fileDropzone',
-                init: function () {
-                } 
+                inti: function () {
+                    @if (Model.AttachInfoList.Any())
+                    {
+                        foreach (var attach in Model.AttachInfoList)
+                        {
+                            var fileName = attach.FileFullName.Substring(attach.FileFullName.IndexOf(".") + 1);
+
+                            @: var mockfile = {
+                                @:name: @fileName,
+                                @:size: @attach.FileSize,
+                                @:type: @attach.ContentType
+                            @:};
+
+                            @:this.options.addedFile.call(this, mockfile);
+                            @:this.options.addedFile.call(this, mockfile, @attach.FileFullName);
+                            @:mockFile.previewElement.classList.add('dz-success');
+                            @:mockFile.previewElement.classList.add('dz-complete');
+                        }
+                    }
+                }
             });
 
             myDropzone.on("dragover drop", function (e) {
@@ -103,7 +121,7 @@
                 }
             });
         });
-    </script>
+</script>
 }
 
 <div class="d-flex justify-content-center align-items-start position-relative">

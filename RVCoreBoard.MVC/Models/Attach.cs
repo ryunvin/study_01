@@ -24,6 +24,10 @@ namespace RVCoreBoard.MVC.Models
         [Required]
         public int FileSize { get; set; }
 
+        [Required]
+        [StringLength(30)]
+        public string ContentType { get; set; }
+
         /// <summary>
         /// 파일 등록 일시
         /// </summary>

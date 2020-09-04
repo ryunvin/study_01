@@ -36,14 +36,14 @@
                 return NotFound();
 
 
-            if (System.IO.File.Exists($"{uploadPath}/{attach.FileFullName}") == false)
+            if (System.IO.File.Exists($"{attach.FileFullName}") == false)
             {
                 // 실제 파일이 없는 경우, 404 리턴
                 return NotFound();
             }
 
             MemoryStream memory = new MemoryStream();
-            using (FileStream fs = new FileStream($"{uploadPath}/{attach.FileFullName}", FileMode.Open))
+            using (FileStream fs = new FileStream($"{attach.FileFullName}", FileMode.Open))
             {
                 await fs.CopyToAsync(memory);
             }
@@ -52,7 +52,7 @@
             if (memory == null)
                 return NotFound();
 
-            return File(memory, "application/octet-stream", attach.FileFullName.Substring(attach.FileFullName.IndexOf(".")+1));
+            return File(memory, "application/octet-stream", attach.FileFullName.Substring(attach.FileFullName.IndexOf(".", attach.FileFullName.LastIndexOf(@"\")) + 1));
         }
 
         // 압축파일로 한꺼번에 다운받기
@@ -73,14 +73,14 @@
 
             foreach (var attach in attachs)
             {
-                if (System.IO.File.Exists($@"{uploadPath}\{attach.FileFullName}") == false)
+                if (System.IO.File.Exists($"{attach.FileFullName}") == false)
                 {
                     // 실제 파일이 없는 경우, 404 리턴
                     return NotFound();
                 }
             }
 
-            if (CreateZipFile(zipPath, attachs.Select(s => s.FileFullName)) == false)
+            if (CreateZipFile(uploadPath + zipPath, attachs.Select(s => s.FileFullName)) == false)
             {
                 return NotFound();
             }
@@ -115,17 +115,17 @@
                     {
                         foreach (var file in files)
                         {
-                            var demoFile = archive.CreateEntry(file.Substring(file.IndexOf(".") + 1));
+                            var demoFile = archive.CreateEntry(file.Substring(file.IndexOf(".", file.LastIndexOf(@"\")) + 1));
 
                             using (var entryStream = demoFile.Open())
-                            using (var streamWriter = new StreamWriter(file))
+                            using (var brinaryWriter = new BinaryWriter(entryStream))
                             {
-                                streamWriter.Write(entryStream);
+                                brinaryWriter.Write(file);
                             }
                         }
                     }
 
-                    using (var fileStream = new FileStream(uploadPath + fileName, FileMode.Create))
+                    using (var fileStream = new FileStream(fileName, FileMode.Create))
                     {
                         memoryStream.Seek(0, SeekOrigin.Begin);
                         memoryStream.CopyTo(fileStream);

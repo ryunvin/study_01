@@ -324,7 +324,8 @@
                             <li class="dropdown-divider"></li>
                             @foreach (var attachInfo in Model.AttachInfoList)
                             {
-                                <li><a class="dropdown-item" asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@attachInfo.FileFullName.Substring(attachInfo.FileFullName.IndexOf(".") + 1) (@attachInfo.FileSize KB)</a></li>
+                                var fileName = attachInfo.FileFullName.Substring(attachInfo.FileFullName.IndexOf(".", attachInfo.FileFullName.LastIndexOf(@"\")) + 1);
+                                <li><a class="dropdown-item" asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@fileName (@attachInfo.FileSize KB)</a></li>
                             }
                         </ul>
                     </div>

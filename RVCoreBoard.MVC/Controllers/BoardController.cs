@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
@@ -90,16 +90,25 @@ namespace RVCoreBoard.MVC.Controllers
                         foreach (var file in files)
                         {
                             var filename = Path.GetFileName(file.FileName);
+
+                            var provider = new FileExtensionContentTypeProvider();
+                            string contentType;
+                            if (!provider.TryGetContentType(file.FileName, out contentType))
+                            {
+                                contentType = "application/octet-stream";
+                            }
+
                             var attach = new Attach
                             {
-                                FileFullName = $"{Guid.NewGuid()}.{filename}",
+                                FileFullName = $@"{path}\{Guid.NewGuid()}.{filename}",
                                 FileSize = (int)file.Length,
+                                ContentType = contentType,
                                 BNo = Board.BNo,
                                 Reg_Date = Board.Reg_Date
                             };
 
                             // TODO : 파일 저장 이름 버그 수정    2020. 09. 02
-                            using (var fileStream = new FileStream(Path.Combine(path, attach.FileFullName), FileMode.Create))
+                            using (var fileStream = new FileStream(attach.FileFullName, FileMode.Create))
                             {
                                 await file.CopyToAsync(fileStream);
                             }
@@ -122,17 +131,13 @@ namespace RVCoreBoard.MVC.Controllers
         [CheckSession]
         public async Task<IActionResult> Edit(int BNo)
         {
-            Board board = new Board(_boardService);
-            await board.GetDetail(BNo);
-
-            ViewBag.User = null;
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") != null)
-            {
-                User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString()));
-                ViewBag.User = currentUser;
-            }
-
-            return View(board.Data);
+            var board = await _db.Boards
+                                 .Include("user")
+                                 .Include(p => p.AttachInfoList).ThenInclude(p => p.board)
+                                 .Include(c => c.CommentList).ThenInclude(c => c.board).ThenInclude(c => c.user)
+                                 .FirstOrDefaultAsync(b => b.BNo.Equals(BNo));
+          
+            return View(board);
         }
 
         [HttpPost, CheckSession]

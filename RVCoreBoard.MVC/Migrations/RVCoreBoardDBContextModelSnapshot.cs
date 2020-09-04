@@ -27,6 +27,10 @@ namespace RVCoreBoard.MVC.Migrations
 
                     b.Property<int>("BNo");
 
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(30);
+
                     b.Property<string>("FileFullName")
                         .IsRequired();
 
@@ -140,7 +144,7 @@ namespace RVCoreBoard.MVC.Migrations
             modelBuilder.Entity("RVCoreBoard.MVC.Models.Attach", b =>
                 {
                     b.HasOne("RVCoreBoard.MVC.Models.Board", "board")
-                        .WithMany()
+                        .WithMany("AttachInfoList")
                         .HasForeignKey("BNo")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -160,7 +164,7 @@ namespace RVCoreBoard.MVC.Migrations
             modelBuilder.Entity("RVCoreBoard.MVC.Models.Comment", b =>
                 {
                     b.HasOne("RVCoreBoard.MVC.Models.Board", "board")
-                        .WithMany()
+                        .WithMany("CommentList")
                         .HasForeignKey("BNo")
                         .OnDelete(DeleteBehavior.Cascade);
 
