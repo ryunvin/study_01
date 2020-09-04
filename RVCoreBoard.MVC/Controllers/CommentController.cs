@@ -59,7 +59,7 @@ namespace RVCoreBoard.MVC.Controllers
             {
                 var cment = await _db.Comments
                                     .Include("user")
-                                    .FirstOrDefaultAsync(c => c.BNo.Equals(comment.BNo));
+                                    .FirstOrDefaultAsync(c => c.CNo.Equals(comment.CNo));
 
                 return Ok(cment);
             }

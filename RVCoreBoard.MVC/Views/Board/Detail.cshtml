@@ -151,7 +151,7 @@
                     '<li id="' + CLiId + '">' +
                     '   <div class="row">' +
                     '       <div class="col-lg-3 mb-3">' +
-                    '           <span class="text-dark font-weight-bold">' + CName + '</span>' +
+                    '           <span class="text-dark font-weight-bold cname">' + CName + '</span>' +
                     '       </div>' +
                     '       <div class="col-lg-9 mb-3">' +
                     '           <textarea class="form-control" rows="5" id="commentModifyContent' + CNo+'">' + CContent + '</textarea>' +
@@ -173,7 +173,7 @@
 
         //댓글 수정 취소
         $(document).on("click", "a[name='commentModifyCancel']", function () {
-        //원래 데이터를 가져온다.
+            //원래 데이터를 가져온다.
             var CLiId = $(this).parent().parent().parent().attr('id');
             var CName = $(this).parent().parent().parent().find('.cname').html().trim();
             var CContent = $(this).attr("cContent");
@@ -191,11 +191,11 @@
                     '<li id="' + CLiId + '">' +
                     '   <div class="row">'+
                     '       <div class="col-lg-3 mb-3">' +
-                    '           <span class="text-dark font-weight-bold">' + CName +'</span><br />' +
-                    '           <span class="text-dark">' + CRegDate + '</span>' +
+                    '           <span class="text-dark font-weight-bold cname">' + CName +'</span><br />' +
+                    '           <span class="text-dark cregdate">' + CRegDate + '</span>' +
                     '       </div>' +
                     '       <div class="col-lg-9 mb-3">' +
-                    '           <sapn class="text-dark">' + CContent + '</sapn>' +
+                    '           <sapn class="text-dark ccontent">' + CContent + '</sapn>' +
                     '       </div>' +
                     '       <div class="col-lg-12 mb-3 text-right">' +
                     '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
@@ -259,21 +259,21 @@
 
                 if (currentUser != null) {
                     strCommentBtn =
-                        '   <div class="col-lg-12 mb-3">' +
+                        '   <div class="col-lg-12 mb-3 text-right">' +
                         '       <a class="btn btn-success text-white" name="commentModify">수정</a>' +
                         '       <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
                         '   </div>';
                 }
 
                 var strCommentAdd =
-                    '<li id="comment' + comment.CNo + '">' +
+                    '<li id="comment' + comment.cNo + '">' +
                     '   <div class="row">'+
                     '       <div class="col-lg-3 mb-3">' +
-                    '           <span class="text-dark font-weight-bold cname">' + comment.user.Name + '</span><br />' +
-                    '           <span class="text-dark cregdate">' + comment.Reg_Date + '</span>' +
+                    '           <span class="text-dark font-weight-bold cname">' + comment.user.name + '</span><br />' +
+                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD a h:mm:ss') + '</span>' +
                     '       </div>' +
                     '       <div class="col-lg-9 mb-3">' +
-                    '           <sapn class="text-dark ccontent">' + comment.Content + '</sapn>' +
+                    '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
                     '       </div>' +
                     strCommentBtn +
                     '   </div>' +
