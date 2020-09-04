@@ -71,7 +71,7 @@
                     '   <div class="row">' +
                     '       <div class="col-lg-3 mb-3">' +
                     '           <span class="text-dark font-weight-bold cname">' + currentUser.name + '</span><br />' +
-                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD a h:mm:ss') + '</span>' +
+                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
                     '       </div>' +
                     '       <div class="col-lg-9 mb-3">' +
                     '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
@@ -187,22 +187,22 @@
                 check = true;
             }
 
-                var strComment =
-                    '<li id="' + CLiId + '">' +
-                    '   <div class="row">'+
-                    '       <div class="col-lg-3 mb-3">' +
-                    '           <span class="text-dark font-weight-bold cname">' + CName +'</span><br />' +
-                    '           <span class="text-dark cregdate">' + CRegDate + '</span>' +
-                    '       </div>' +
-                    '       <div class="col-lg-9 mb-3">' +
-                    '           <sapn class="text-dark ccontent">' + CContent + '</sapn>' +
-                    '       </div>' +
-                    '       <div class="col-lg-12 mb-3 text-right">' +
-                    '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
-                    '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
-                    '       </div>' +
-                    '   </div>' +
-                    '</li>';
+            var strComment =
+                '<li id="' + CLiId + '">' +
+                '   <div class="row">'+
+                '       <div class="col-lg-3 mb-3">' +
+                '           <span class="text-dark font-weight-bold cname">' + CName +'</span><br />' +
+                '           <span class="text-dark cregdate">' + CRegDate + '</span>' +
+                '       </div>' +
+                '       <div class="col-lg-9 mb-3">' +
+                '           <sapn class="text-dark ccontent">' + CContent + '</sapn>' +
+                '       </div>' +
+                '       <div class="col-lg-12 mb-3 text-right">' +
+                '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
+                '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
+                '       </div>' +
+                '   </div>' +
+                '</li>';
 
             var prevLi = $(this).parent().parent().parent();
             //자기 위에 붙이기
@@ -270,7 +270,7 @@
                     '   <div class="row">'+
                     '       <div class="col-lg-3 mb-3">' +
                     '           <span class="text-dark font-weight-bold cname">' + comment.user.name + '</span><br />' +
-                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD a h:mm:ss') + '</span>' +
+                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
                     '       </div>' +
                     '       <div class="col-lg-9 mb-3">' +
                     '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
@@ -343,7 +343,7 @@
                                 <div class="row">
                                     <div class="col-lg-3 mb-3">
                                         <span class="text-dark font-weight-bold cname">@comment.user.Name</span><br />
-                                        <span class="text-dark cregdate">@comment.Reg_Date</span>
+                                        <span class="text-dark cregdate">@comment.Reg_Date.ToString("yyyy-MM-dd HH:mm")</span>
                                     </div>
                                     <div class="col-lg-9 mb-3">
                                         <sapn class="text-dark ccontent">@comment.Content</sapn>

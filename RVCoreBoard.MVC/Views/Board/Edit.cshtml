@@ -78,7 +78,9 @@
                 maxFilesize: 5,
                 filesizeBase: 1000,
                 uploadMultiple: true,
-                clickable: '#fileDropzone'
+                clickable: '#fileDropzone',
+                init: function () {
+                } 
             });
 
             myDropzone.on("dragover drop", function (e) {

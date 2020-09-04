@@ -60,8 +60,9 @@
         public async Task<IActionResult> AllDownload(int id)
         {
             var attachs = await _db.Attachs
-                                .OrderByDescending(p => p.BNo)
-                                .ToListAsync();
+                                    .Where(p => p.BNo.Equals(id))
+                                    .OrderByDescending(p => p.BNo)
+                                    .ToListAsync();
 
             // 404 오류 리턴
             if (attachs == null)

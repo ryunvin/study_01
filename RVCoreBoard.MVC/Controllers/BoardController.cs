@@ -120,15 +120,23 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [CheckSession]
-        public IActionResult Edit(int BNo)
+        public async Task<IActionResult> Edit(int BNo)
         {
-            var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
+            Board board = new Board(_boardService);
+            await board.GetDetail(BNo);
 
-            return View(Board);
+            ViewBag.User = null;
+            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") != null)
+            {
+                User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString()));
+                ViewBag.User = currentUser;
+            }
+
+            return View(board.Data);
         }
 
         [HttpPost, CheckSession]
-        public async Task<IActionResult> Edit(Board model)
+        public IActionResult Edit(Board model)
         {
             model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
 
