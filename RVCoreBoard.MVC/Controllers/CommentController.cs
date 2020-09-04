@@ -43,23 +43,25 @@ namespace RVCoreBoard.MVC.Controllers
             _db.Comments.Remove(comment);
             if (_db.SaveChanges() > 0)
             {
-                return Ok("삭제되었습니다.");
+                return Json(new { success = true, responseText = "삭제되었습니다." });
             }
-            return NotFound();
+            return Json(new { success = false, responseText = "오류 : 삭제되지 않았습니다." });
         }
 
         [HttpPost, Route("api/commentModify")]
         [CheckSession]
-        public async Task<IActionResult> CommentModify([FromBody] Comment comment)
+        public async Task<IActionResult> CommentModify(Comment comment)
         {
             comment.Reg_Date = DateTime.Now;
 
             _db.Entry(comment).State = EntityState.Modified;
             if (await _db.SaveChangesAsync() > 0)
             {
-                var cment = await _db.Comments.FirstOrDefaultAsync(c => c.BNo.Equals(comment.BNo));
+                var cment = await _db.Comments
+                                    .Include("user")
+                                    .FirstOrDefaultAsync(c => c.BNo.Equals(comment.BNo));
 
-                return Ok(cment.CNo);
+                return Ok(cment);
             }
             return NotFound();
         }
