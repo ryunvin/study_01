@@ -1,1 +1,0 @@
-System.IO.Compression.WrappedStream
