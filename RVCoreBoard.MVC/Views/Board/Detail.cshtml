@@ -349,7 +349,7 @@
                                     <div class="col-lg-9 mb-3">
                                         <sapn class="text-dark ccontent">@comment.Content</sapn>
                                     </div>
-                                    @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (currentUser.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
+                                    @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (comment.user.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
                                     {
                                         <div class="col-lg-12 mb-3 text-right">
                                             <a class="btn btn-success text-white" name="commentModify">수정</a>

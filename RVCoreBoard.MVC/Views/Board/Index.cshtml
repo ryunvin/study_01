@@ -56,6 +56,7 @@
                         }
                     </tbody>
                 </table>
+
                 @* 페이징 구현 *@
                 <ul class="pagination float-right mt-3">
                     @{
@@ -74,10 +75,10 @@
 
                         if (Model.CurrentPage - prevPageCount > 1)
                         {
-                            minPage = Model.CurrentPage + nextPageCount < Model.Count ? Model.CurrentPage - prevPageCount : Model.Count - Model.PageRimitCount +1;
+                            minPage = Model.CurrentPage + nextPageCount < Model.Count ? Model.CurrentPage - prevPageCount : Model.Count - Model.PageRimitCount + 1;
                             maxPage = Model.CurrentPage + nextPageCount < Model.Count ? Model.CurrentPage + nextPageCount : Model.Count;
                         }
-                       
+
                         for (int i = minPage; i <= maxPage; i++)
                         {
                             var pageActive = i == Model.CurrentPage ? "active" : "";
@@ -90,6 +91,32 @@
                         <a class="page-link" asp-action="Index" asp-controller="Board" asp-route-currentPage="@(Model.CurrentPage + 1)">다음</a>
                     </li>
                 </ul>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3 text-center">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" asp-controller="Board" asp-action="Index" method="get">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="dropdown mb-4 show">
+                                    <a class="btn btn-link dropdown-toggle border" asp-action="Index" asp-controller="Board" asp-route-searchTtype="All" 
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</a>
+                                    <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="All">전체</a>
+                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="Writer">글쓴이</a>
+                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="Content">내용</a>
+                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="Coment">댓글</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control bg-light border-0 small" name="SearchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append d-inline">
+                                <button class="btn btn-primary" type="submit" >
+                                    <i class="fas fa-search fa-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
