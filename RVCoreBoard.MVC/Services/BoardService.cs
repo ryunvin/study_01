@@ -17,7 +17,7 @@
             _db = db;
         }
 
-        public async Task<Board> GetDetail(int BNo)
+        public async Task<Board> GetDetail(int BNo, bool bDetail)
         {
             var board = await _db.Boards
                                 .Include("user")
@@ -25,12 +25,13 @@
                                 .Include(p => p.AttachInfoList).ThenInclude(p => p.board)
                                 .Include(c => c.CommentList).ThenInclude(c => c.board).ThenInclude(c => c.user)
                                 .FirstOrDefaultAsync(b => b.BNo.Equals(BNo));
+            if (bDetail)
+            {
+                board.Cnt_Read++;
 
-            board.Cnt_Read++;
-
-            _db.Entry(board).State = EntityState.Modified;
-            _db.SaveChanges();
-
+                _db.Entry(board).State = EntityState.Modified;
+                _db.SaveChanges();
+            }
             return board;
         }
 

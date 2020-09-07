@@ -70,8 +70,8 @@
             var myDropzone = new Dropzone("#editInputForm", {
                 previewsContainer: '#previewDropContainer',
                 autoProcessQueue: false,
-                thumbnailHeight: 50,
-                thumbnailWidth: 50,
+                thumbnailHeight: 150,
+                thumbnailWidth: 150,
                 addRemoveLinks: true,
                 dictRemoveFile: '삭제',
                 parallelUploads: 10,
@@ -79,25 +79,26 @@
                 filesizeBase: 1000,
                 uploadMultiple: true,
                 clickable: '#fileDropzone',
-                inti: function () {
-                    @if (Model.AttachInfoList.Any())
-                    {
-                        foreach (var attach in Model.AttachInfoList)
-                        {
-                            var fileName = attach.FileFullName.Substring(attach.FileFullName.IndexOf(".") + 1);
+                init: function () {
+                    $.ajax({
+                        url: '/api/getFiles',
+                        method: 'post',
+                        data: { BNo : @Model.BNo },
+                        dataType: 'json',
+                        success: function (response) {
+                            $.each(response, function (key, value) {
+                                var fileName = value.FileFullName.substring(value.FileFullName.indexOf(".", value.FileFullName.lastIndexOf("\\")) + 1);
+                                var mockFile = { name: fileName, size: value.FileSize, type: value.ContentType, ano : value.ANo };
 
-                            @: var mockfile = {
-                                @:name: @fileName,
-                                @:size: @attach.FileSize,
-                                @:type: @attach.ContentType
-                            @:};
-
-                            @:this.options.addedFile.call(this, mockfile);
-                            @:this.options.addedFile.call(this, mockfile, @attach.FileFullName);
-                            @:mockFile.previewElement.classList.add('dz-success');
-                            @:mockFile.previewElement.classList.add('dz-complete');
+                                myDropzone.emit("addedfile", mockFile);
+                                myDropzone.files.push(mockFile);
+                                myDropzone.emit("complete", mockFile);
+                                $('#fileDropzone').addClass('dz-started');
+                                mockFile.previewElement.classList.add('dz-success');
+                                mockFile.previewElement.classList.add('dz-complete');
+                            });
                         }
-                    }
+                    });
                 }
             });
 
@@ -108,17 +109,30 @@
                     .prop("files", e.originalEvent.dataTransfer.files)
                     .closest("form")
                     .submit();
-                }).on("addedfiles", function (files) {
-                    if (files.length >= 1 && $('#fileDropzone').hasClass('dz-started') == false) {
+            }).on("addedfiles", function (files) {
+                if (files.length >= 1 && $('#fileDropzone').hasClass('dz-started') == false) {
                     $('#fileDropzone').addClass('dz-started');
                 }
                 $("input[type='file']")
                     .prop("files", files)
                     .closest("form");
             }).on("removedfile", function (file) {
-                if (myDropzone.files.length == 0) {
-                    $('#fileDropzone').removeClass('dz-started');
-                }
+                $.ajax({
+                    url: '/api/removeFile',
+                    method: 'post',
+                    data: { ANo : file.ano },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.responseText);
+                            if (myDropzone.files.length == 0) {
+                                $('#fileDropzone').removeClass('dz-started');
+                            }
+                        } else {
+                            alert(response.responseText);
+                        }
+                    }
+                });
             });
         });
 </script>
@@ -127,7 +141,7 @@
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
         <div class="card-body">
-            <form id="editInputForm" class="form-horizontal" method="post" asp-controller="Board" asp-action="Edit">
+            <form id="editInputForm" class="form-horizontal" method="post" enctype="multipart/form-data"  asp-controller="Board" asp-action="Edit">
                 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <div class="form-group">
                     <input type="hidden" class="form-control" asp-for="BNo" value="@Model.BNo" />

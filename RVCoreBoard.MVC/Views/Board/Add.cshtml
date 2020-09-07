@@ -68,8 +68,8 @@
             var myDropzone = new Dropzone("#inputForm", {
                 previewsContainer: '#previewDropContainer',
                 autoProcessQueue: false,
-                thumbnailHeight: 50,
-                thumbnailWidth: 50,
+                thumbnailHeight: 150,
+                thumbnailWidth: 150,
                 addRemoveLinks: true,
                 dictRemoveFile: '삭제',
                 parallelUploads: 10,
@@ -86,8 +86,8 @@
                     .prop("files", e.originalEvent.dataTransfer.files)
                     .closest("form")
                     .submit();
-                }).on("addedfiles", function (files) {
-                    if (files.length >= 1 && $('#fileDropzone').hasClass('dz-started') == false) {
+            }).on("addedfiles", function (files) {
+                if (files.length >= 1 && $('#fileDropzone').hasClass('dz-started') == false) {
                     $('#fileDropzone').addClass('dz-started');
                 }
                 $("input[type='file']")

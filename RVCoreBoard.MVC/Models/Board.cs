@@ -67,9 +67,9 @@ namespace RVCoreBoard.MVC.Models
 
         public Board Data { get; private set; }
 
-        public async Task GetDetail(int BNo)
+        public async Task GetDetail(int BNo, bool bDetail)
         {
-            Data = await _boardService.GetDetail(BNo);
+            Data = await _boardService.GetDetail(BNo, bDetail);
         }
     }
 }
