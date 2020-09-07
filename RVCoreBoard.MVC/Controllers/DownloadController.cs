@@ -115,13 +115,14 @@
                     {
                         foreach (var file in files)
                         {
-                            var demoFile = archive.CreateEntry(file.Substring(file.IndexOf(".", file.LastIndexOf(@"\")) + 1));
+                            archive.CreateEntryFromFile(file, file.Substring(file.IndexOf(".", file.LastIndexOf(@"\")) + 1), CompressionLevel.Optimal);
+                            //var demoFile = archive.CreateEntry(file.Substring(file.IndexOf(".", file.LastIndexOf(@"\")) + 1));
 
-                            using (var entryStream = demoFile.Open())
-                            using (var brinaryWriter = new BinaryWriter(entryStream))
-                            {
-                                brinaryWriter.Write(file);
-                            }
+                            //using (var entryStream = demoFile.Open())
+                            //using (var brinaryWriter = new BinaryWriter(entryStream))
+                            //{
+                            //    brinaryWriter.Write(file);
+                            //}
                         }
                     }
 
