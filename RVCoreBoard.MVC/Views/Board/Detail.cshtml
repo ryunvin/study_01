@@ -80,7 +80,7 @@
                     '   </div>' +
                     '</li>';
 
-                if ($('#commentList').children('ul').length == 0) {
+                if ($('#commentList ul li').length == 0) {
                     $('#commentList').children('ul').append(strCommentAdd);
                 } else {
                     $('#commentList ul li').last().after(strCommentAdd);
