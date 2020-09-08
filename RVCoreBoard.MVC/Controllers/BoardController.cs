@@ -36,6 +36,10 @@ namespace RVCoreBoard.MVC.Controllers
             BoardListInfoModel boardListInfoModel = new BoardListInfoModel(_boardService);
             await boardListInfoModel.GetList(currentPage ?? 1, searchType, searchString);
 
+            ViewBag.CurrentPage = currentPage ?? 1;
+            ViewBag.SearchType = String.IsNullOrEmpty(searchType) ? null : searchType;
+            ViewBag.SearchString = String.IsNullOrEmpty(searchString) ? null : searchString;
+
             return View(boardListInfoModel);
         }
 
@@ -44,7 +48,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <param name="BNo"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Detail(int BNo)
+        public async Task<IActionResult> Detail(int BNo, int? currentPage, string searchType, string searchString)
         {
             Board board = new Board(_boardService);
             await board.GetDetail(BNo, true);
@@ -55,6 +59,10 @@ namespace RVCoreBoard.MVC.Controllers
                 User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString()));
                 ViewBag.User = currentUser;
             }
+
+            ViewBag.CurrentPage = currentPage ?? 1;
+            ViewBag.SearchType = String.IsNullOrEmpty(searchType) ?  null : searchType;
+            ViewBag.SearchString = String.IsNullOrEmpty(searchString) ? null : searchString;
 
             return View(board.Data);
         }

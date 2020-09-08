@@ -51,7 +51,8 @@
                             <tr>
                                 <td>@board.BNo</td>
                                 <td class="text-left">
-                                    <a asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.Title</a>
+                                    <a asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo"
+                                        asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString" name="board_title">@board.Title</a>
                                 </td>
                                 <td>@board.user.Name</td>
                                 @if (board.Reg_Date.ToString("yyyy-MM-dd").Equals(DateTime.Today.ToString("yyyy-MM-dd")))
@@ -105,7 +106,7 @@
             </div>
             <div class="row">
                 <div class="col-12 mb-3 text-center">
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" id="searchForm" asp-action="Index" asp-controller="Board">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" id="searchForm" asp-action="Index" asp-controller="Board" method="get">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="dropdown mb-4 show">

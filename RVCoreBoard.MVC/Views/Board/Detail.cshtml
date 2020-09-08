@@ -393,7 +393,8 @@
                     <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.BNo">수정</a>
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDel">삭제</button>
                 }
-                <a class="btn btn-primary" asp-controller="Board" asp-action="Index">목록</a>
+                <a class="btn btn-primary" asp-controller="Board" asp-action="Index" 
+                    asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">목록</a>
             </div>
         </div>
     </div>
