@@ -40,6 +40,7 @@
         {
             var boardList = await _db.Boards
                                     .Include("user")
+                                    .Include(c => c.CommentList).ThenInclude(c => c.user)
                                     .OrderByDescending(p => p.BNo)
                                     .ToListAsync();
             return boardList;

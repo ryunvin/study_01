@@ -2,7 +2,18 @@
 @{
     ViewData["Title"] = "게시판";
 }
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
+    <script>
+        $('#searchType li').on('click', function () {
+            var newVal = $(this).data('value');
+
+            $('#searchDropdown').text($(this).text());
+            $('#inputSearchType').val(newVal);
+        });
+    </script>
+}
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
         <div class="card-body">
@@ -94,24 +105,25 @@
             </div>
             <div class="row">
                 <div class="col-12 mb-3 text-center">
-                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" asp-controller="Board" asp-action="Index" method="get">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" id="searchForm" asp-action="Index" asp-controller="Board">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="dropdown mb-4 show">
-                                    <a class="btn btn-link dropdown-toggle border" asp-action="Index" asp-controller="Board" asp-route-searchTtype="All" 
-                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</a>
-                                    <div class="dropdown-menu animated--fade-in" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="All">전체</a>
-                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="Writer">글쓴이</a>
-                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="Content">내용</a>
-                                        <a class="dropdown-item" asp-action="Index" asp-controller="Board" asp-route-searchTtype="Coment">댓글</a>
-                                    </div>
+                                    <button type="button" class="btn btn-link dropdown-toggle border" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</button>
+                                    <ul class="dropdown-menu animated--fade-in" id="searchType" aria-labelledby="searchDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                        <li class="dropdown-item" data-value="All">전체</li>
+                                        <li class="dropdown-item" data-value="Title">제목</li>
+                                        <li class="dropdown-item" data-value="Content">내용</li>
+                                        <li class="dropdown-item" data-value="Writer">글쓴이</li>
+                                        <li class="dropdown-item" data-value="Comment">댓글</li>
+                                    </ul>
                                 </div>
                             </div>
-                            <input type="text" class="form-control bg-light border-0 small" name="SearchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2">
+                            <input type="text" class="d-none" name="searchType" id="inputSearchType" value="All"/>
+                            <input type="text" class="form-control bg-light border-0" id="searchString" name="searchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2"/>
                             <div class="input-group-append d-inline">
-                                <button class="btn btn-primary" type="submit" >
-                                    <i class="fas fa-search fa-sm"></i>
+                                <button type="submit" class="btn btn-primary" >
+                                    <i class="fas fa-search fa-sm d-inline"></i>
                                 </button>
                             </div>
                         </div>

@@ -38,11 +38,34 @@
 
         public List<Board> Data { get; private set; }
 
-        public async Task GetList(int currentPage)
+        public async Task GetList(int currentPage, string searchType, string searchString)
         {
             CurrentPage = currentPage;
 
             Data = await _boardService.GetList();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                switch (searchType)
+                {
+                    case "All":
+                        Data = Data.Where(s => s.user.Name.Contains(searchString) || s.Content.Contains(searchString)
+                                        || s.CommentList.Any(c => c.Content.Contains(searchString)) || s.Title.Contains(searchString)).ToList();
+                        break;
+                    case "Title":
+                        Data = Data.Where(s => s.Title.Contains(searchString)).ToList();
+                        break;
+                    case "Writer":
+                        Data = Data.Where(s => s.user.Name.Contains(searchString)).ToList();
+                        break;
+                    case "Content":
+                        Data = Data.Where(s => s.Content.Contains(searchString)).ToList();
+                        break;
+                    case "Comment":
+                        Data = Data.Where(s => s.CommentList.Any(c => c.Content.Contains(searchString))).ToList();
+                        break;
+                }
+            }
 
             RowCount = Data.Count;
             Count = (int)Math.Ceiling(RowCount / (double)PageSize);
