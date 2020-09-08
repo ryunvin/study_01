@@ -64,6 +64,9 @@
                     case "Comment":
                         Data = Data.Where(s => s.CommentList.Any(c => c.Content.Contains(searchString))).ToList();
                         break;
+                    case "FileName":
+                        Data = Data.Where(s => s.AttachInfoList.Any(c => c.FileFullName.Contains(searchString))).ToList();
+                        break;
                 }
             }
 
