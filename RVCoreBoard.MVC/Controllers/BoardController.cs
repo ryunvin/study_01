@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
 using RVCoreBoard.MVC.Services;
+using RVCoreBoard.MVC.Helpers;
+using static RVCoreBoard.MVC.Models.User;
+using RVCoreBoard.MVC.Attributes;
 
 namespace RVCoreBoard.MVC.Controllers
 {
@@ -26,11 +29,11 @@ namespace RVCoreBoard.MVC.Controllers
             _boardService = boardService;
         }
 
-
         /// <summary>
         /// 게시판 리스트
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int? currentPage, string searchType, string searchString)
         {
             BoardListInfoModel boardListInfoModel = new BoardListInfoModel(_boardService);
@@ -48,15 +51,16 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <param name="BNo"></param>
         /// <returns></returns>
+        [MyAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Detail(int BNo, int? currentPage, string searchType, string searchString)
         {
             Board board = new Board(_boardService);
             await board.GetDetail(BNo, true);
 
             ViewBag.User = null;
-            if (HttpContext.Session.GetInt32("USER_LOGIN_KEY") != null)
+            if (User.Identity.IsAuthenticated)
             {
-                User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString()));
+                User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == User.Identity.GetSid());
                 ViewBag.User = currentUser;
             }
 
@@ -71,16 +75,16 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 추가
         /// </summary>
         /// <returns></returns>
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)] 
         public IActionResult Add()
         {
             return View();
         }
 
-        [HttpPost, CheckSession]
+        [HttpPost, MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Add(Board model, List<IFormFile> files)
         {
-            model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
+            model.UNo = User.Identity.GetSid();
             model.Reg_Date = DateTime.Now;
             model.Cnt_Read = 0;
 
@@ -137,7 +141,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 수정
         /// </summary>
         /// <returns></returns>
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Edit(int BNo)
         {
             Board board = new Board(_boardService);
@@ -146,10 +150,10 @@ namespace RVCoreBoard.MVC.Controllers
             return View(board.Data);
         }
 
-        [HttpPost, CheckSession]
+        [HttpPost, MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Edit(Board model, List<IFormFile> files)
         {
-            model.UNo = int.Parse(HttpContext.Session.GetInt32("USER_LOGIN_KEY").ToString());
+            model.UNo = User.Identity.GetSid();
 
             if (ModelState.IsValid)
             {
@@ -202,6 +206,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 삭제 
         /// </summary>
         /// <returns></returns>
+        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public IActionResult Delete(int BNo)
         {
             var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
@@ -215,7 +220,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/getFiles")]
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> GetFiles(string BNo)
         {
             var attachs = await _db.Attachs.Where(a => a.BNo.Equals(int.Parse(BNo))).ToListAsync();
@@ -227,7 +232,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/removeFile")]
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> RemvoeFile(string ANo)
         {
             var attach = await _db.Attachs.Where(a => a.ANo.Equals(int.Parse(ANo))).FirstOrDefaultAsync();

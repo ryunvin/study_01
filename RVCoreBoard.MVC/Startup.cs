@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,17 +34,32 @@ namespace RVCoreBoard.MVC
                 options.UseSqlServer(Configuration.GetConnectionString("localDB"));
             });
 
+            services.AddAuthentication(options => {
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/Logout";
+                options.AccessDeniedPath = "/Home/Index";
+            });
+
             // NoteService 서비스 컨테이너 등록
             services.AddTransient<IBoardService, BoardService>();
+            // AccountService 서비스 컨테이너 등록 - 20.09.09
+            services.AddTransient<IAccountService, AccountService>();
 
             // 세션 사용
-            services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-            });
+            //services.AddDistributedMemoryCache();
+            //services.AddSession(options =>
+            //{
+            //    options.IdleTimeout = TimeSpan.FromMinutes(10);
+            //    options.Cookie.HttpOnly = true;
+            //    options.Cookie.IsEssential = true;
+            //});
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -73,8 +89,9 @@ namespace RVCoreBoard.MVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSession();
+            //app.UseSession();
             app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

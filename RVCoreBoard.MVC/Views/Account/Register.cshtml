@@ -3,6 +3,33 @@
     ViewData["Title"] = "Register";
 }
 
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+    <script>
+        $('#CHKPWD').focusout(function () {
+            var pwd1 = $('#PWD').val();
+            var pwd2 = $('#CHKPWD').val();
+
+            if (pwd1 != '' && pwd2 == '') {
+                null;
+            } else {
+                if (pwd1 == pwd2) {
+                    $('#CHKPWD').addClass('bg-light-success');
+                } else {
+                    $('#CHKPWD').addClass('bg-light-danger');
+                }
+            }
+        });
+        $('#CHKPWD').focusin(function () {
+            if ($('#CHKPWD').hasClass('bg-light-success')) {
+                $('#CHKPWD').removeClass('bg-light-success');
+            } else if ($('#CHKPWD').hasClass('bg-light-danger')) {
+                $('#CHKPWD').removeClass('bg-light-danger');
+            }
+        });
+    </script>
+}
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-8 center-block">
         <div class="pb-5">
@@ -12,21 +39,28 @@
                         <div class="form-group">
                             <div>@Html.ValidationMessage("UserIDDuplicates", new { @class = "text-danger" })</div>
                             <label class="text-dark d-inline">아이디</label><label class="text-danger">*</label>
-                            <input type="text" class="form-control" asp-for="Id" placeholder="아이디"/>
+                            <input type="text" class="form-control" asp-for="Id" placeholder="아이디" />
                             <span class="text-danger" asp-validation-for="Id"></span>
                         </div>
                     </div>
-                    <div class="col-lg-12 mb-3">
+                    <div class="col-lg-6 mb-3">
                         <div class="form-group">
                             <label class="text-dark d-inline">비밀번호</label><label class="text-danger">*</label>
-                            <input type="password" class="form-control" asp-for="Password" placeholder="비밀번호" />
+                            <input type="password" id="PWD" class="form-control" asp-for="Password" placeholder="비밀번호" />
                             <span class="text-danger" asp-validation-for="Password"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-3">
+                        <div class="form-group">
+                            <label class="text-dark d-inline">비밀번호 확인</label><label class="text-danger">*</label>
+                            <input type="password" id="CHKPWD" class="form-control" placeholder="비밀번호" />
+                            <span class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-lg-12 mb-3">
                         <div class="form-group">
                             <label class="text-dark d-inline">이름</label><label class="text-danger">*</label>
-                            <input type="text" class="form-control" asp-for="Name" placeholder="이름"/>
+                            <input type="text" class="form-control" asp-for="Name" placeholder="이름" />
                             <span class="text-danger" asp-validation-for="Name"></span>
                         </div>
                     </div>
@@ -68,7 +102,7 @@
                     <div class="col-lg-12 mb-3">
                         <div class="form-group">
                             <label class="text-dark">이메일</label>
-                            <input type="text" class="form-control" asp-for="Email" placeholder="이메일" />
+                            <input type="email" class="form-control" asp-for="Email" placeholder="이메일" />
                             <span class="text-danger" asp-validation-for="Email"></span>
                         </div>
                     </div>

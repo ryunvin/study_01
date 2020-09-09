@@ -1,8 +1,14 @@
 ﻿using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
+using RVCoreBoard.MVC.Services;
 
 namespace RVCoreBoard.MVC.Controllers
 {
@@ -10,10 +16,12 @@ namespace RVCoreBoard.MVC.Controllers
     public class AccountController : Controller
     {
         private readonly RVCoreBoardDBContext _db;
+        private IAccountService _accountService;
 
-        public AccountController(RVCoreBoardDBContext db)
+        public AccountController(RVCoreBoardDBContext db, IAccountService accountService)
         {
             _db = db;
+            _accountService = accountService;
         }
 
         // <summary>
@@ -21,6 +29,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -31,20 +40,27 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Login(LoginModel model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = _db.Users.FirstOrDefault(u => u.Id.Equals(model.Id) && u.Password.Equals(model.Password));
+                User user = new User(_accountService);
+                await user.Login(model);
 
                 if (user != null)
                 {
                     // 로그인 성공 시
-                    HttpContext.Session.SetInt32("USER_LOGIN_KEY", user.UNo);
+                    var claims = user.BuildClaims(user);
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
                     return RedirectToAction("Index", "Home");    //  로그인 성공 페이지로 이동
                 }
                 // 로그인 실패 시
-                ModelState.AddModelError("UserIDorPWNotCorrect", "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
+                ModelState.AddModelError("UserIDorPWNIncorrect", "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
             }
             return View(model);
         }
@@ -52,9 +68,10 @@ namespace RVCoreBoard.MVC.Controllers
         /// 로그아웃
         /// </summary>
         /// <returns></returns>
-        public IActionResult Logout()
+        [Authorize]
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Remove("USER_LOGIN_KEY");
+            await HttpContext.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
 
@@ -62,6 +79,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// 회원 가입
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
@@ -73,19 +91,25 @@ namespace RVCoreBoard.MVC.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Register(User model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(User model)
         {
             if (ModelState.IsValid)
             {
-                if(_db.Users.Any( p => p.Id == model.Id))
+                if (_db.Users.Any(p => p.Id == model.Id))
                 {
                     ModelState.AddModelError("UserIDDuplicates", "이미 사용중인 아이디 입니다.");
                     return View(model);
                 }
 
-                _db.Users.Add(model);
-                _db.SaveChanges();
-                return RedirectToAction("Login", "Account");
+                User user = new User(_accountService);
+                bool IsRegister = await user.Register(model);
+
+                if (IsRegister)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                
             }
             return View(model);
         }

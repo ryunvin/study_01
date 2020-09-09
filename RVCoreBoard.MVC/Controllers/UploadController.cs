@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RVCoreBoard.MVC.Attributes;
+using static RVCoreBoard.MVC.Models.User;
 
 namespace RVCoreBoard.MVC.Controllers
 {
@@ -24,7 +26,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// <returns></returns>
         // TODO : 이 API도 인증 체크 해야지 아무나 파일 업로드 못함
         [HttpPost, Route("api/imageUpload")]
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> ImageUpload(IFormFile file)
         {
             var path = Path.Combine(_environment.WebRootPath, @"upload\images");

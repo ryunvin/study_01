@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Http
+@using RVCoreBoard.MVC.Helpers;
+
 @model RVCoreBoard.MVC.Models.Board
 @{
     ViewData["Title"] = Model.Title;
@@ -114,7 +116,7 @@
                         alert(response.responseText);
                     } else {
                         alert(response.responseText);
-                    }    
+                    }
                 },
                 error       :   function(request, status, error){
                     console.log("AJAX_ERROR");
@@ -168,7 +170,7 @@
                 prevLi.after(commentEditor);
                 //자기 자신 삭제
                 $(this).parent().parent().parent().remove();
-            }   
+            }
         });
 
         //댓글 수정 취소
@@ -349,7 +351,7 @@
                                     <div class="col-lg-9 mb-3">
                                         <sapn class="text-dark ccontent">@comment.Content</sapn>
                                     </div>
-                                    @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (comment.user.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
+                                    @if (User.Identity.IsAuthenticated && (comment.user.UNo == User.Identity.GetSid()))
                                     {
                                         <div class="col-lg-12 mb-3 text-right">
                                             <a class="btn btn-success text-white" name="commentModify">수정</a>
@@ -362,7 +364,7 @@
                     </ul>
                 </div>
                 <div id="commentInput">
-                    @if (Context.Session.GetInt32("USER_LOGIN_KEY") != null)
+                    @if (User.Identity.IsAuthenticated)
                     {
                         <div class="col-12">
                             <span class="text-dark font-weight-bold">@currentUser.Name</span>
@@ -388,13 +390,13 @@
                 @* 이전글 다음글 구현*@
             </div>
             <div class="col-4 text-right">
-                @if ((Context.Session.GetInt32("USER_LOGIN_KEY") != null) && (Model.UNo == Context.Session.GetInt32("USER_LOGIN_KEY").Value))
+                @if (User.Identity.IsAuthenticated && (Model.UNo == User.Identity.GetSid()))
                 {
                     <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.BNo">수정</a>
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDel">삭제</button>
                 }
-                <a class="btn btn-primary" asp-controller="Board" asp-action="Index" 
-                    asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">목록</a>
+                <a class="btn btn-primary" asp-controller="Board" asp-action="Index"
+                   asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">목록</a>
             </div>
         </div>
     </div>

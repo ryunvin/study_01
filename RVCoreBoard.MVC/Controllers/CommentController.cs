@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
+using static RVCoreBoard.MVC.Models.User;
 
 namespace RVCoreBoard.MVC.Controllers
 {
@@ -19,7 +21,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/commentAdd")]
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> CommentAdd(Comment comment)
         {
             comment.Reg_Date = DateTime.Now;
@@ -35,7 +37,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/commentDelete")]
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> CommentDelete(string CNo)
         {
             var comment = await _db.Comments.FirstOrDefaultAsync(c => c.CNo.Equals(int.Parse(CNo)));
@@ -49,7 +51,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/commentModify")]
-        [CheckSession]
+        [MyAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> CommentModify(Comment comment)
         {
             comment.Reg_Date = DateTime.Now;
@@ -66,4 +68,4 @@ namespace RVCoreBoard.MVC.Controllers
             return NotFound();
         }
     }
-    }
+}

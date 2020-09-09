@@ -1,10 +1,34 @@
-﻿using System;
+﻿using RVCoreBoard.MVC.Helpers;
+using RVCoreBoard.MVC.Services;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace RVCoreBoard.MVC.Models
 {
     public class User
     {
+        private readonly IAccountService _accountService;
+
+        public User() { }
+
+        public User(IAccountService accountService)
+        {
+            _accountService = accountService;
+        }
+
+        [Flags]
+        public enum UserLevel
+        {
+            Newbie = 1 << 0,
+            Junior = 1 << 1,
+            Senior = 1 << 2,
+            Manager = 1 << 3,
+            Admin = 1 << 4
+        }
         /// <summary>
         /// 사용자 번호
         /// </summary>
@@ -22,7 +46,7 @@ namespace RVCoreBoard.MVC.Models
         /// 사용자 비밀번호
         /// </summary>
         [Required(ErrorMessage = "비밀번호를 입력하세요.")]  // Not Null 설정
-        [StringLength(50)]
+        [StringLength(200)]
         public string Password { get; set; }
 
         /// <summary>
@@ -71,5 +95,48 @@ namespace RVCoreBoard.MVC.Models
         [EmailAddress]
         [StringLength(100)]
         public string Email { get; set; }
+
+        [Required]
+        [DefaultValue(1)]
+        public int Level { get; set; }
+
+        public User Data { get; private set; }
+        
+        public string ConvertPassword(string pwd)
+        {
+            var sha = new System.Security.Cryptography.HMACSHA512();
+            sha.Key = System.Text.Encoding.UTF8.GetBytes(pwd.Length.ToString());
+
+            var hash = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(pwd));
+
+            return Convert.ToBase64String(hash);
+        }
+
+        public IList<Claim> BuildClaims(User user)
+        {
+            var roles = Enum.GetName(typeof(UserLevel), 1 << user.Data.Level);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Sid, $"{user.Data.UNo}"),
+                new Claim("Id", user.Data.Id),
+                new Claim("Name", user.Data.Name),
+                new Claim(ClaimTypes.Role, roles)
+            };
+
+            return claims;
+        }
+
+        public async Task Login(LoginModel model)
+        {
+            model.Password = ConvertPassword(model.Password);
+            Data = await _accountService.Login(model);
+        }
+
+        public async Task<bool> Register(User user)
+        {
+            user.Password = ConvertPassword(user.Password);
+            return await _accountService.Register(user);
+        }
     }
 }

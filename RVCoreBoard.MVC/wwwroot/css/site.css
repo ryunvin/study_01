@@ -18,6 +18,16 @@ for details on configuring this project to bundle and minify static web assets. 
     margin-left: auto;
 }
 
+.bg-light-success {
+    background-color: #28a745 !important;
+    opacity : 0.4;
+}
+
+.bg-light-danger {
+    background-color: #dc3545 !important;
+    opacity : 0.4;
+}
+
 /* Carousel */
 .carousel-caption p {
     font-size: 20px;
