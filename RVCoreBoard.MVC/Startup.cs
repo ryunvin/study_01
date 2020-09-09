@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Services;
 
@@ -51,16 +52,7 @@ namespace RVCoreBoard.MVC
             services.AddTransient<IBoardService, BoardService>();
             // AccountService 서비스 컨테이너 등록 - 20.09.09
             services.AddTransient<IAccountService, AccountService>();
-
-            // 세션 사용
-            //services.AddDistributedMemoryCache();
-            //services.AddSession(options =>
-            //{
-            //    options.IdleTimeout = TimeSpan.FromMinutes(10);
-            //    options.Cookie.HttpOnly = true;
-            //    options.Cookie.IsEssential = true;
-            //});
-
+          
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
