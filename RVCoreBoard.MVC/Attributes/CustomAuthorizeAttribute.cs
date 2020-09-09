@@ -4,7 +4,7 @@ using static RVCoreBoard.MVC.Models.User;
 
 namespace RVCoreBoard.MVC.Attributes
 {
-    public class MyAuthorizeAttribute : AuthorizeAttribute
+    public class CustomAuthorizeAttribute : AuthorizeAttribute
     {
         private UserLevel roleEnum;
         public UserLevel RoleEnum

@@ -30,8 +30,14 @@ namespace RVCoreBoard.MVC.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -41,7 +47,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -57,7 +63,7 @@ namespace RVCoreBoard.MVC.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
 
-                    return RedirectToAction("Index", "Home");    //  로그인 성공 페이지로 이동
+                    return RedirectToLocal(returnUrl); 
                 }
                 // 로그인 실패 시
                 ModelState.AddModelError("UserIDorPWNIncorrect", "사용자 ID 혹은 비밀번호가 올바르지 않습니다.");
@@ -112,6 +118,18 @@ namespace RVCoreBoard.MVC.Controllers
                 
             }
             return View(model);
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
     }
 }

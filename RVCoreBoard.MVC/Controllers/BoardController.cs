@@ -51,7 +51,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <param name="BNo"></param>
         /// <returns></returns>
-        [MyAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Detail(int BNo, int? currentPage, string searchType, string searchString)
         {
             Board board = new Board(_boardService);
@@ -75,13 +75,13 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 추가
         /// </summary>
         /// <returns></returns>
-        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)] 
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)] 
         public IActionResult Add()
         {
             return View();
         }
 
-        [HttpPost, MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Add(Board model, List<IFormFile> files)
         {
             model.UNo = User.Identity.GetSid();
@@ -141,7 +141,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 수정
         /// </summary>
         /// <returns></returns>
-        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Edit(int BNo)
         {
             Board board = new Board(_boardService);
@@ -150,7 +150,7 @@ namespace RVCoreBoard.MVC.Controllers
             return View(board.Data);
         }
 
-        [HttpPost, MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Edit(Board model, List<IFormFile> files)
         {
             model.UNo = User.Identity.GetSid();
@@ -206,7 +206,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 삭제 
         /// </summary>
         /// <returns></returns>
-        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public IActionResult Delete(int BNo)
         {
             var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
@@ -220,7 +220,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/getFiles")]
-        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> GetFiles(string BNo)
         {
             var attachs = await _db.Attachs.Where(a => a.BNo.Equals(int.Parse(BNo))).ToListAsync();
@@ -232,7 +232,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/removeFile")]
-        [MyAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> RemvoeFile(string ANo)
         {
             var attach = await _db.Attachs.Where(a => a.ANo.Equals(int.Parse(ANo))).FirstOrDefaultAsync();

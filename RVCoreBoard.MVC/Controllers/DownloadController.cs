@@ -30,7 +30,7 @@
 
         // TODO : Download액션에서 하드코딩으로 작성된 파일 경로는 상수로 빼는게 좋습니다.  2020. 09. 02
         [HttpGet("api/Download/{id}")]
-        [MyAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> Download(int id)
         {
             Attach attach = _db.Attachs.FirstOrDefault(p => p.ANo == id);
@@ -61,7 +61,7 @@
 
         // 압축파일로 한꺼번에 다운받기
         [HttpGet("api/AllDownload/{id}")]
-        [MyAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
         public async Task<IActionResult> AllDownload(int id)
         {
             var attachs = await _db.Attachs
