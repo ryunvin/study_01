@@ -1,6 +1,6 @@
 ﻿@model RVCoreBoard.MVC.Models.BoardListInfoModel
 @{
-    ViewData["Title"] = "게시판";
+    ViewData["Title"] = ViewBag.Category.Name;
 }
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -108,9 +108,9 @@
                 <div class="col-12 mb-3 text-center">
                     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" id="searchForm" asp-action="Index" asp-controller="Board" method="get">
                         <div class="input-group">
-                            <div class="input-group-prepend">
+                            <div class="input-group-prepend">   
                                 <div class="dropdown mb-4 show">
-                                    <button type="button" class="btn btn-link dropdown-toggle border" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</button>
+                                    <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</button>
                                     <ul class="dropdown-menu animated--fade-in" id="searchType" aria-labelledby="searchDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
                                         <li class="dropdown-item" data-value="All">전체</li>
                                         <li class="dropdown-item" data-value="Title">제목</li>

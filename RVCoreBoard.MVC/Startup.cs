@@ -39,13 +39,12 @@ namespace RVCoreBoard.MVC
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            }).AddCookie();
-            services.ConfigureApplicationCookie(options =>
+            }).AddCookie(options =>
             {
                 options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logout";
-                options.AccessDeniedPath = "/Home/Index";
+                options.AccessDeniedPath = "/Error/AccessDenied";
             });
 
             // NoteService 서비스 컨테이너 등록

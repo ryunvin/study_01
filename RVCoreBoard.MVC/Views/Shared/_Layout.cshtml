@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
+﻿@using RVCoreBoard.MVC.Components
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +21,7 @@
     <link href="~/css/sb-admin-2.css" rel="stylesheet">
 
     <link href="~/lib/summernote/summernote-lite.css" rel="stylesheet" />
-    
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/dropzone.css" rel="stylesheet" />
 
     <link href="~/css/site.css" rel="stylesheet">
@@ -62,66 +62,9 @@
             <div class="sidebar-heading">
                 삼겸살 요정 하마 아빈님의 공간입니당
             </div>
+            @*<div id="dynamicContentContainer"></div>*@
 
-            <!-- Nav Item - 포트폴리오 Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Web</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">웹프로젝트 입니당:</h6>
-                        <a class="collapse-item" href="buttons.html">ASP.NET</a>
-                        <a class="collapse-item" href="cards.html">JAVA</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - 맛집 컬렉션 Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>맛집정보</span>
-                </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">맛집정보 입니당:</h6>
-                        <a class="collapse-item" asp-controller="Board" asp-action="Index">꼬기!</a>
-                        <a class="collapse-item" href="utilities-border.html">카페!</a>
-                        <a class="collapse-item" href="utilities-animation.html">술!</a>
-                        <a class="collapse-item" href="utilities-other.html">Other</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider" />
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Addons
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>먹방 기록 일지</span>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">2020년:</h6>
-                        <a class="collapse-item" href="login.html">8월</a>
-                        <a class="collapse-item" href="register.html">9월</a>
-                        <a class="collapse-item" href="forgot-password.html">10월</a>
-                        <div class="collapse-divider"></div>
-                        <h6 class="collapse-header">2021년:</h6>
-                        <a class="collapse-item" href="404.html">1월</a>
-                        <a class="collapse-item" href="blank.html">2월</a>
-                    </div>
-                </div>
-            </li>
+            @await Component.InvokeAsync("MenuBar")
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block" />
@@ -199,7 +142,7 @@
                         var mainWidth = (!ViewData["Title"].Equals("Login") && !ViewData["Title"].Equals("Register")) ? "width:100%;" : "width:60%;";
                     }
                     <div class="row">
-                        <main role="main" class="p-5 center-block" style="@mainWidth">
+                        <main role="main" class="p-5 center-block" style="@mainWidth;">
                             @RenderBody()
                         </main>
                     </div>
@@ -242,6 +185,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.2/dropzone.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/ko.min.js"></script>
+        <script>
+
+            $.get('@Url.Action("RenderMenu", "Home")', function(content){
+                    $("#dynamicContentContainer").html(content);
+                });
+        </script>
     </div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>

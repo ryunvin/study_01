@@ -6,6 +6,7 @@ namespace RVCoreBoard.MVC.Attributes
 {
     public class CustomAuthorizeAttribute : AuthorizeAttribute
     {
+
         private UserLevel roleEnum;
         public UserLevel RoleEnum
         {

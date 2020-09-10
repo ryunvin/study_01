@@ -34,10 +34,13 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        public async Task<IActionResult> Index(int? currentPage, string searchType, string searchString)
+        public async Task<IActionResult> Index(int Id, int? currentPage, string searchType, string searchString)
         {
             BoardListInfoModel boardListInfoModel = new BoardListInfoModel(_boardService);
-            await boardListInfoModel.GetList(currentPage ?? 1, searchType, searchString);
+            await boardListInfoModel.GetList(Id, currentPage ?? 1, searchType, searchString);
+
+            Category category = await _db.Catergorys.FirstOrDefaultAsync(c => c.Id == Id);
+            ViewBag.Category = category;
 
             ViewBag.CurrentPage = currentPage ?? 1;
             ViewBag.SearchType = String.IsNullOrEmpty(searchType) ? null : searchType;
@@ -47,22 +50,18 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         /// <summary>
-        /// 게시물 목록
+        /// 게시물 상세보기
         /// </summary>
         /// <param name="BNo"></param>
         /// <returns></returns>
-        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> Detail(int BNo, int? currentPage, string searchType, string searchString)
         {
             Board board = new Board(_boardService);
             await board.GetDetail(BNo, true);
 
-            ViewBag.User = null;
-            if (User.Identity.IsAuthenticated)
-            {
-                User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == User.Identity.GetSid());
-                ViewBag.User = currentUser;
-            }
+            User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == User.Identity.GetSid());
+            ViewBag.User = currentUser;
 
             ViewBag.CurrentPage = currentPage ?? 1;
             ViewBag.SearchType = String.IsNullOrEmpty(searchType) ?  null : searchType;
@@ -75,13 +74,13 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 추가
         /// </summary>
         /// <returns></returns>
-        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)] 
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)] 
         public IActionResult Add()
         {
             return View();
         }
 
-        [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> Add(Board model, List<IFormFile> files)
         {
             model.UNo = User.Identity.GetSid();
@@ -141,7 +140,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 수정
         /// </summary>
         /// <returns></returns>
-        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> Edit(int BNo)
         {
             Board board = new Board(_boardService);
@@ -150,7 +149,7 @@ namespace RVCoreBoard.MVC.Controllers
             return View(board.Data);
         }
 
-        [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> Edit(Board model, List<IFormFile> files)
         {
             model.UNo = User.Identity.GetSid();
@@ -206,7 +205,7 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시물 삭제 
         /// </summary>
         /// <returns></returns>
-        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public IActionResult Delete(int BNo)
         {
             var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
@@ -220,7 +219,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/getFiles")]
-        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> GetFiles(string BNo)
         {
             var attachs = await _db.Attachs.Where(a => a.BNo.Equals(int.Parse(BNo))).ToListAsync();
@@ -232,7 +231,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/removeFile")]
-        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> RemvoeFile(string ANo)
         {
             var attach = await _db.Attachs.Where(a => a.ANo.Equals(int.Parse(ANo))).FirstOrDefaultAsync();
@@ -243,6 +242,25 @@ namespace RVCoreBoard.MVC.Controllers
                 return Json(new { success = true, responseText = "등록된 파일이 삭제되었습니다." });
             }
             return Json(new { success = false, responseText = "오류 : 등록된 파일이 삭제되지 않았습니다." });
+        }
+
+        /// <summary>
+        /// 게시판 리스트
+        /// </summary>
+        /// <returns></returns>
+        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
+        public async Task<IActionResult> Manage(int Gid)
+        {
+            CategoryListInfoModel categoryListInfoModel = new CategoryListInfoModel(_boardService);
+            await categoryListInfoModel.GetList(Gid);
+
+            List<CategoryGroup> categoryGroupList = await _db.CatergoryGroups
+                                                            .OrderBy(c => c.Gid)
+                                                            .ToListAsync();
+            ViewBag.CategoryGroupList = categoryGroupList;
+            ViewBag.CurrentCategory = categoryGroupList.Where(c => c.Gid == Gid).FirstOrDefault();
+
+            return View(categoryListInfoModel);
         }
     }
 }

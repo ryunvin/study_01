@@ -38,11 +38,13 @@
 
         public List<Board> Data { get; private set; }
 
-        public async Task GetList(int currentPage, string searchType, string searchString)
+        public async Task GetList(int Gid, int currentPage, string searchType, string searchString)
         {
             CurrentPage = currentPage;
 
-            Data = await _boardService.GetList();
+            Data = await _boardService.GetBoardList();
+
+            Data = Data.Where(d => d.category.Gid.Equals(Gid)).ToList();
 
             if (!String.IsNullOrEmpty(searchString))
             {

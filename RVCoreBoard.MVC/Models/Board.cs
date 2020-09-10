@@ -44,18 +44,30 @@ namespace RVCoreBoard.MVC.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime Reg_Date { get; set; }
-        
+
         /// <summary>
         /// 게시물 조회수
         /// </summary>
         [Required]
         public int Cnt_Read { get; set; }
 
+        [Required]
+        public int Gid { get; set; }
+
+        [Required]
+        public int Id { get; set; }
+
         /// <summary>
         /// 작성자(FK_사용자번호)
         /// </summary>
         [Required]  // Not Null 설정
         public int UNo { get; set; }
+
+        [ForeignKey("Gid")]
+        public virtual CategoryGroup categorygroup { get; set; }
+
+        [ForeignKey("Id")]
+        public virtual Category category { get; set; }
 
         [ForeignKey("UNo")]
         public virtual User user { get; set; }
@@ -69,7 +81,7 @@ namespace RVCoreBoard.MVC.Models
 
         public async Task GetDetail(int BNo, bool bDetail)
         {
-            Data = await _boardService.GetDetail(BNo, bDetail);
+            Data = await _boardService.GetBoardDetail(BNo, bDetail);
         }
     }
 }

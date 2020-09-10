@@ -21,7 +21,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/commentAdd")]
-        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> CommentAdd(Comment comment)
         {
             comment.Reg_Date = DateTime.Now;
@@ -37,7 +37,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/commentDelete")]
-        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> CommentDelete(string CNo)
         {
             var comment = await _db.Comments.FirstOrDefaultAsync(c => c.CNo.Equals(int.Parse(CNo)));
@@ -51,7 +51,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, Route("api/commentModify")]
-        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Senior | UserLevel.Admin)]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> CommentModify(Comment comment)
         {
             comment.Reg_Date = DateTime.Now;

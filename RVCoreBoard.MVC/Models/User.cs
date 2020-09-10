@@ -96,9 +96,11 @@ namespace RVCoreBoard.MVC.Models
         [StringLength(100)]
         public string Email { get; set; }
 
+        /// <summary>
+        /// 사용자 등급
+        /// </summary>
         [Required]
-        [DefaultValue(1)]
-        public int Level { get; set; }
+        public short Level { get; set; }
 
         public User Data { get; private set; }
         
@@ -114,13 +116,13 @@ namespace RVCoreBoard.MVC.Models
 
         public IList<Claim> BuildClaims(User user)
         {
-            var roles = Enum.GetName(typeof(UserLevel), 1 << user.Data.Level);
+            var roles = Enum.GetName(typeof(UserLevel), 1 << user.Level);
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, $"{user.Data.UNo}"),
-                new Claim("Id", user.Data.Id),
-                new Claim("Name", user.Data.Name),
+                new Claim(ClaimTypes.Sid, $"{user.UNo}"),
+                new Claim("Id", user.Id),
+                new Claim("Name", user.Name),
                 new Claim(ClaimTypes.Role, roles)
             };
 

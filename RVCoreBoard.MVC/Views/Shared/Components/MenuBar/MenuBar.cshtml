@@ -1,0 +1,71 @@
+﻿@using RVCoreBoard.MVC.Helpers
+@{
+    var categoryGroupList = ViewBag.CategoryGroupList;
+    var categoryList = ViewBag.CategoryList;
+}
+
+@if (User.Identity.IsAuthenticated && User.Identity.GetRole() == "Admin")
+{
+    <li class="nav-item">
+        <!--Nav Item - 관리 Collapse Menu -->
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseManage" aria-expanded="true" aria-controls="collapseManage">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Manage</span>
+        </a>
+        <div id="collapseManage" class="collapse" aria-labelledby="headingManage" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" asp-action="Manage" asp-controller="Board" asp-route-Gid="1">게시판 관리</a>
+            </div>
+        </div>
+    </li>
+}
+
+@foreach (var categoryGroup in categoryGroupList)
+{
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#@categoryGroup.Gname" aria-expanded="true" aria-controls="@categoryGroup.Gname">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>@categoryGroup.Gname</span>
+        </a>
+        <div id="@categoryGroup.Gname" class="collapse" aria-labelledby="@categoryGroup.Gname" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">@categoryGroup.Gname 입니당:</h6>
+                @foreach (var category in categoryList)
+                {
+                    if (category.Gid == categoryGroup.Gid)
+                    {
+                        <a class="collapse-item" asp-controller="Board" asp-action="Index" asp-route-Id="@category.Id">@category.Name</a>
+                    }
+                }
+            </div>
+        </div>
+    </li>
+}
+
+<!-- Divider -->
+<hr class="sidebar-divider" />
+
+<!-- Heading -->
+<div class="sidebar-heading">
+    Addons
+</div>
+
+<!-- Nav Item - Pages Collapse Menu -->
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+        <i class="fas fa-fw fa-folder"></i>
+        <span>먹방 기록 일지</span>
+    </a>
+    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">2020년:</h6>
+            <a class="collapse-item" href="login.html">8월</a>
+            <a class="collapse-item" href="register.html">9월</a>
+            <a class="collapse-item" href="forgot-password.html">10월</a>
+            <div class="collapse-divider"></div>
+            <h6 class="collapse-header">2021년:</h6>
+            <a class="collapse-item" href="404.html">1월</a>
+            <a class="collapse-item" href="blank.html">2월</a>
+        </div>
+    </div>
+</li>

@@ -17,7 +17,7 @@
             _db = db;
         }
 
-        public async Task<Board> GetDetail(int BNo, bool bDetail)
+        public async Task<Board> GetBoardDetail(int BNo, bool bDetail)
         {
             var board = await _db.Boards
                                 .Include("user")
@@ -36,15 +36,24 @@
             return board;
         }
 
-        public async Task<List<Board>> GetList()
+        public async Task<List<Board>> GetBoardList()
         {
             var boardList = await _db.Boards
                                     .Include("user")
+                                    .Include(cg => cg.category)
                                     .Include(p => p.AttachInfoList)
                                     .Include(c => c.CommentList)
                                     .OrderByDescending(p => p.BNo)
                                     .ToListAsync();
             return boardList;
+        }
+        public async Task<List<Category>> GetCategoryList()
+        {
+            var categoryList = await _db.Catergorys
+                                    .Include("categoryGroup")
+                                    .OrderBy(p => p.Gid).ThenBy(p => p.Id)
+                                    .ToListAsync();
+            return categoryList;
         }
     }
 }

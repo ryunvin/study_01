@@ -7,11 +7,24 @@
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
     <script>
+        $('#PWD').focusout(function () {
+            PwdFocusout();
+        });
         $('#CHKPWD').focusout(function () {
+            PwdFocusout();
+        });
+        $('#PWD').focusin(function () {
+            PwdFocusin();
+        });
+        $('#CHKPWD').focusin(function () {
+            PwdFocusin();
+        });
+
+        function PwdFocusout() {
             var pwd1 = $('#PWD').val();
             var pwd2 = $('#CHKPWD').val();
 
-            if (pwd1 != '' && pwd2 == '') {
+            if ((pwd1 == '' && pwd2 == '') || (pwd1 != '' && pwd2 == '')) {
                 null;
             } else {
                 if (pwd1 == pwd2) {
@@ -20,14 +33,14 @@
                     $('#CHKPWD').addClass('bg-light-danger');
                 }
             }
-        });
-        $('#CHKPWD').focusin(function () {
+        }
+        function PwdFocusin() {
             if ($('#CHKPWD').hasClass('bg-light-success')) {
                 $('#CHKPWD').removeClass('bg-light-success');
             } else if ($('#CHKPWD').hasClass('bg-light-danger')) {
                 $('#CHKPWD').removeClass('bg-light-danger');
             }
-        });
+        }
     </script>
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
@@ -53,7 +66,7 @@
                     <div class="col-lg-6 mb-3">
                         <div class="form-group">
                             <label class="text-dark d-inline">비밀번호 확인</label><label class="text-danger">*</label>
-                            <input type="password" id="CHKPWD" class="form-control" placeholder="비밀번호" />
+                            <input type="password" id="CHKPWD" class="form-control" placeholder="비밀번호 확인" />
                             <span class="text-danger"></span>
                         </div>
                     </div>

@@ -6,7 +6,8 @@ namespace RVCoreBoard.MVC.Services
 {
     public interface IBoardService
     {
-        Task<List<Board>> GetList();
-        Task<Board> GetDetail(int BNo, bool bDetail);
+        Task<List<Board>> GetBoardList();
+        Task<Board> GetBoardDetail(int BNo, bool bDetail);
+        Task<List<Category>> GetCategoryList();
     }
 }

@@ -54,10 +54,10 @@ namespace RVCoreBoard.MVC.Controllers
                 User user = new User(_accountService);
                 await user.Login(model);
 
-                if (user != null)
+                if (user.Data != null)
                 {
                     // 로그인 성공 시
-                    var claims = user.BuildClaims(user);
+                    var claims = user.BuildClaims(user.Data);
 
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
