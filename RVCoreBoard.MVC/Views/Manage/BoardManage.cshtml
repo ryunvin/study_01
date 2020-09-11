@@ -1,0 +1,677 @@
+﻿@using Microsoft.AspNetCore.Http;
+@model RVCoreBoard.MVC.Models.CategoryListInfoModel
+@{
+    ViewData["Title"] = "게시판 관리";
+    var CategoryGroups = (dynamic)null;
+    var currentCategory = (dynamic)null;
+    if (ViewBag.CategoryGroupList != null)
+    {
+        CategoryGroups = ViewBag.CategoryGroupList;
+        currentCategory = ViewBag.CurrentCategory;
+    }
+}
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        function RefreshComponent() {
+            var menuBarcontainer = $("#menuBarViewComponentContainer");
+            $.get("/Home/MenuBar", function (data) { menuBarcontainer.html(data); });
+        }
+
+        function RefreshDropdown() {
+            var check = false;
+            var dropdownDiv = $('#categoryGid');
+            
+            var groups = null;
+
+            $.ajax({
+                url: "/api/getCategoryGroups",
+                dataType: "json",
+                method: "post",
+                async: false, //동기: false, 비동기: ture
+                success: function (result) {
+                    groups = result;
+                    check = true;
+                },
+                error: function (request, status, error) {
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                dropdownDiv.empty();
+
+                if (dropdownDiv.children().length == 0) {
+                    var strLi = '';
+                    $.each(groups, function(index, group){
+                        strLi +=
+                            '<li class="dropdown-item" data-value="' + group.gid + '">' +
+                            '   <a class="dropdown-item" asp-action="BoardManage" asp-controller="Manage" asp-route-Gid="' + group.gid + '">' + group.gname + '</a>' +
+                            '</li>';
+                    });
+                    
+                    dropdownDiv.append(strLi);
+                }
+            }
+        }
+        $('#categoryGid li').on('click', function () {
+            var newVal = $(this).data('value');
+
+            $('#categoryDropdown').text($(this).text());
+            $('#inputCategoryGid').val(newVal);
+        });
+
+        // 카테고리 그룹 추가
+        $("#categoryGroupAdd").click(function () {
+            var check = false;
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            //널 검사
+            if ($("#inputCategoryGroupGname").val().trim() == "") {
+                alert("게시판 그룹 이름을 입력하세요.");
+                $("#inputCategoryGroupGname").focus();
+                return false;
+            }
+
+            var CGname = $("#inputCategoryGroupGname").val();
+
+            //값 셋팅
+            var objParams = {
+                Gname: CGname
+            };
+
+            var group = null;
+
+            $.ajax({
+                url: "/api/categoryGroupAdd",
+                dataType: "json",
+                method: "post",
+                async: false, //동기: false, 비동기: ture
+                data: objParams,
+                success: function (result) {
+                    group = result;
+                    check = true;
+                    alert("그룹이 추가되었습니다.");
+                },
+                error: function (request, status, error) {
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                var strCategoryGroupAdd =
+                    '<tr id="categoryGroup' + group.gid + '"> ' +
+                    '   <td>' + group.gid + '</td>' +
+                    '   <td class="text-left gname">' + group.gname + '</td>' +
+                    '   <td>' +
+                    '       <a class="btn btn-success text-white" name="categoryGroupModify">수정</a>' +
+                    '       <a class="btn btn-danger text-white" name="categoryGroupDelete">삭제</a>' +
+                    '   </td>' +
+                    '</tr>';
+
+                if ($('#categoryGroupTable tbody tr').length == 0) {
+                    $('#categoryGroupTable').children('tbody').append(strCategoryGroupAdd);
+                } else {
+                    $('#categoryGroupTable tbody tr').last().after(strCategoryGroupAdd);
+                }
+
+                $("#inputCategoryGroupGname").val("");
+
+                RefreshComponent();
+                RefreshDropdown();
+            }
+        });
+
+        //카테고리 그룹 삭제
+        $(document).on("click", "a[name='categoryGroupDelete']", function () {
+            var check = false;
+            var Gid = $(this).parent().parent().attr('id').replace('categoryGroup', '');
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            //값 셋팅
+            var objParams = {
+                Gid: Gid
+            };
+
+            //ajax 호출
+            $.ajax({
+                url         :   "/api/categoryGroupDelete",
+                dataType    :   "json",
+                method      :   "post",
+                async       :   false, //동기: false, 비동기: ture
+                data        :   objParams,
+                success: function (response) {
+                    if (response.success) {
+                        check = true;
+                        alert(response.responseText);
+                    } else {
+                        alert(response.responseText);
+                    }
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                $(this).parent().parent().remove();
+            }
+            RefreshComponent();
+            RefreshDropdown();
+        });
+
+        //카테고리 그룹 수정 입력
+        $(document).on("click", "a[name='categoryGroupModify']", function () {
+            var CGtrid = $(this).parent().parent().attr('id');
+            var CGid = CGtrid.replace("categoryGroup", "");
+            var CGname = $(this).parent().parent().find('.gname').html().trim();
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            var categoryGroupEditor =
+                '<tr id="' + CGtrid + '"> ' +
+                '   <td>' + CGid + '</td>' +
+                '   <td class="text-left gname"> <input type="text" class="form-control" id="categoryGroupModifyGname' + CGid + '" value="' + CGname + '"/></td>' +
+                '   <td>' +
+                '       <a class="btn btn-primary text-white" name="categoryGroupModifySave">저장</a>' +
+                '       <a class="btn btn-dark text-white" name="categoryGroupModifyCancel cGname="' + CGname + '">취소</a> ' +
+                '   </td>' +
+                '</tr>';
+
+            var prevTr = $(this).parent().parent();
+            //자기 위에 붙이기
+            prevTr.after(categoryGroupEditor);
+            //자기 자신 삭제
+            $(this).parent().parent().remove();
+        });
+
+        //카테고리 그룹 수정 취소
+        $(document).on("click", "a[name='categoryGroupModifyCancel']", function () {
+            //원래 데이터를 가져온다.
+            var CGtrid = $(this).parent().parent().attr('id');
+            var CGid = CGtrid.replace("categoryGroup", "");
+            var CGname = $(this).attr("cGname");
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            var strCategoryGroup =
+                '<tr id="' + CGtrid + '"> ' +
+                '   <td>' + CGid + '</td>' +
+                '   <td class="text-left gname">' + CGname + '</td>' +
+                '   <td>' +
+                '       <a class="btn btn-success text-white" name="categoryGroupModify">수정</a>' +
+                '       <a class="btn btn-danger text-white" name="categoryGroupDelete">삭제</a>' +
+                '   </td>' +
+                '</tr>';
+
+            var prevTr = $(this).parent().parent();
+            //자기 위에 붙이기
+            prevTr.after(strCategoryGroup);
+            //자기 자신 삭제
+            $(this).parent().parent().remove();
+        });
+
+        //카테고리 그룹 수정 저장
+        $(document).on("click", "a[name='categoryGroupModifySave']", function () {
+            var check = false;
+            var CGid = $(this).parent().parent().attr('id').replace("categoryGroup", "");
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            if ($("#categoryGroupModifyGname" + CGid) == "") {
+                alert("카테고리 그룹 이름을 입력하세요.");
+                $("#categoryGroupModifyGname" + CGid).focus();
+                return false;
+            }
+
+            var CGname = $("#categoryGroupModifyGname" + CGid).val();
+
+            //값 셋팅
+            var objParams = {
+                Gid: CGid,
+                Gname: CGname
+            };
+
+            var group = null;
+
+            $.ajax({
+                url         :   "/api/categoryGroupModify",
+                dataType    :   "json",
+                method      :   "post",
+                async: false, //동기: false, 비동기: ture
+                data : objParams,
+                success     :   function(result){
+                    group = result;
+                    check = true;
+                    alert("카테고리 그룹이 수정되었습니다.");
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                var strCategoryGroupModify =
+                    '<tr id="categoryGroup' + group.gid + '"> ' +
+                    '   <td>' + group.gid + '</td>' +
+                    '   <td class="text-left gname">' + group.gname + '</td>' +
+                    '   <td>' +
+                    '       <a class="btn btn-success text-white" name="categoryGroupModify">수정</a>' +
+                    '       <a class="btn btn-danger text-white" name="categoryGroupDelete">삭제</a>' +
+                    '   </td>' +
+                    '</tr>';
+
+                var prevTr = $(this).parent().parent();
+                //자기 위에 붙이기
+                prevTr.after(strCategoryGroupModify);
+
+                //자기 자신 삭제
+                $(this).parent().parent().remove();
+
+                RefreshComponent();
+                RefreshDropdown();
+            }
+        });
+
+        // 카테고리 추가
+        $("#categoryAdd").click(function () {
+            var check = false;
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            //널 검사
+            if ($("#inputCategoryName").val().trim() == "") {
+                alert("게시판 이름을 입력하세요.");
+                $("#inputCategoryName").focus();
+                return false;
+            }
+
+            //널 검사
+            if ($("#inputCategoryLevel").val().trim() == "") {
+                alert("게시판 사용자 등급을 입력하세요.");
+                $("#inputCategoryLevel").focus();
+                return false;
+            }
+
+            var Cname = $("#inputCategoryName").val();
+            var CLevel = $("#inputCategoryLevel").val();
+
+            //값 셋팅
+            var objParams = {
+                Gid: @currentCategory.Gid,
+                Name: Cname,
+                Level: CLevel
+            };
+
+            var category = null;
+
+            $.ajax({
+                url: "/api/categoryAdd",
+                dataType: "json",
+                method: "post",
+                async: false, //동기: false, 비동기: ture
+                data: objParams,
+                success: function (result) {
+                    category = result;
+                    check = true;
+                    alert("카테고리가 추가되었습니다.");
+                },
+                error: function (request, status, error) {
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                var strCategoryAdd =
+                    '<tr id="category' + category.id + '"> ' +
+                    '   <td>' + category.id+ '</td>' +
+                    '   <td class="text-left cgname">' + category.name + '</td>' +
+                    '   <td class="cglevel">' + category.level + '</td>' +
+                    '   <td class="cgregdate">'+ moment(category.reg_Date).format('YYYY-MM-DD hh:mm') +'</td>'+
+                    '   <td>' +
+                    '       <a class="btn btn-success text-white" name="categoryModify">수정</a>' +
+                    '       <a class="btn btn-danger text-white" name="categoryDelete">삭제</a>' +
+                    '   </td>' +
+                    '</tr>';
+
+                if ($('#categoryTable tbody tr').length == 0) {
+                    $('#categoryTable').children('tbody').append(strCategoryAdd);
+                } else {
+                    $('#categoryTable tbody tr').last().after(strCategoryAdd);
+                }
+
+                $("#inputCategoryName").val("");
+                $("#inputCategoryLevel").val("");
+
+                RefreshComponent();
+                RefreshDropdown();
+            }
+        });
+
+        //카테고리 삭제
+        $(document).on("click", "a[name='categoryDelete']", function () {
+            var check = false;
+            var Id = $(this).parent().parent().attr('id').replace('category', '');
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            //값 셋팅
+            var objParams = {
+                Id: Id
+            };
+
+            //ajax 호출
+            $.ajax({
+                url         :   "/api/categoryDelete",
+                dataType    :   "json",
+                method      :   "post",
+                async       :   false, //동기: false, 비동기: ture
+                data        :   objParams,
+                success: function (response) {
+                    if (response.success) {
+                        check = true;
+                        alert(response.responseText);
+                    } else {
+                        alert(response.responseText);
+                    }
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                $(this).parent().parent().remove();
+
+                RefreshComponent();
+                RefreshDropdown();
+            }
+        });
+
+        //카테고리 수정 입력
+        $(document).on("click", "a[name='categoryModify']", function () {
+            var CTrid = $(this).parent().parent().attr('id');
+            var CId = CTrid.replace("category", "");
+            var CName = $(this).parent().parent().find('.cgname').html().trim();
+            var CLevel = $(this).parent().parent().find('.cglevel').html().trim();
+            var CRegDate = $(this).parent().parent().find('.cgregdate').html().trim();
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            var categoryEditor =
+                '<tr id="' + CTrid + '"> ' +
+                '   <td>' + CId + '</td>' +
+                '   <td class="text-left cgname"><input type="text" class="form-control" id="categoryModifyName' + CId + '" value="' + CName + '"/></td>' +
+                '   <td class="cglevel"><input type="text" class="form-control" id="categoryModifyLevel' + CId + '" value="' + CLevel + '"/></td>' +
+                '   <td class="cgregdate">' + CRegDate + '</td>'+
+                '   <td>' +
+                '       <a class="btn btn-primary text-white" name="categoryModifySave">저장</a>' +
+                '       <a class="btn btn-dark text-white" name="categoryModifyCancel cRegDate="' + CRegDate + '" cName="' + CName + '" cLevel="' + CLevel + '">취소</a>' +
+                '   </td>' +
+                '</tr>';
+
+            var prevTr = $(this).parent().parent();
+            //자기 위에 붙이기
+            prevTr.after(categoryEditor);
+            //자기 자신 삭제
+            $(this).parent().parent().remove();
+        });
+
+        //카테고리 수정 취소
+        $(document).on("click", "a[name='categoryModifyCancel']", function () {
+            //원래 데이터를 가져온다.
+            var CTrid = $(this).parent().parent().attr('id');
+            var CId = CTrid.replace("category", "");
+            var CName = $(this).attr("cName");
+            var CLevel = $(this).attr("cLevel");
+            var CRegDate = $(this).attr("cRegDate");
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            var strCategory =
+                '<tr id="' + CTrid + '"> ' +
+                '   <td>' + CId + '</td>' +
+                '   <td class="text-left cgname">' + CName + '</td>' +
+                '   <td class="cglevel">' + CLevel + '</td>' +
+                '   <td class="cgregdate">' + CRegDate + '</td>' +
+                '   <td>' +
+                '       <a class="btn btn-success text-white" name="categorpModify">수정</a>' +
+                '       <a class="btn btn-danger text-white" name="categoryDelete">삭제</a>' +
+                '   </td>' +
+                '</tr>';
+
+            var prevTr = $(this).parent().parent();
+            //자기 위에 붙이기
+            prevTr.after(strCategory);
+            //자기 자신 삭제
+            $(this).parent().parent().remove();
+
+            RefreshComponent();
+            RefreshDropdown();
+        });
+
+        //카테고리 수정 저장
+        $(document).on("click", "a[name='categoryModifySave']", function () {
+            var check = false;
+            var CTrid = $(this).parent().parent().attr('id');
+            var CId = CTrid.replace("category", "");
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            if ($("#categoryModifyName" + CId) == "") {
+                alert("게시판 이름을 입력하세요.");
+                $("#categoryModifyName" + CId).focus();
+                return false;
+            }
+
+            var CName = $("#categoryModifyName" + CId).val();
+            var CLevel = $("#categoryModifyLevel" + CId).val();
+
+            //값 셋팅
+            var objParams = {
+                Gid: @currentCategory.Gid,
+                Id: CId,
+                Gname: CName,
+                Level: CLevel
+            };
+
+            var category = null;
+
+            $.ajax({
+                url         :   "/api/categoryModify",
+                dataType    :   "json",
+                method      :   "post",
+                async: false, //동기: false, 비동기: ture
+                data : objParams,
+                success     :   function(result){
+                    category = result;
+                    check = true;
+                    alert("게시판이 수정되었습니다.");
+                },
+                error       :   function(request, status, error){
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                var strCategoryModify =
+                    '<tr id="category' + category.id + '"> ' +
+                    '   <td>' + category.id + '</td>' +
+                    '   <td class="text-left cgname">' + category.name + '</td>' +
+                    '   <td class="cglevel">' + category.level + '</td>' +
+                    '   <td class="cgregdate">' + moment(category.reg_Date).format('YYYY-MM-DD hh:mm') + '</td>' +
+                    '   <td>' +
+                    '       <a class="btn btn-success text-white" name="categoryModify">수정</a>' +
+                    '       <a class="btn btn-danger text-white" name="categoryDelete">삭제</a>' +
+                    '   </td>' +
+                    '</tr>';
+
+                var prevTr = $(this).parent().parent();
+                //자기 위에 붙이기
+                prevTr.after(strCategoryModify);
+
+                //자기 자신 삭제
+                $(this).parent().parent().remove();
+
+                RefreshComponent();
+                RefreshDropdown();
+            }
+        });
+    </script>
+}
+<div class="d-flex justify-content-center align-items-start position-relative">
+    <div class="col-lg-9 card">
+        <div class="card-body">
+            <div class="row">
+                <!-- Column -->
+                <div class="col-12 mb-3 p-2 text-left bg-transparent shadow-none">
+                    <div class="dropdown mb-4 show w-auto" style="display:inline-block;">
+                        <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">@currentCategory.Gname</button>
+                        <ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                            @foreach (var categorygroup in CategoryGroups)
+                            {
+                                <li class="dropdown-item" data-value="@categorygroup.Gid">
+                                    <a class="dropdown-item" asp-action="BoardManage" asp-controller="Manage" asp-route-Gid="@categorygroup.Gid">@categorygroup.Gname</a>
+                                </li>
+                            }
+                        </ul>
+
+                    </div>
+                    <button type="button" class="btn btn-primary mx-3" data-toggle="modal" data-target="#modalManageGroup">그룹 추가</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table id="categoryTable" class="table table-striped table-bordered no-wrap">
+                    <colgroup>
+                        <col style="width:100px;" />
+                        <col style="width:auto;" />
+                        <col style="width:150px;" />
+                        <col style="width:200px;" />
+                        <col style="width:150px;" />
+                    </colgroup>
+                    <thead class="text-center">
+                        <tr>
+                            <th>번호</th>
+                            <th>게시판 이름</th>
+                            <th>사용자 등급</th>
+                            <th>생성 날짜</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        @foreach (var category in Model.Data)
+                        {
+                            var Trid = "category" + category.Id;
+                            <tr id="@Trid">
+                                <td>@category.Id</td>
+                                <td class="text-left cgname">@category.Name</td>
+                                <td class="cglevel">@category.Level</td>
+                                <td class="cgregdate">@category.Reg_Date.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>
+                                    <a class="btn btn-success text-white" name="categoryModify">수정</a>
+                                    <a class="btn btn-danger text-white" name="categoryDelete">삭제</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <div class="col-12 my-3 text-center">
+                    <input type="text" class="form-control my-3" id="inputCategoryName" placeholder="게시판 이름" />
+                    <input type="text" class="form-control my-3" id="inputCategoryLevel" name="Level" placeholder="사용자 등급" />
+                    <a class="btn btn-primary text-white" id="categoryAdd">추가</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalManageGroup" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="danger-header-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modal-colored-header bg-primary">
+                <h4 class="modal-title text-white" id="danger-header-modalLabel">게시판 그룹 설정</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="categoryGroupTable" class="table table-striped table-bordered no-wrap">
+                        <colgroup>
+                            <col style="width:100px;" />
+                            <col style="width:auto;" />
+                            <col style="width:150px;" />
+                        </colgroup>
+                        <thead class="text-center">
+                            <tr>
+                                <th>번호</th>
+                                <th>게시판 이름</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+                            @foreach (var categorygroup in CategoryGroups)
+                            {
+                                var trId = "categoryGroup" + categorygroup.Gid;
+                                <tr id="@trId">
+                                    <td>@categorygroup.Gid</td>
+                                    <td class="text-left gname">@categorygroup.Gname</td>
+                                    <td>
+                                        <a class="btn btn-success text-white" name="categoryGroupModify">수정</a>
+                                        <a class="btn btn-danger text-white" name="categoryGroupDelete">삭제</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-12 my-3">
+                    <input type="text" class="form-control my-3" id="inputCategoryGroupGname" placeholder="게시판 그룹 이름 입력" />
+                </div>
+                <div class="text-right col-lg-12">
+                    <a class="btn btn-primary text-white" id="categoryGroupAdd">추가</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">창닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

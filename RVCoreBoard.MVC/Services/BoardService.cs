@@ -49,7 +49,7 @@
         }
         public async Task<List<Category>> GetCategoryList()
         {
-            var categoryList = await _db.Catergorys
+            var categoryList = await _db.Categorys
                                     .Include("categoryGroup")
                                     .OrderBy(p => p.Gid).ThenBy(p => p.Id)
                                     .ToListAsync();

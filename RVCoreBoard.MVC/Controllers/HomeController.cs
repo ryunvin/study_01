@@ -25,22 +25,13 @@ namespace RVCoreBoard.MVC.Controllers
             return View();
         }
 
+
         [AllowAnonymous]
-        public async Task<IActionResult> RenderMenu()
+        public IActionResult MenuBar()
         {
-            var categoryGroupList = await _db.CatergoryGroups
-                                            .OrderBy(c => c.Gid)
-                                            .ToListAsync();
-
-            var categoryList = await _db.Catergorys
-                                        .OrderBy(c => c.Gid).ThenBy(c => c.Id)
-                                        .ToListAsync();
-
-            ViewBag.CategoryGroupList = categoryGroupList;
-            ViewBag.CategoryList = categoryList;
-
-            return PartialView("_MenuBar");
+            return ViewComponent("MenuBar");
         }
+
 
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace RVCoreBoard.MVC.Helpers
@@ -24,6 +25,18 @@ namespace RVCoreBoard.MVC.Helpers
                 return string.Empty;
 
             return claim.Value;
+        }
+        public static int GetRoleLevel(this IIdentity identity)
+        {
+            ClaimsIdentity claimsIdentity = identity as ClaimsIdentity;
+            Claim claim = claimsIdentity?.FindFirst(ClaimTypes.Role);
+
+            if (claim == null)
+                return 0;
+
+            int value = (int)Enum.Parse(typeof(Models.User.UserLevel), claim.Value);
+
+            return value;
         }
     }
 }

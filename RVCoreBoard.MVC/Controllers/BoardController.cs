@@ -39,7 +39,7 @@ namespace RVCoreBoard.MVC.Controllers
             BoardListInfoModel boardListInfoModel = new BoardListInfoModel(_boardService);
             await boardListInfoModel.GetList(Id, currentPage ?? 1, searchType, searchString);
 
-            Category category = await _db.Catergorys.FirstOrDefaultAsync(c => c.Id == Id);
+            Category category = await _db.Categorys.FirstOrDefaultAsync(c => c.Id == Id);
             ViewBag.Category = category;
 
             ViewBag.CurrentPage = currentPage ?? 1;
@@ -242,25 +242,6 @@ namespace RVCoreBoard.MVC.Controllers
                 return Json(new { success = true, responseText = "등록된 파일이 삭제되었습니다." });
             }
             return Json(new { success = false, responseText = "오류 : 등록된 파일이 삭제되지 않았습니다." });
-        }
-
-        /// <summary>
-        /// 게시판 리스트
-        /// </summary>
-        /// <returns></returns>
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> Manage(int Gid)
-        {
-            CategoryListInfoModel categoryListInfoModel = new CategoryListInfoModel(_boardService);
-            await categoryListInfoModel.GetList(Gid);
-
-            List<CategoryGroup> categoryGroupList = await _db.CatergoryGroups
-                                                            .OrderBy(c => c.Gid)
-                                                            .ToListAsync();
-            ViewBag.CategoryGroupList = categoryGroupList;
-            ViewBag.CurrentCategory = categoryGroupList.Where(c => c.Gid == Gid).FirstOrDefault();
-
-            return View(categoryListInfoModel);
         }
     }
 }

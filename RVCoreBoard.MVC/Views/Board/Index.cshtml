@@ -1,6 +1,9 @@
-﻿@model RVCoreBoard.MVC.Models.BoardListInfoModel
+﻿@using RVCoreBoard.MVC.Helpers;
+@model RVCoreBoard.MVC.Models.BoardListInfoModel
 @{
-    ViewData["Title"] = ViewBag.Category.Name;
+    var category = ViewBag.Category;
+    var currentUserLevel = User.Identity.GetRoleLevel();
+    ViewData["Title"] = category.Name;
 }
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -18,11 +21,13 @@
     <div class="col-lg-9 card">
         <div class="card-body">
             <div class="row">
-                <!-- Column -->
                 <div class="col-12 mb-3">
                     <div class="bg-transparent shadow-none">
                         <div class="p-2 text-right">
-                            <a class="btn btn-primary" asp-controller="Board" asp-action="Add">글쓰기</a>
+                            @if (currentUserLevel > (1 << category.Level))
+                            {
+                                <a class="btn btn-primary" asp-controller="Board" asp-action="Add">글쓰기</a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -52,7 +57,7 @@
                                 <td>@board.BNo</td>
                                 <td class="text-left">
                                     <a asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo"
-                                        asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString" name="board_title">@board.Title</a>
+                                       asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString" name="board_title">@board.Title</a>
                                 </td>
                                 <td>@board.user.Name</td>
                                 @if (board.Reg_Date.ToString("yyyy-MM-dd").Equals(DateTime.Today.ToString("yyyy-MM-dd")))
@@ -108,7 +113,7 @@
                 <div class="col-12 mb-3 text-center">
                     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" id="searchForm" asp-action="Index" asp-controller="Board" method="get">
                         <div class="input-group">
-                            <div class="input-group-prepend">   
+                            <div class="input-group-prepend">
                                 <div class="dropdown mb-4 show">
                                     <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</button>
                                     <ul class="dropdown-menu animated--fade-in" id="searchType" aria-labelledby="searchDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
@@ -121,10 +126,10 @@
                                     </ul>
                                 </div>
                             </div>
-                            <input type="text" class="d-none" name="searchType" id="inputSearchType" value="All"/>
-                            <input type="text" class="form-control bg-light border-0" id="searchString" name="searchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2"/>
+                            <input type="text" class="d-none" name="searchType" id="inputSearchType" value="All" />
+                            <input type="text" class="form-control bg-light border-0" id="searchString" name="searchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2" />
                             <div class="input-group-append d-inline">
-                                <button type="submit" class="btn btn-primary" >
+                                <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-search fa-sm d-inline"></i>
                                 </button>
                             </div>

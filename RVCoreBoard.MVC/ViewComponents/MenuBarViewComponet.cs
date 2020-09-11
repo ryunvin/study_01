@@ -23,7 +23,7 @@ namespace RVCoreBoard.MVC.Components
             var categoryGroupList = await _db.CatergoryGroups
                                             .OrderBy(c => c.Gid)
                                             .ToListAsync();
-            var categoryList = await _db.Catergorys
+            var categoryList = await _db.Categorys
                                     .OrderBy(c => c.Gid).ThenBy(c => c.Id)
                                     .ToListAsync();
 

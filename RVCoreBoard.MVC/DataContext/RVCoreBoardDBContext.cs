@@ -24,7 +24,7 @@ namespace RVCoreBoard.MVC.DataContext
 
         public DbSet<Attach> Attachs { get; set; }
 
-        public DbSet<Category> Catergorys { get; set; }
+        public DbSet<Category> Categorys { get; set; }
 
         public DbSet<CategoryGroup> CatergoryGroups { get; set; }
 
