@@ -13,7 +13,7 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    <script>
+<script>
         function RefreshComponent() {
             var menuBarcontainer = $("#menuBarViewComponentContainer");
             $.get("/Home/MenuBar", function (data) { menuBarcontainer.html(data); });
@@ -22,7 +22,7 @@
         function RefreshDropdown() {
             var check = false;
             var dropdownDiv = $('#categoryGid');
-            
+
             var groups = null;
 
             $.ajax({
@@ -46,20 +46,64 @@
                     var strLi = '';
                     $.each(groups, function(index, group){
                         strLi +=
-                            '<li class="dropdown-item" data-value="' + group.gid + '">' +
-                            '   <a class="dropdown-item" asp-action="BoardManage" asp-controller="Manage" asp-route-Gid="' + group.gid + '">' + group.gname + '</a>' +
-                            '</li>';
+                            '<li class="dropdown-item" data-value="' + group.gid + '">'+ group.gname + '</a></li>';
                     });
-                    
+
                     dropdownDiv.append(strLi);
                 }
             }
         }
         $('#categoryGid li').on('click', function () {
-            var newVal = $(this).data('value');
+            var CGid = $(this).data('value');
 
             $('#categoryDropdown').text($(this).text());
-            $('#inputCategoryGid').val(newVal);
+            $('#inputCategoryGid').val(CGid);
+
+            //값 셋팅
+            var objParams = {
+                Gid: CGid
+            };
+
+            var check = false;
+            var categorys = null;
+
+            $.ajax({
+                url: "/api/getCategorys",
+                dataType: "json",
+                method: "post",
+                async: false, //동기: false, 비동기: ture
+                data: objParams,
+                success: function (result) {
+                    categorys = result;
+                    check = true;
+                },
+                error: function (request, status, error) {
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                var tbody = $('#categoryTable tbody');
+
+                tbody.empty();
+                if (tbody.children().length == 0) {
+                    var strCategoryTr = '';
+                    $.each(categorys, function (index, category) {
+                        strCategoryTr +=
+                            '<tr id="category' + category.id + '"> ' +
+                            '   <td>' + category.id + '</td>' +
+                            '   <td class="text-left cgname">' + category.name + '</td>' +
+                            '   <td class="cglevel">' + category.level + '</td>' +
+                            '   <td class="cgregdate">' + moment(category.reg_Date).format('YYYY-MM-DD hh:mm') + '</td>' +
+                            '   <td>' +
+                            '       <a class="btn btn-success text-white" name="categoryModify">수정</a>' +
+                            '       <a class="btn btn-danger text-white" name="categoryDelete">삭제</a>' +
+                            '   </td>' +
+                            '</tr>';
+                    });
+                    tbody.append(strCategoryTr);
+                }
+            }
         });
 
         // 카테고리 그룹 추가
@@ -294,6 +338,7 @@
         // 카테고리 추가
         $("#categoryAdd").click(function () {
             var check = false;
+            var CGid = $('#inputCategoryGid').val();
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -319,7 +364,7 @@
 
             //값 셋팅
             var objParams = {
-                Gid: @currentCategory.Gid,
+                Gid: CGid,
                 Name: Cname,
                 Level: CLevel
             };
@@ -483,6 +528,7 @@
         //카테고리 수정 저장
         $(document).on("click", "a[name='categoryModifySave']", function () {
             var check = false;
+            var CGid = $('#inputCategoryGid').val();
             var CTrid = $(this).parent().parent().attr('id');
             var CId = CTrid.replace("category", "");
 
@@ -502,7 +548,7 @@
 
             //값 셋팅
             var objParams = {
-                Gid: @currentCategory.Gid,
+                Gid: CGid,
                 Id: CId,
                 Gname: CName,
                 Level: CLevel
@@ -550,7 +596,7 @@
                 RefreshDropdown();
             }
         });
-    </script>
+</script>
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
@@ -563,9 +609,7 @@
                         <ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
                             @foreach (var categorygroup in CategoryGroups)
                             {
-                                <li class="dropdown-item" data-value="@categorygroup.Gid">
-                                    <a class="dropdown-item" asp-action="BoardManage" asp-controller="Manage" asp-route-Gid="@categorygroup.Gid">@categorygroup.Gname</a>
-                                </li>
+                                <li class="dropdown-item" data-value="@categorygroup.Gid">@categorygroup.Gname</li>
                             }
                         </ul>
 
@@ -611,6 +655,7 @@
             </div>
             <div class="row">
                 <div class="col-12 my-3 text-center">
+                    <input type="text" class="d-none" id="inputCategoryGid"/>
                     <input type="text" class="form-control my-3" id="inputCategoryName" placeholder="게시판 이름" />
                     <input type="text" class="form-control my-3" id="inputCategoryLevel" name="Level" placeholder="사용자 등급" />
                     <a class="btn btn-primary text-white" id="categoryAdd">추가</a>

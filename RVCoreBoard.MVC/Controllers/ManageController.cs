@@ -173,5 +173,24 @@ namespace RVCoreBoard.MVC.Controllers
             }
             return NotFound();
         }
+
+        /// <summary>
+        /// 게시판 그룹 갖고오기
+        /// </summary>
+        /// <param name="categoryGroup"></param>
+        /// <returns></returns>
+        [HttpPost, Route("api/getCategorys")]
+        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
+        public async Task<IActionResult> GetCategorys(string Gid)
+        {
+            var categoryList = await _db.Categorys.OrderBy(c => c.Id).ToListAsync();
+            categoryList = categoryList.Where(c => c.Gid.Equals(int.Parse(Gid))).ToList();
+
+            if (categoryList != null)
+            {
+                return Ok(categoryList);
+            }
+            return NotFound();
+        }
     }
 }
