@@ -44,19 +44,26 @@
 
                 if (dropdownDiv.children().length == 0) {
                     var strLi = '';
-                    $.each(groups, function(index, group){
+                    var OrgGid = $('#categoryDropdown').attr('name');
+                    var NewGid = null;
+                    $.each(groups, function (index, group) {
+                        if (OrgGid == group.gid) {
+                            NewGid = group.gid;
+                        }
                         strLi +=
                             '<li class="dropdown-item" name="dropdownCategoryLi" data-value="' + group.gid + '">'+ group.gname + '</a></li>';
                     });
-
                     dropdownDiv.append(strLi);
+                    $('#inputCategoryGid').val(NewGid);
                 }
             }
         }
-         $(document).on("click", "li[name='dropdownCategoryLi']", function () {
+
+        $(document).on("click", "li[name='dropdownCategoryLi']", function () {
             var CGid = $(this).data('value');
 
             $('#categoryDropdown').text($(this).text());
+            $('#categoryDropdown').attr("name", CGid);
             $('#inputCategoryGid').val(CGid);
 
             //값 셋팅
@@ -107,7 +114,7 @@
         });
 
         // 카테고리 그룹 추가
-        $("#categoryGroupAdd").click(function () {
+        $(document).on("click", "#categoryGroupAdd", function () {
             var check = false;
 
             @if (!User.Identity.IsAuthenticated)
@@ -230,7 +237,7 @@
                 '   <td class="text-left gname"> <input type="text" class="form-control" id="categoryGroupModifyGname' + CGid + '" value="' + CGname + '"/></td>' +
                 '   <td>' +
                 '       <a class="btn btn-primary text-white" name="categoryGroupModifySave">저장</a>' +
-                '       <a class="btn btn-dark text-white" name="categoryGroupModifyCancel cGname="' + CGname + '">취소</a> ' +
+                '       <a class="btn btn-dark text-white" name="categoryGroupModifyCancel" cGname="' + CGname + '">취소</a> ' +
                 '   </td>' +
                 '</tr>';
 
@@ -274,6 +281,7 @@
         $(document).on("click", "a[name='categoryGroupModifySave']", function () {
             var check = false;
             var CGid = $(this).parent().parent().attr('id').replace("categoryGroup", "");
+            var OrgCGname = $(this).next().attr("cGname");
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -332,11 +340,16 @@
 
                 RefreshComponent();
                 RefreshDropdown();
+
+                var categoryDropdown = $('#categoryDropdown');
+                if (OrgCGname == categoryDropdown.text()) {
+                    categoryDropdown.text(group.gname)
+                }
             }
         });
 
         // 카테고리 추가
-        $("#categoryAdd").click(function () {
+        $(document).on("click", "#categoryAdd", function () {
             var check = false;
             var CGid = $('#inputCategoryGid').val();
 
@@ -478,7 +491,7 @@
                 '   <td class="cgregdate">' + CRegDate + '</td>'+
                 '   <td>' +
                 '       <a class="btn btn-primary text-white" name="categoryModifySave">저장</a>' +
-                '       <a class="btn btn-dark text-white" name="categoryModifyCancel cRegDate="' + CRegDate + '" cName="' + CName + '" cLevel="' + CLevel + '">취소</a>' +
+                '       <a class="btn btn-dark text-white" name="categoryModifyCancel" cRegDate="' + CRegDate + '" cName="' + CName + '" cLevel="' + CLevel + '">취소</a>' +
                 '   </td>' +
                 '</tr>';
 
@@ -605,7 +618,7 @@
                 <!-- Column -->
                 <div class="col-12 mb-3 p-2 text-left bg-transparent shadow-none">
                     <div class="dropdown mb-4 show w-auto" style="display:inline-block;">
-                        <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">@currentCategory.Gname</button>
+                        <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="categoryDropdown" name="@currentCategory.Gid" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">@currentCategory.Gname</button>
                         <ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
                             @foreach (var categorygroup in CategoryGroups)
                             {
