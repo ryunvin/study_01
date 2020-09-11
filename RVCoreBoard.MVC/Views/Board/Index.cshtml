@@ -24,7 +24,7 @@
                 <div class="col-12 mb-3">
                     <div class="bg-transparent shadow-none">
                         <div class="p-2 text-right">
-                            @if (currentUserLevel > (1 << category.Level))
+                            @if (currentUserLevel >= (1 << category.Level))
                             {
                                 <a class="btn btn-primary" asp-controller="Board" asp-action="Add">글쓰기</a>
                             }
