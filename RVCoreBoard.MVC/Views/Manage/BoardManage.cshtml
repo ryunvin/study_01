@@ -46,14 +46,14 @@
                     var strLi = '';
                     $.each(groups, function(index, group){
                         strLi +=
-                            '<li class="dropdown-item" data-value="' + group.gid + '">'+ group.gname + '</a></li>';
+                            '<li class="dropdown-item" name="dropdownCategoryLi" data-value="' + group.gid + '">'+ group.gname + '</a></li>';
                     });
 
                     dropdownDiv.append(strLi);
                 }
             }
         }
-        $('#categoryGid li').on('click', function () {
+         $(document).on("click", "li[name='dropdownCategoryLi']", function () {
             var CGid = $(this).data('value');
 
             $('#categoryDropdown').text($(this).text());
@@ -609,7 +609,7 @@
                         <ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
                             @foreach (var categorygroup in CategoryGroups)
                             {
-                                <li class="dropdown-item" data-value="@categorygroup.Gid">@categorygroup.Gname</li>
+                                <li class="dropdown-item" name="dropdownCategoryLi" data-value="@categorygroup.Gid">@categorygroup.Gname</li>
                             }
                         </ul>
 
