@@ -32,7 +32,7 @@
                 <h6 class="collapse-header">@categoryGroup.Gname 입니당:</h6>
                 @foreach (var category in categoryList)
                 {
-                    if (category.Gid == categoryGroup.Gid && category.Level <= (1 << User.Identity.GetRoleLevel()))
+                    if (category.Gid == categoryGroup.Gid)
                     {
                         <a class="collapse-item" asp-controller="Board" asp-action="Index" asp-route-Id="@category.Id">@category.Name</a>
                     }
