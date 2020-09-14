@@ -60,6 +60,8 @@ namespace RVCoreBoard.MVC.Controllers
             Board board = new Board(_boardService);
             await board.GetDetail(BNo, true);
 
+            ViewBag.Category = board.Data.category;
+
             User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == User.Identity.GetSid());
             ViewBag.User = currentUser;
 
@@ -75,17 +77,23 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)] 
-        public IActionResult Add()
+        public async Task<IActionResult> Add(int id)
         {
+            Category category = await _db.Categorys.FirstOrDefaultAsync(c => c.Id == id);
+            ViewBag.CId = category.Id;
+
             return View();
         }
 
         [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
-        public async Task<IActionResult> Add(Board model, List<IFormFile> files)
+        public async Task<IActionResult> AddProc(Board model, List<IFormFile> files)
         {
+            Category category = await _db.Categorys.FirstOrDefaultAsync(c => c.Id == model.Id);
+
             model.UNo = User.Identity.GetSid();
             model.Reg_Date = DateTime.Now;
             model.Cnt_Read = 0;
+            model.Gid = category.Gid;
 
             // TODO : file 객체로 업로드된 파일정보도 저장 필요 [파일이름, 용량 등등]
             if (ModelState.IsValid)
@@ -129,7 +137,7 @@ namespace RVCoreBoard.MVC.Controllers
                             _db.SaveChanges();
                         }
                     }
-                    return Redirect("Index");
+                    return Redirect($"Index/{category.Id}");
                 }
                 ModelState.AddModelError(string.Empty, "게시물을 등록할 수 없습니다.");
             }
@@ -150,7 +158,7 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
-        public async Task<IActionResult> Edit(Board model, List<IFormFile> files)
+        public async Task<IActionResult> EditProc(Board model, List<IFormFile> files)
         {
             model.UNo = User.Identity.GetSid();
 

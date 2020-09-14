@@ -26,7 +26,7 @@
                         <div class="p-2 text-right">
                             @if (currentUserLevel >= (1 << category.Level))
                             {
-                                <a class="btn btn-primary" asp-controller="Board" asp-action="Add">글쓰기</a>
+                                <a class="btn btn-primary" asp-controller="Board" asp-action="Add" asp-route-Id="@category.Id">글쓰기</a>
                             }
                         </div>
                     </div>
@@ -56,8 +56,8 @@
                             <tr>
                                 <td>@board.BNo</td>
                                 <td class="text-left">
-                                    <a asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo"
-                                       asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString" name="board_title">@board.Title</a>
+                                    <a asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo" asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType"
+                                        asp-route-searchString="@ViewBag.SearchString" name="board_title">@board.Title</a>
                                 </td>
                                 <td>@board.user.Name</td>
                                 @if (board.Reg_Date.ToString("yyyy-MM-dd").Equals(DateTime.Today.ToString("yyyy-MM-dd")))
@@ -81,7 +81,7 @@
                         var nextDisabled = !Model.HasNextPage ? "disabled" : "";
                     }
                     <li class="page-item @prevDisabled">
-                        <a class="page-link" tabindex="-1" asp-action="Index" asp-controller="Board" asp-route-currentPage="@(Model.CurrentPage - 1)">이전</a>
+                        <a class="page-link" tabindex="-1" asp-action="Index" asp-controller="Board" asp-route-currentPage="@(Model.CurrentPage - 1)" asp-route-Id="@category.Id">이전</a>
                     </li>
                     @{
                         var prevPageCount = Model.PageRimitCount / 2;
@@ -100,12 +100,12 @@
                         {
                             var pageActive = i == Model.CurrentPage ? "active" : "";
                             <li class="page-item @pageActive">
-                                <a class="page-link" asp-action="Index" asp-controller="Board" asp-route-currentPage="@i">@i</a>
+                                <a class="page-link" asp-action="Index" asp-controller="Board" asp-route-currentPage="@i" asp-route-Id="@category.Id">@i</a>
                             </li>
                         }
                     }
                     <li class="page-item @nextDisabled">
-                        <a class="page-link" asp-action="Index" asp-controller="Board" asp-route-currentPage="@(Model.CurrentPage + 1)">다음</a>
+                        <a class="page-link" asp-action="Index" asp-controller="Board" asp-route-currentPage="@(Model.CurrentPage + 1)" asp-route-Id="@category.Id">다음</a>
                     </li>
                 </ul>
             </div>
@@ -126,6 +126,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            <input type="text" class="d-none" name="Id" value="@category.Id" />
                             <input type="text" class="d-none" name="searchType" id="inputSearchType" value="All" />
                             <input type="text" class="form-control bg-light border-0" id="searchString" name="searchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2" />
                             <div class="input-group-append d-inline">

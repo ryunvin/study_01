@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RVCoreBoard.MVC.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +10,15 @@ namespace RVCoreBoard.MVC.Models
 {
     public class Comment
     {
+        private readonly IBoardService _boardService;
+
+        public Comment() { }
+
+        public Comment(IBoardService boardService)
+        {
+            _boardService = boardService;
+        }
+
         /// <summary>
         /// 댓글 번호
         /// </summary>
@@ -44,5 +54,14 @@ namespace RVCoreBoard.MVC.Models
 
         [ForeignKey("BNo")]
         public virtual Board board { get; set; }
+
+        public int RecentCount { get; set; } = 15;
+
+        public List<Comment> Data { get; private set; }
+
+        public async Task GetRecentComments()
+        {
+            Data = await _boardService.GetRecentComments(RecentCount);
+        }
     }
 }

@@ -77,6 +77,7 @@ namespace RVCoreBoard.MVC.Models
 
         public List<Comment> CommentList { get; set; }
 
+        
         public Board Data { get; private set; }
 
         public async Task GetDetail(int BNo, bool bDetail)

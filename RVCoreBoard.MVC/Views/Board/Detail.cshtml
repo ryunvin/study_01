@@ -4,11 +4,7 @@
 @model RVCoreBoard.MVC.Models.Board
 @{
     ViewData["Title"] = Model.Title;
-    var currentUser = (dynamic)null;
-    if (ViewBag.User != null)
-    {
-        currentUser = ViewBag.User;
-    }
+    var currentUser = ViewBag.User;
 }
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
@@ -396,7 +392,7 @@
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDel">삭제</button>
                 }
                 <a class="btn btn-primary" asp-controller="Board" asp-action="Index"
-                   asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">목록</a>
+                   asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString" asp-route-Id="@ViewBag.Category.Id">목록</a>
             </div>
         </div>
     </div>

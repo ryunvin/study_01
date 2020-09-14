@@ -21,6 +21,7 @@
         {
             var board = await _db.Boards
                                 .Include("user")
+                                .Include("category")
                                 // TODO : 첨부 파일 정보 Include해서 데이터 Get    2020. 09. 02
                                 .Include(p => p.AttachInfoList).ThenInclude(p => p.board)
                                 .Include(c => c.CommentList).ThenInclude(c => c.board)
@@ -54,6 +55,28 @@
                                     .OrderBy(p => p.Gid).ThenBy(p => p.Id)
                                     .ToListAsync();
             return categoryList;
+        }
+
+        public async Task<List<Board>> GetRecentBoards(int count)
+        {
+            var boardList = await _db.Boards
+                                    .Include("user")
+                                    .Include(cg => cg.category)
+                                    .Take(count)
+                                    .OrderByDescending(p => p.BNo)
+                                    .ToListAsync();
+            return boardList;
+        }
+
+        public async Task<List<Comment>> GetRecentComments(int count)
+        {
+            var commentList = await _db.Comments
+                                       .Include("user")
+                                       .Include("board")
+                                       .Take(count)
+                                       .OrderByDescending(c => c.CNo)
+                                       .ToListAsync();
+            return commentList;
         }
     }
 }

@@ -27,6 +27,8 @@
 
         public int RowCount { get; set; }
 
+        public int RecentCount { get; set; } = 15;
+
         public bool HasPreviousPage
         {
             get { return (CurrentPage > 1); }
@@ -76,6 +78,11 @@
             Count = (int)Math.Ceiling(RowCount / (double)PageSize);
 
             Data = Data.Skip((currentPage - 1) * PageSize).Take(PageSize).ToList();
+        }
+
+        public async Task GetRecentBoards()
+        {
+            Data = await _boardService.GetRecentBoards(RecentCount);
         }
     }
 }

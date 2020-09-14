@@ -9,5 +9,7 @@ namespace RVCoreBoard.MVC.Services
         Task<List<Board>> GetBoardList();
         Task<Board> GetBoardDetail(int BNo, bool bDetail);
         Task<List<Category>> GetCategoryList();
+        Task<List<Board>> GetRecentBoards(int count);
+        Task<List<Comment>> GetRecentComments(int count);
     }
 }
