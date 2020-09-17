@@ -3,17 +3,17 @@
 @{
     ViewData["Title"] = "게시판 관리";
     var CategoryGroups = (dynamic)null;
-    var currentCategory = (dynamic)null;
+    var currentCategoryGroup = (dynamic)null;
     if (ViewBag.CategoryGroupList != null)
     {
         CategoryGroups = ViewBag.CategoryGroupList;
-        currentCategory = ViewBag.CurrentCategory;
+        currentCategoryGroup = ViewBag.CurrentCategoryGroup == null ? currentCategoryGroup : ViewBag.CurrentCategoryGroup;
     }
 }
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script>
+    <script>
         function RefreshComponent() {
             var menuBarcontainer = $("#menuBarViewComponentContainer");
             $.get("/Home/MenuBar", function (data) { menuBarcontainer.html(data); });
@@ -21,7 +21,7 @@
 
         function RefreshDropdown() {
             var check = false;
-            var dropdownDiv = $('#categoryGid');
+            var dropdownUl = $('#categoryGid');
 
             var groups = null;
 
@@ -40,9 +40,9 @@
             });
 
             if (check) {
-                dropdownDiv.empty();
+                dropdownUl.empty();
 
-                if (dropdownDiv.children().length == 0) {
+                if (dropdownUl.children().length == 0) {
                     var strLi = '';
                     var OrgGid = $('#categoryDropdown').attr('name');
                     var NewGid = null;
@@ -53,11 +53,15 @@
                         strLi +=
                             '<li class="dropdown-item" name="dropdownCategoryLi" data-value="' + group.gid + '">'+ group.gname + '</a></li>';
                     });
-                    dropdownDiv.append(strLi);
+                    dropdownUl.append(strLi);
                     $('#inputCategoryGid').val(NewGid);
                 }
             }
         }
+
+        $('#modalManageGroup').on('hidden.bs.modal', function (e) {
+            $(this).find("input").val('').end();
+        })
 
         $(document).on("click", "li[name='dropdownCategoryLi']", function () {
             var CGid = $(this).data('value');
@@ -165,6 +169,16 @@
                     '   </td>' +
                     '</tr>';
 
+                var strCGDropddwonAdd =
+                    '<button type="button" class="btn btn-link dropdown-toggle border w-auto" id="categoryDropdown" name="' + group.gid + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' + group.gname + '</button>' +
+                    '<ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">' +
+                    '   <li class="dropdown-item" name="dropdownCategoryLi" data-value="' + group.gid + '">' + group.gname + '</li>' +
+                    '</ul>';
+
+                if ($('#div_CGDropdown').empty()) {
+                    $('#div_CGDropdown').append(strCGDropddwonAdd);
+                }
+
                 if ($('#categoryGroupTable tbody tr').length == 0) {
                     $('#categoryGroupTable').children('tbody').append(strCategoryGroupAdd);
                 } else {
@@ -215,6 +229,10 @@
 
             if (check) {
                 $(this).parent().parent().remove();
+
+                if ($('#categoryGid').empty()) {
+                    $('#div_CGDropdown').empty();
+                }
             }
             RefreshComponent();
             RefreshDropdown();
@@ -609,7 +627,7 @@
                 RefreshDropdown();
             }
         });
-</script>
+    </script>
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">
@@ -617,15 +635,17 @@
             <div class="row">
                 <!-- Column -->
                 <div class="col-12 mb-3 p-2 text-left bg-transparent shadow-none">
-                    <div class="dropdown mb-4 show w-auto" style="display:inline-block;">
-                        <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="categoryDropdown" name="@currentCategory.Gid" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">@currentCategory.Gname</button>
-                        <ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                            @foreach (var categorygroup in CategoryGroups)
-                            {
-                                <li class="dropdown-item" name="dropdownCategoryLi" data-value="@categorygroup.Gid">@categorygroup.Gname</li>
-                            }
-                        </ul>
-
+                    <div class="dropdown mb-4 show w-auto" style="display:inline-block;" id="div_CGDropdown">
+                        @if (currentCategoryGroup != null)
+                        {
+                            <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="categoryDropdown" name="@currentCategoryGroup.Gid" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">@currentCategoryGroup.Gname</button>
+                            <ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                @foreach (var categorygroup in CategoryGroups)
+                                {
+                                    <li class="dropdown-item" name="dropdownCategoryLi" data-value="@categorygroup.Gid">@categorygroup.Gname</li>
+                                }
+                            </ul>
+                        }
                     </div>
                     <button type="button" class="btn btn-primary mx-3" data-toggle="modal" data-target="#modalManageGroup">그룹 추가</button>
                 </div>
@@ -668,7 +688,7 @@
             </div>
             <div class="row">
                 <div class="col-12 my-3 text-center">
-                    <input type="text" class="d-none" id="inputCategoryGid"/>
+                    <input type="text" class="d-none" id="inputCategoryGid" />
                     <input type="text" class="form-control my-3" id="inputCategoryName" placeholder="게시판 이름" />
                     <input type="text" class="form-control my-3" id="inputCategoryLevel" name="Level" placeholder="사용자 등급" />
                     <a class="btn btn-primary text-white" id="categoryAdd">추가</a>
@@ -705,17 +725,20 @@
                             </tr>
                         </thead>
                         <tbody class="text-center">
-                            @foreach (var categorygroup in CategoryGroups)
+                            @if (CategoryGroups != null)
                             {
-                                var trId = "categoryGroup" + categorygroup.Gid;
-                                <tr id="@trId">
-                                    <td>@categorygroup.Gid</td>
-                                    <td class="text-left gname">@categorygroup.Gname</td>
-                                    <td>
-                                        <a class="btn btn-success text-white" name="categoryGroupModify">수정</a>
-                                        <a class="btn btn-danger text-white" name="categoryGroupDelete">삭제</a>
-                                    </td>
-                                </tr>
+                                foreach (var categorygroup in CategoryGroups)
+                                {
+                                    var trId = "categoryGroup" + categorygroup.Gid;
+                                    <tr id="@trId">
+                                        <td>@categorygroup.Gid</td>
+                                        <td class="text-left gname">@categorygroup.Gname</td>
+                                        <td>
+                                            <a class="btn btn-success text-white" name="categoryGroupModify">수정</a>
+                                            <a class="btn btn-danger text-white" name="categoryGroupDelete">삭제</a>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
