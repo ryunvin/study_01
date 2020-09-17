@@ -27,7 +27,7 @@
 
         public int RowCount { get; set; }
 
-        public int RecentCount { get; set; } = 15;
+        public int RecentCount { get; set; } = 10;
 
         public bool HasPreviousPage
         {

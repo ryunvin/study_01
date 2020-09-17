@@ -55,7 +55,7 @@ namespace RVCoreBoard.MVC.Models
         [ForeignKey("BNo")]
         public virtual Board board { get; set; }
 
-        public int RecentCount { get; set; } = 15;
+        public int RecentCount { get; set; } = 10;
 
         public List<Comment> Data { get; private set; }
 
