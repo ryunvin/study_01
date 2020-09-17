@@ -30,10 +30,6 @@ namespace RVCoreBoard.MVC.Controllers
         [CustomAuthorize(RoleEnum = UserLevel.Admin)]
         public async Task<IActionResult> BoardManage()
         {
-            CategoryListInfoModel categoryListInfoModel = new CategoryListInfoModel(_boardService);
-            await categoryListInfoModel.GetList();
-
-
             List<CategoryGroup> categoryGroupList = await _db.CatergoryGroups
                                                             .OrderBy(c => c.Gid)
                                                             .ToListAsync();
@@ -47,6 +43,9 @@ namespace RVCoreBoard.MVC.Controllers
                 firstGid = categoryGroupList.FirstOrDefault().Gid;
                 ViewBag.CurrentCategoryGroup = categoryGroupList.Where(c => c.Gid == firstGid).FirstOrDefault();
             }
+
+            CategoryListInfoModel categoryListInfoModel = new CategoryListInfoModel(_boardService);
+            await categoryListInfoModel.GetList(firstGid);
 
             return View(categoryListInfoModel);
         }

@@ -1,5 +1,6 @@
 ﻿namespace RVCoreBoard.MVC.Models
 {
+    using RVCoreBoard.MVC.Factorys;
     using RVCoreBoard.MVC.Services;
     using System;
     using System.Collections.Generic;
@@ -8,6 +9,11 @@
 
     public class BoardListInfoModel
     {
+        public enum SearchType
+        {
+            All, Title, Writer, Content, Comment, FileName
+        }
+
         private readonly IBoardService _boardService;
 
         public BoardListInfoModel() { }
@@ -42,6 +48,7 @@
 
         public async Task GetList(int Id, int currentPage, string searchType, string searchString)
         {
+
             CurrentPage = currentPage;
 
             // 검색
@@ -49,28 +56,31 @@
             {
                 // TODO : searchType은 하드코딩의 코드 보단 정형화된 Enum타입을 쓴느 것이 좋습니다.  [2020. 09. 17]
                 // TODO : 검색 조건식이 복잡해지는 경우 확장성을 위해 팩토리패턴등을 활용하여 별도 검색처리를 담당하는 클래스를 만들어 분리 하는 것이 좋습니다.   [2020. 09. 17]
-                switch (searchType)
-                {
-                    case "All":
-                        Data = await _boardService.GetBoardList(s => s.user.Name.Contains(searchString) || s.Content.Contains(searchString)
-                                        || s.CommentList.Any(c => c.Content.Contains(searchString)) || s.Title.Contains(searchString));
-                        break;
-                    case "Title":
-                        Data = await _boardService.GetBoardList(s => s.Title.Contains(searchString));
-                        break;
-                    case "Writer":
-                        Data = await _boardService.GetBoardList(s => s.user.Name.Contains(searchString));
-                        break;
-                    case "Content":
-                        Data = await _boardService.GetBoardList(s => s.Content.Contains(searchString));
-                        break;
-                    case "Comment":
-                        Data = await _boardService.GetBoardList(s => s.CommentList.Any(c => c.Content.Contains(searchString)));
-                        break;
-                    case "FileName":
-                        Data = await _boardService.GetBoardList(s => s.AttachInfoList.Any(c => c.FileFullName.Contains(searchString)));
-                        break;
-                }
+                //switch (searchType)
+                //{
+                //    case SearchType.All:
+                //        All all = new All(searchString);
+                //        Data = await _boardService.GetBoardList(all.predicate);
+                //        break;
+                //    case SearchType.Title:
+                //        Data = await _boardService.GetBoardList(s => s.Title.Contains(searchString));
+                //        break;
+                //    case SearchType.Writer:
+                //        Data = await _boardService.GetBoardList(s => s.user.Name.Contains(searchString));
+                //        break;
+                //    case SearchType.Content:
+                //        Data = await _boardService.GetBoardList(s => s.Content.Contains(searchString));
+                //        break;
+                //    case SearchType.Comment:
+                //        Data = await _boardService.GetBoardList(s => s.CommentList.Any(c => c.Content.Contains(searchString)));
+                //        break;
+                //    case SearchType.FileName:
+                //        Data = await _boardService.GetBoardList(s => s.AttachInfoList.Any(c => c.FileFullName.Contains(searchString)));
+                //        break;
+                //}
+                SearchType sType = (SearchType)Enum.Parse(typeof(SearchType), searchType);
+                Data = await SearchFactory.GetSearchBoardList(sType, searchString, _boardService);
+                Data = Data.Where(d => d.category.Id.Equals(Id)).ToList();
             }
             else
             {
@@ -90,10 +100,10 @@
 
         //    Data = await _boardService.GetBoardList();
 
-        //    // TODO : await _boardService.GetBoardList() 부분에서 불필요하게 모든 데이터를 가져와서 카테고리에 맞는 데이터를 필터링 하고있음   [2020. 09. 07]
+        //    // TODO : await _boardService.GetBoardList() 부분에서 불필요하게 모든 데이터를 가져와서 카테고리에 맞는 데이터를 필터링 하고있음   [2020. 09. 17]
         //    Data = Data.Where(d => d.category.Id.Equals(Id)).ToList();
 
-        //    // TODO : 검색시 await _boardService.GetBoardList() 부분에서 불필요하게 모든 데이터를 가져와서 필터링 하고있음   [2020. 09. 07]
+        //    // TODO : 검색시 await _boardService.GetBoardList() 부분에서 불필요하게 모든 데이터를 가져와서 필터링 하고있음   [2020. 09. 17]
         //    if (!String.IsNullOrEmpty(searchString))
         //    {
         //        switch (searchType)

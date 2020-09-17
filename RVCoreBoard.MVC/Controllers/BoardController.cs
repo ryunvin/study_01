@@ -14,6 +14,7 @@ using RVCoreBoard.MVC.Models;
 using RVCoreBoard.MVC.Services;
 using RVCoreBoard.MVC.Helpers;
 using static RVCoreBoard.MVC.Models.User;
+using static RVCoreBoard.MVC.Models.BoardListInfoModel;
 using RVCoreBoard.MVC.Attributes;
 
 namespace RVCoreBoard.MVC.Controllers

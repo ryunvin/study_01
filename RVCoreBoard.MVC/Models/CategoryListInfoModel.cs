@@ -19,11 +19,11 @@
 
         public List<Category> Data { get; private set; }
 
-        public async Task GetList()
+        public async Task GetList(int Gid)
         {
             Data = await _boardService.GetCategoryList();
 
-            //Data = Data.Where(c => c.Gid.Equals(Gid)).ToList();
+            Data = Data.Where(c => c.Gid.Equals(Gid)).ToList();
         }
     }
 }
