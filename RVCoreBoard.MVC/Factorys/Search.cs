@@ -1,12 +1,22 @@
 ﻿using RVCoreBoard.MVC.Models;
+using RVCoreBoard.MVC.Services;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using static RVCoreBoard.MVC.Models.BoardListInfoModel;
 
 namespace RVCoreBoard.MVC.Factorys
 {
-    abstract class  Search
+    public abstract class  SearchBase
     {
-        public System.Linq.Expressions.Expression<Func<Board, bool>> Predicate { get; set; }
+        private readonly IBoardService _boardService;
+        public SearchBase(IBoardService boardService)
+        {
+            _boardService = boardService;
+        }
+
+        protected IBoardService BoardService { get => _boardService; }
+
+        public abstract Task<List<Board>> Search(int id, string searchString);
     }
 }

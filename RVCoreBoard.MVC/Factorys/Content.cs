@@ -1,14 +1,20 @@
-﻿using static RVCoreBoard.MVC.Models.BoardListInfoModel;
+﻿using RVCoreBoard.MVC.Models;
+using RVCoreBoard.MVC.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using static RVCoreBoard.MVC.Models.BoardListInfoModel;
 
 namespace RVCoreBoard.MVC.Factorys
 {
-    class Content : Search
+    internal class Content : SearchBase
     {
-        public Content() { }
-
-        public Content(string searchString)
+        public Content(IBoardService boardService) : base(boardService)
         {
-            Predicate = s => s.Content.Contains(searchString);
+        }
+
+        public override async Task<List<Board>> Search(int id, string searchString)
+        {
+            return await base.BoardService.GetBoardList(s => s.category.Id == id && s.Content.Contains(searchString));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace RVCoreBoard.MVC.Models
 {
+    using RVCoreBoard.MVC.Attributes;
     using RVCoreBoard.MVC.Factorys;
     using RVCoreBoard.MVC.Services;
     using System;
@@ -11,7 +12,18 @@
     {
         public enum SearchType
         {
-            All, Title, Writer, Content, Comment, FileName
+            [ExtensionEnum(typeof(All))]
+            All,
+            [ExtensionEnum(typeof(Title))]
+            Title,
+            [ExtensionEnum(typeof(Writer))]
+            Writer,
+            [ExtensionEnum(typeof(Content))]
+            Content,
+            [ExtensionEnum(typeof(Comment))]
+            Comment,
+            [ExtensionEnum(typeof(FileName))]
+            FileName
         }
 
         private readonly IBoardService _boardService;
@@ -79,7 +91,8 @@
                 //        break;
                 //}
                 SearchType sType = (SearchType)Enum.Parse(typeof(SearchType), searchType);
-                Data = await SearchFactory.GetSearchBoardList(id, sType, searchString, _boardService);
+                SearchBase searchBase = SearchFactory.GetSearchBoardList(id, sType, _boardService);
+                Data = await searchBase.Search(id, searchString);
             }
             else
             {
