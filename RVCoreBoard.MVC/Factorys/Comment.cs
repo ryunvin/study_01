@@ -9,7 +9,7 @@ namespace RVCoreBoard.MVC.Factorys
 
         public Comment(string searchString)
         {
-            predicate = s => s.CommentList.Any(c => c.Content.Contains(searchString));
+            Predicate = s => s.CommentList.Any(c => c.Content.Contains(searchString));
         }
     }
 }

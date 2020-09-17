@@ -10,7 +10,7 @@ namespace RVCoreBoard.MVC.Factorys
 {
     public class SearchFactory
     {
-        public static async Task<List<Board>> GetSearchBoardList(SearchType searchType, string searchString, IBoardService boardService)
+        public static async Task<List<Board>> GetSearchBoardList(int id, SearchType searchType, string searchString, IBoardService boardService)
         {
             List<Board> Data = new List<Board>();
 
@@ -18,29 +18,30 @@ namespace RVCoreBoard.MVC.Factorys
             {
                 case SearchType.All:
                     All all = new All(searchString);
-                    Data = await boardService.GetBoardList(all.predicate);
+                    Data = await boardService.GetBoardList(all.Predicate);
                     break;
                 case SearchType.Title:
                     Title title = new Title(searchString);
-                    Data = await boardService.GetBoardList(title.predicate);
+                    Data = await boardService.GetBoardList(title.Predicate);
                     break;
                 case SearchType.Writer:
                     Writer writer = new Writer(searchString);
-                    Data = await boardService.GetBoardList(writer.predicate);
+                    Data = await boardService.GetBoardList(writer.Predicate);
                     break;
                 case SearchType.Content:
                     Content content = new Content(searchString);
-                    Data = await boardService.GetBoardList(content.predicate);
+                    Data = await boardService.GetBoardList(content.Predicate);
                     break;
                 case SearchType.Comment:
                     Comment comment = new Comment(searchString);
-                    Data = await boardService.GetBoardList(comment.predicate);
+                    Data = await boardService.GetBoardList(comment.Predicate);
                     break;
                 case SearchType.FileName:
                     FileName fileName = new FileName(searchString);
-                    Data = await boardService.GetBoardList(fileName.predicate);
+                    Data = await boardService.GetBoardList(fileName.Predicate);
                     break;
             }
+            Data = Data.Where(d => d.category.Id.Equals(id)).ToList();
             return Data;
         }
     }

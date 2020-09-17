@@ -7,6 +7,6 @@ namespace RVCoreBoard.MVC.Factorys
 {
     abstract class  Search
     {
-        public System.Linq.Expressions.Expression<Func<Board, bool>> predicate { get; set; }
+        public System.Linq.Expressions.Expression<Func<Board, bool>> Predicate { get; set; }
     }
 }

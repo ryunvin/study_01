@@ -46,7 +46,7 @@
 
         public List<Board> Data { get; private set; }
 
-        public async Task GetList(int Id, int currentPage, string searchType, string searchString)
+        public async Task GetList(int id, int currentPage, string searchType, string searchString)
         {
 
             CurrentPage = currentPage;
@@ -79,12 +79,11 @@
                 //        break;
                 //}
                 SearchType sType = (SearchType)Enum.Parse(typeof(SearchType), searchType);
-                Data = await SearchFactory.GetSearchBoardList(sType, searchString, _boardService);
-                Data = Data.Where(d => d.category.Id.Equals(Id)).ToList();
+                Data = await SearchFactory.GetSearchBoardList(id, sType, searchString, _boardService);
             }
             else
             {
-                Data = await _boardService.GetBoardList(d => d.category.Id.Equals(Id));
+                Data = await _boardService.GetBoardList(d => d.category.Id.Equals(id));
             }
 
             RowCount = Data.Count;

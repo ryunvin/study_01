@@ -8,7 +8,7 @@ namespace RVCoreBoard.MVC.Factorys
 
         public Writer(string searchString)
         {
-            predicate = s => s.user.Name.Contains(searchString);
+            Predicate = s => s.user.Name.Contains(searchString);
         }
     }
 }

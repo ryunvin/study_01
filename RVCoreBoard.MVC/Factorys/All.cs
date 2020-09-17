@@ -11,7 +11,7 @@ namespace RVCoreBoard.MVC.Factorys
 
         public All(string searchString)
         {
-            predicate = s => s.user.Name.Contains(searchString) || s.Content.Contains(searchString)
+            Predicate = s => s.user.Name.Contains(searchString) || s.Content.Contains(searchString)
                                         || s.CommentList.Any(c => c.Content.Contains(searchString)) || s.Title.Contains(searchString);
         }
     }

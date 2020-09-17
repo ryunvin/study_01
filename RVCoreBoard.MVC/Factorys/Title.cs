@@ -8,7 +8,7 @@ namespace RVCoreBoard.MVC.Factorys
 
         public Title(string searchString)
         {
-            predicate = s => s.Title.Contains(searchString);
+            Predicate = s => s.Title.Contains(searchString);
         }
     }
 }
