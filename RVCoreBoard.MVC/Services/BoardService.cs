@@ -48,6 +48,20 @@
                                     .ToListAsync();
             return boardList;
         }
+
+        public async Task<List<Board>> GetBoardList(System.Linq.Expressions.Expression<Func<Board, bool>> predicate)
+        {
+            var boardList = await _db.Boards
+                                    .Include("user")
+                                    .Include(cg => cg.category)
+                                    .Include(p => p.AttachInfoList)
+                                    .Include(c => c.CommentList)
+                                    .Where(predicate)
+                                    .OrderByDescending(p => p.BNo)
+                                    .ToListAsync();
+            return boardList;
+        }
+
         public async Task<List<Category>> GetCategoryList()
         {
             var categoryList = await _db.Categorys
