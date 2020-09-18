@@ -27,7 +27,7 @@
                                 <span><b>@board.category.Name </b></span>
                             </div>
                             <div class="col-lg-6 my-2">
-                                <span>@board.Title</span>
+                                <span><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.Title</a></span>
                             </div>
                             <div class="col-lg-3 my-2 text-right">
                                 <span>@board.user.Name</span>
@@ -49,7 +49,7 @@
                         @foreach (var comment in commentList)
                         {
                             <div class="col-lg-3 my-2">
-                                <span><b>@comment.board.category.Name @comment.board.BNo </b></span>
+                                <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@comment.board.BNo">@comment.board.category.Name @comment.board.Title</a></b></span>
                             </div>
                             <div class="col-lg-6 my-2">
                                 <span>@comment.Content</span>
