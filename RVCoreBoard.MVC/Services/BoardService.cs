@@ -92,5 +92,25 @@
                                        .ToListAsync();
             return commentList;
         }
+        public async Task<int> GetBoardPrevBNo(int bNo, int id)
+        {
+            var prevBNo = await _db.Boards
+                                    .Include(cg => cg.category)
+                                    .Where(b => b.BNo < bNo && b.category.Id == id)
+                                    .OrderByDescending(b => b.BNo)
+                                    .Select(b => b.BNo)
+                                    .FirstOrDefaultAsync();
+            return prevBNo;
+        }
+        public async Task<int> GetBoardNextBNo(int bNo, int id)
+        {
+            var nextBNo = await _db.Boards
+                                    .Include(cg => cg.category)
+                                    .Where(b => b.BNo > bNo && b.category.Id == id)
+                                    .OrderBy(b => b.BNo)
+                                    .Select(b => b.BNo)
+                                    .FirstOrDefaultAsync();
+            return nextBNo;
+        }
     }
 }

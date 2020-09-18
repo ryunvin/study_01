@@ -70,7 +70,7 @@ namespace RVCoreBoard.MVC.Controllers
             ViewBag.SearchType = String.IsNullOrEmpty(searchType) ?  null : searchType;
             ViewBag.SearchString = String.IsNullOrEmpty(searchString) ? null : searchString;
 
-            return View(board.Data);
+            return View(board);
         }
 
         /// <summary>

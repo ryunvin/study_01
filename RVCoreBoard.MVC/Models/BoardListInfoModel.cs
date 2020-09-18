@@ -60,7 +60,6 @@
 
         public async Task GetList(int id, int currentPage, string searchType, string searchString)
         {
-
             CurrentPage = currentPage;
 
             // 검색

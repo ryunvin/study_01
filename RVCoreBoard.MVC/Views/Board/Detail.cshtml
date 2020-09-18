@@ -3,7 +3,7 @@
 
 @model RVCoreBoard.MVC.Models.Board
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.Data.Title;
     var currentUser = ViewBag.User;
 }
 @section Scripts {
@@ -29,7 +29,7 @@
 
             //값 셋팅
             var objParams = {
-                BNo: @Html.Raw(Model.BNo),
+                BNo: @Html.Raw(Model.Data.BNo),
                 UNo: currentUser.uNo,
                 Content: CContent,
             };
@@ -229,7 +229,7 @@
             //값 셋팅
             var objParams = {
                 CNo: CNo,
-                BNo: @Html.Raw(Model.BNo),
+                BNo: @Html.Raw(Model.Data.BNo),
                 UNo: currentUser.uNo,
                 Content: CContent
             };
@@ -292,25 +292,25 @@
         <div class="card-body m-3">
             <div class="row">
                 <div class="col-6 text-left mb-5">
-                    <h1 class="card-title">@Model.Title</h1>
+                    <h1 class="card-title">@Model.Data.Title</h1>
                 </div>
                 <div class="col-6">
                     <div class="row text-right">
                         <div class="col-4">
-                            <p><b>글쓴이 </b>@Model.user.Name</p>
+                            <p><b>글쓴이 </b>@Model.Data.user.Name</p>
                         </div>
                         <div class="col-6">
-                            <p><b>등록일시 </b>@Model.Reg_Date.ToString("yyyy-MM-dd HH:mm")</p>
+                            <p><b>등록일시 </b>@Model.Data.Reg_Date.ToString("yyyy-MM-dd HH:mm")</p>
                         </div>
                         <div class="col-2">
-                            <p><b>조회수 </b>@Model.Cnt_Read</p>
+                            <p><b>조회수 </b>@Model.Data.Cnt_Read</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-12 text-right">
                 @*첨부파일 다운로드 구현*@
-                @if (Model.AttachInfoList.Count > 0)
+                @if (Model.Data.AttachInfoList.Count > 0)
                 {
                     <div class="dropdown">
                         <button class="btn btn-facebook dropdown-toggle" type="button" data-toggle="dropdown">
@@ -318,9 +318,9 @@
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a class="dropdown-item" asp-controller="api" asp-action="AllDownload" asp-route-id="@Model.BNo">한꺼번에 받기</a></li>
+                            <li><a class="dropdown-item" asp-controller="api" asp-action="AllDownload" asp-route-id="@Model.Data.BNo">한꺼번에 받기</a></li>
                             <li class="dropdown-divider"></li>
-                            @foreach (var attachInfo in Model.AttachInfoList)
+                            @foreach (var attachInfo in Model.Data.AttachInfoList)
                             {
                                 var fileName = attachInfo.FileFullName.Substring(attachInfo.FileFullName.IndexOf(".", attachInfo.FileFullName.LastIndexOf(@"\")) + 1);
                                 <li><a class="dropdown-item" asp-controller="api" asp-action="Download" asp-route-id="@attachInfo.ANo">@fileName (@attachInfo.FileSize KB)</a></li>
@@ -329,13 +329,13 @@
                     </div>
                 }
             </div>
-            <p class="card-text mb-5">@Html.Raw(Model.Content)</p>
+            <p class="card-text mb-5">@Html.Raw(Model.Data.Content)</p>
             <p class="text-dark font-weight-bold mt-5">댓글</p>
             @*댓글 구현*@
             <div id="commentArea">
                 <div id="commentList">
                     <ul class="list-unstyled">
-                        @foreach (var comment in Model.CommentList)
+                        @foreach (var comment in Model.Data.CommentList)
                         {
                             var liId = "comment" + comment.CNo;
                             <li id="@liId">
@@ -381,14 +381,28 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-5 mb-3 p-2">
-            <div class="col-4 center-block">
+        <div class="row px-5 mb-3 align-items-center">
+            <div class="center-block">
                 @* 이전글 다음글 구현*@
+                <ul class="pagination mt-3">
+                    @{
+                        var prevDisabled = Model.PrevBNo == 0 ? "disabled" : "";
+                        var nextDisabled = Model.NextBNo == 0 ? "disabled" : "";
+                    }
+                    <li class="page-item @prevDisabled">
+                        <a class="page-link" tabindex="-1" asp-action="Detail" asp-controller="Board" asp-route-BNo="@Model.PrevBNo"
+                           asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">이전글</a>
+                    </li>
+                    <li class="page-item @nextDisabled">
+                        <a class="page-link" asp-action="Detail" asp-controller="Board" asp-route-BNo="@Model.NextBNo"
+                           asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">다음글</a>
+                    </li>
+                </ul>
             </div>
-            <div class="col-4 text-right">
-                @if (User.Identity.IsAuthenticated && (Model.UNo == User.Identity.GetSid()))
+            <div class="text-right d-inline-block ">
+                @if (User.Identity.IsAuthenticated && (Model.Data.UNo == User.Identity.GetSid()))
                 {
-                    <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.BNo">수정</a>
+                    <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.Data.BNo">수정</a>
                     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalDel">삭제</button>
                 }
                 <a class="btn btn-primary" asp-controller="Board" asp-action="Index"
@@ -416,7 +430,7 @@
                 </p>
             </div>
             <div class="modal-footer">
-                <a class="btn btn-danger" asp-controller="Board" asp-action="Delete" asp-route-BNo="@Model.BNo">삭제</a>
+                <a class="btn btn-danger" asp-controller="Board" asp-action="Delete" asp-route-BNo="@Model.Data.BNo">삭제</a>
                 <button type="button" class="btn btn-light"
                         data-dismiss="modal">
                     취소

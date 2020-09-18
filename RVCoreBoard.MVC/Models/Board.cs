@@ -76,13 +76,16 @@ namespace RVCoreBoard.MVC.Models
         public ICollection<Attach> AttachInfoList { get; set; }
 
         public List<Comment> CommentList { get; set; }
-
-        
+        public int PrevBNo { get; set; } = 0;
+        public int NextBNo { get; set; } = 0;
         public Board Data { get; private set; }
 
         public async Task GetDetail(int BNo, bool bDetail)
         {
             Data = await _boardService.GetBoardDetail(BNo, bDetail);
+
+            PrevBNo = await _boardService.GetBoardPrevBNo(BNo, Data.category.Id);
+            NextBNo = await _boardService.GetBoardNextBNo(BNo, Data.category.Id);
         }
     }
 }
