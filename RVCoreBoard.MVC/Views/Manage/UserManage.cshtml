@@ -95,21 +95,19 @@
             var check = false;
             var UTrid = $(this).parent().parent().attr('id');
             var UUNo = UTrid.replace("user", "");
-            var UId = $(this).parent().parent().find('.uid').html().trim();
-            var UName = $(this).parent().parent().find('.uname').html().trim();
 
             @if (!User.Identity.IsAuthenticated)
             {
                 @:return false;
             }
 
-            if ($("#userLevelModifyLevel" + UNo) == "") {
+            if ($("#userLevelModifyLevel" + UUNo) == "") {
                 alert("사용자 등급을 입력하세요.");
-                $("#userLevelModifyLevel" + UNo).focus();
+                $("#userLevelModifyLevel" + UUNo).focus();
                 return false;
             }
 
-            var ULevel = $("#userLevelModifyLevel" + CId).val();
+            var ULevel = $("#userLevelModifyLevel" + UUNo).val();
 
             if (ULevel > 4 || ULevel < 0) {
                 alert("사용자 등급이 올바르지 않습니다.");
@@ -125,25 +123,25 @@
             var user = null;
 
             $.ajax({
-                        url         :   "/api/userLevelModify",
+                url         :   "/api/userLevelModify",
                 dataType    :   "json",
                 method      :   "post",
                 async: false, //동기: false, 비동기: ture
                 data : objParams,
                 success     :   function(result){
-                                user = result;
-                                check = true;
-                                alert("게시판이 수정되었습니다.");
-                            },
+                    user = result;
+                    check = true;
+                    alert("사용자 <"+ user.id +">의 등급이 수정되었습니다.");
+                },
                 error       :   function(request, status, error){
-                                console.log("AJAX_ERROR");
-                            }
-                        });
+                    console.log("AJAX_ERROR");
+                }
+            });
 
             if (check) {
                 var strUserLevelModify =
-                    '<tr id="user' + user.uno + '"> ' +
-                    '   <td class="align-middle">' + user.id + '</td>' +
+                    '<tr id="user' + user.uNo + '"> ' +
+                    '   <td class="align-middle">' + user.uNo + '</td>' +
                     '   <td class="align-middle text-left uid">' + user.id + '</td>' +
                     '   <td class="align-middle text-left uname">' + user.name + '</td>' +
                     '   <td class="align-middle ulevel">' + user.level + '</td>' +
