@@ -90,7 +90,7 @@
                 //        break;
                 //}
                 SearchType sType = (SearchType)Enum.Parse(typeof(SearchType), searchType);
-                SearchBase searchBase = SearchFactory.GetSearchBoardList(id, sType, _boardService);
+                BoardSearchBase searchBase = SearchFactory.GetSearchBoardList(id, sType, _boardService);
                 Data = await searchBase.Search(id, searchString);
             }
             else

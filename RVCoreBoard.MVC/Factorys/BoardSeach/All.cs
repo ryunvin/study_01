@@ -3,11 +3,10 @@ using RVCoreBoard.MVC.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static RVCoreBoard.MVC.Models.BoardListInfoModel;
 
 namespace RVCoreBoard.MVC.Factorys
 {
-    internal class All : SearchBase
+    internal class All : BoardSearchBase
     {
         public All(IBoardService boardService) : base(boardService)
         {

@@ -576,6 +576,11 @@
             var CName = $("#categoryModifyName" + CId).val();
             var CLevel = $("#categoryModifyLevel" + CId).val();
 
+            if (CLevel > 4 || CLevel < 0) {
+                alert("사용자 등급이 올바르지 않습니다.");
+                return false;
+            }
+
             //값 셋팅
             var objParams = {
                 Gid: CGid,

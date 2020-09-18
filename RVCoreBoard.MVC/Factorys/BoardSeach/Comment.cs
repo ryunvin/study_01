@@ -1,15 +1,14 @@
-﻿using RVCoreBoard.MVC.Models;
-using RVCoreBoard.MVC.Services;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static RVCoreBoard.MVC.Models.BoardListInfoModel;
+using RVCoreBoard.MVC.Models;
+using RVCoreBoard.MVC.Services;
 
 namespace RVCoreBoard.MVC.Factorys
 {
-    internal class FileName : SearchBase
+    internal class Comment : BoardSearchBase
     {
-        public FileName(IBoardService boardService) : base(boardService)
+        public Comment(IBoardService boardService) : base(boardService)
         {
         }
 

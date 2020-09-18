@@ -1,0 +1,264 @@
+﻿@model RVCoreBoard.MVC.Models.UserListInfoModel
+@{
+    ViewData["Title"] = "사용자 등급 관리";
+    var sType = ViewBag.SearchType == null ? "Id" : ViewBag.SearchType;
+    var sTypeTxt = (dynamic)null;
+    switch (sType)
+    {
+        case "Id":
+            sTypeTxt = "아이디";
+            break;
+        case "Name":
+            sTypeTxt = "이름";
+            break;
+        case "Level":
+            sTypeTxt = "등급";
+            break;
+    }
+}
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $('#searchType li').on('click', function () {
+        var newVal = $(this).data('value');
+
+            $('#searchDropdown').text($(this).text());
+            $('#inputSearchType').val(newVal);
+        });
+        //사용자 등급 수정 입력
+        $(document).on("click", "a[name='userLevelModify']", function () {
+            var UTrid = $(this).parent().parent().attr('id');
+            var UUNo = UTrid.replace("user", "");
+            var UId = $(this).parent().parent().find('.uid').html().trim();
+            var UName = $(this).parent().parent().find('.uname').html().trim();
+            var ULevel = $(this).parent().parent().find('.ulevel').html().trim();
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                    @:return false;
+            }
+
+            var userEditor =
+                '<tr id="' + UTrid + '"> ' +
+                '   <td class="align-middle">' + UUNo + '</td>' +
+                '   <td class="align-middle text-left uid">' + UId + '</td>' +
+                '   <td class="align-middle text-left uname">' + UName + '</td> ' +
+                '   <td class="align-middle ulevel"><input type="text" class="form-control" id="userLevelModifyLevel' + UUNo + '" value="' + ULevel + '"/></td>' +
+                '   <td>' +
+                '       <a class="btn btn-primary text-white" name="userLevelModifySave">저장</a>' +
+                '       <a class="btn btn-dark text-white" name="userLevelModifyCancel" uLevel="' + ULevel + '">취소</a>' +
+                '   </td>' +
+                '</tr>';
+
+            var prevTr = $(this).parent().parent();
+            //자기 위에 붙이기
+            prevTr.after(userEditor);
+                //자기 자신 삭제
+                $(this).parent().parent().remove();
+        });
+
+        //사용자 등급 수정 취소
+        $(document).on("click", "a[name='userLevelModifyCancel']", function () {
+            //원래 데이터를 가져온다.
+            var UTrid = $(this).parent().parent().attr('id');
+            var UUNo = UTrid.replace("user", "");
+            var UId = $(this).parent().parent().find('.uid').html().trim();
+            var UName = $(this).parent().parent().find('.uname').html().trim();
+            var ULevel = $(this).attr("uLevel");
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            var strUser =
+                '<tr id="' + UTrid + '"> ' +
+                '   <td class="align-middle">' + UUNo + '</td>' +
+                '   <td class="align-middle text-left uid">' + UId + '</td>' +
+                '   <td class="align-middle text-left uname">' + UName + '</td> ' +
+                '   <td class="align-middle ulevel">' + ULevel + '</td>' +
+                '   <td>' +
+                '       <a class="btn btn-success text-white" name="userLevelModify">수정</a>' +
+                '   </td>' +
+                '</tr>';
+
+            var prevTr = $(this).parent().parent();
+            //자기 위에 붙이기
+            prevTr.after(strUser);
+            //자기 자신 삭제
+            $(this).parent().parent().remove();
+        });
+
+        //사용자 등급 수정 저장
+        $(document).on("click", "a[name='userLevelModifySave']", function () {
+            var check = false;
+            var UTrid = $(this).parent().parent().attr('id');
+            var UUNo = UTrid.replace("user", "");
+            var UId = $(this).parent().parent().find('.uid').html().trim();
+            var UName = $(this).parent().parent().find('.uname').html().trim();
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @:return false;
+            }
+
+            if ($("#userLevelModifyLevel" + UNo) == "") {
+                alert("사용자 등급을 입력하세요.");
+                $("#userLevelModifyLevel" + UNo).focus();
+                return false;
+            }
+
+            var ULevel = $("#userLevelModifyLevel" + CId).val();
+
+            if (ULevel > 4 || ULevel < 0) {
+                alert("사용자 등급이 올바르지 않습니다.");
+                return false;
+            }
+
+            //값 셋팅
+            var objParams = {
+                UNo: UUNo,
+                Level: ULevel
+            };
+
+            var user = null;
+
+            $.ajax({
+                        url         :   "/api/userLevelModify",
+                dataType    :   "json",
+                method      :   "post",
+                async: false, //동기: false, 비동기: ture
+                data : objParams,
+                success     :   function(result){
+                                user = result;
+                                check = true;
+                                alert("게시판이 수정되었습니다.");
+                            },
+                error       :   function(request, status, error){
+                                console.log("AJAX_ERROR");
+                            }
+                        });
+
+            if (check) {
+                var strUserLevelModify =
+                    '<tr id="user' + user.uno + '"> ' +
+                    '   <td class="align-middle">' + user.id + '</td>' +
+                    '   <td class="align-middle text-left uid">' + user.id + '</td>' +
+                    '   <td class="align-middle text-left uname">' + user.name + '</td>' +
+                    '   <td class="align-middle ulevel">' + user.level + '</td>' +
+                    '   <td>' +
+                    '       <a class="btn btn-success text-white" name="userLevelModify">수정</a>' +
+                    '   </td>' +
+                    '</tr>';
+
+                        var prevTr = $(this).parent().parent();
+                        //자기 위에 붙이기
+                        prevTr.after(strUserLevelModify);
+
+                //자기 자신 삭제
+                $(this).parent().parent().remove();
+                    }
+                });
+    </script>
+}
+<div class="d-flex justify-content-center align-items-start position-relative">
+    <div class="col-lg-9 card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="userLevelTable" class="table table-striped table-bordered no-wrap">
+                    <colgroup>
+                        <col style="width:100px;" />
+                        <col style="width:auto;" />
+                        <col style="width:auto;" />
+                        <col style="width:150px;" />
+                        <col style="width:200px;" />
+                    </colgroup>
+                    <thead class="text-center">
+                        <tr>
+                            <th>번호</th>
+                            <th>사용자 아이디</th>
+                            <th>사용자 이름</th>
+                            <th>사용자 등급</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center">
+                        @foreach (var user in Model.Data)
+                        {
+                            var Trid = "user" + user.UNo;
+                            <tr id="@Trid">
+                                <td class="align-middle">@user.UNo</td>
+                                <td class="text-left align-middle uid">@user.Id</td>
+                                <td class="text-left align-middle uname">@user.Name</td>
+                                <td class="align-middle ulevel">@user.Level</td>
+                                <td class="align-middle text-center">
+                                    <a class="btn btn-success text-white" name="userLevelModify">수정</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                @* 페이징 구현 *@
+                <ul class="pagination float-right mt-3">
+                    @{
+                        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    }
+                    <li class="page-item @prevDisabled">
+                        <a class="page-link" tabindex="-1" asp-action="UserManage" asp-controller="Manage" asp-route-currentPage="@(Model.CurrentPage - 1)">이전</a>
+                    </li>
+                    @{
+                        var prevPageCount = Model.PageRimitCount / 2;
+                        var nextPageCount = Model.PageRimitCount % 2 == 0 ? Model.PageRimitCount / 2 - 1 : Model.PageRimitCount / 2;
+
+                        var minPage = 1;
+                        var maxPage = Model.PageRimitCount < Model.Count ? Model.PageRimitCount : Model.Count;
+
+                        if (Model.CurrentPage - prevPageCount > 1)
+                        {
+                            minPage = Model.CurrentPage + nextPageCount < Model.Count ? Model.CurrentPage - prevPageCount : Model.Count - Model.PageRimitCount + 1;
+                            maxPage = Model.CurrentPage + nextPageCount < Model.Count ? Model.CurrentPage + nextPageCount : Model.Count;
+                        }
+
+                        for (int i = minPage; i <= maxPage; i++)
+                        {
+                            var pageActive = i == Model.CurrentPage ? "active" : "";
+                            <li class="page-item @pageActive">
+                                <a class="page-link" asp-action="UserManage" asp-controller="Manage" asp-route-currentPage="@i">@i</a>
+                            </li>
+                        }
+                    }
+                    <li class="page-item @nextDisabled">
+                        <a class="page-link" asp-action="UserManage" asp-controller="Manage" asp-route-currentPage="@(Model.CurrentPage + 1)">다음</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3 text-center">
+                    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100" id="searchForm" asp-action="UserManage" asp-controller="Manage" method="get">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="dropdown mb-4 show">
+                                    <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">@sTypeTxt</button>
+                                    <ul class="dropdown-menu animated--fade-in" id="searchType" aria-labelledby="searchDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                                        <li class="dropdown-item" data-value="Id">아이디</li>
+                                        <li class="dropdown-item" data-value="Name">이름</li>
+                                        <li class="dropdown-item" data-value="Level">등급</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <input type="text" class="d-none" name="searchType" id="inputSearchType" value="@sType" />
+                            <input type="text" class="form-control bg-light border-0" id="searchString" name="searchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2" value="@ViewBag.SearchString" />
+                            <div class="input-group-append d-inline">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search fa-sm d-inline"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

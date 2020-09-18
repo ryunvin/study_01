@@ -50,7 +50,7 @@ namespace RVCoreBoard.MVC
             // NoteService 서비스 컨테이너 등록
             services.AddTransient<IBoardService, BoardService>();
             // AccountService 서비스 컨테이너 등록 - 20.09.09
-            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IUserService, UserService>();
           
             services.Configure<CookiePolicyOptions>(options =>
             {

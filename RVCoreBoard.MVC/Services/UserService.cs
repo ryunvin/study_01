@@ -8,11 +8,11 @@
     using RVCoreBoard.MVC.Models;
     using Microsoft.EntityFrameworkCore;
 
-    public class AccountService : IAccountService
+    public class UserService : IUserService
     {
         private readonly RVCoreBoardDBContext _db;
 
-        public AccountService(RVCoreBoardDBContext db)
+        public UserService(RVCoreBoardDBContext db)
         {
             _db = db;
         }
@@ -33,6 +33,18 @@
                 return true;
             }
             return false;
+        }
+        public async Task<List<User>> GetUserList(System.Linq.Expressions.Expression<Func<User, bool>> predicate)
+        {
+
+            var userList = predicate != null ? await _db.Users
+                                                        .Where(predicate)
+                                                        .OrderBy(p => p.UNo)
+                                                        .ToListAsync()
+                                             : await _db.Users
+                                                        .OrderBy(p => p.UNo)
+                                                        .ToListAsync();
+            return userList;
         }
     }
 }

@@ -8,7 +8,7 @@ using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
 using static RVCoreBoard.MVC.Models.User;
 
-namespace RVCoreBoard.MVC.Controllers
+namespace RVCoreBoard.MVC.Apis
 {
     public class CommentController : Controller
     {

@@ -11,11 +11,11 @@ namespace RVCoreBoard.MVC.Models
 {
     public class User
     {
-        private readonly IAccountService _accountService;
+        private readonly IUserService _accountService;
 
         public User() { }
 
-        public User(IAccountService accountService)
+        public User(IUserService accountService)
         {
             _accountService = accountService;
         }

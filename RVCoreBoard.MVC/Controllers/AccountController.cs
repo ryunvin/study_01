@@ -16,9 +16,9 @@ namespace RVCoreBoard.MVC.Controllers
     public class AccountController : Controller
     {
         private readonly RVCoreBoardDBContext _db;
-        private IAccountService _accountService;
+        private IUserService _accountService;
 
-        public AccountController(RVCoreBoardDBContext db, IAccountService accountService)
+        public AccountController(RVCoreBoardDBContext db, IUserService accountService)
         {
             _db = db;
             _accountService = accountService;

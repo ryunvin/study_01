@@ -1,4 +1,4 @@
-﻿namespace RVCoreBoard.MVC.Controllers
+﻿namespace RVCoreBoard.MVC.Apis
 {
     using System.Collections.Generic;
     using System.IO;

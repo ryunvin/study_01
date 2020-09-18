@@ -2,11 +2,10 @@
 using RVCoreBoard.MVC.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static RVCoreBoard.MVC.Models.BoardListInfoModel;
 
 namespace RVCoreBoard.MVC.Factorys
 {
-    internal class Title : SearchBase
+    internal class Title : BoardSearchBase
     {
         public Title(IBoardService boardService) : base(boardService)
         {

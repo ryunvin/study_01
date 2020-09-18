@@ -16,11 +16,13 @@ namespace RVCoreBoard.MVC.Controllers
     {
         private readonly RVCoreBoardDBContext _db;
         private IBoardService _boardService;
+        private IUserService _userService;
 
-        public ManageController(RVCoreBoardDBContext db, IBoardService boardService)
+        public ManageController(RVCoreBoardDBContext db, IBoardService boardService, IUserService userService)
         {
             _db = db;
             _boardService = boardService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -51,154 +53,20 @@ namespace RVCoreBoard.MVC.Controllers
         }
 
         /// <summary>
-        /// 게시판 그룹 추가
+        /// 사용자 관리
         /// </summary>
         /// <returns></returns>
-        [HttpPost, Route("api/categoryGroupAdd")]
         [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> CategoryGroupAdd(CategoryGroup categoryGroup)
+        public async Task<IActionResult> UserManage(int? currentPage, string searchType, string searchString)
         {
-            await _db.CatergoryGroups.AddAsync(categoryGroup);
-            if (await _db.SaveChangesAsync() > 0)
-            {
-                var group = await _db.CatergoryGroups.OrderByDescending(c => c.Gid).FirstOrDefaultAsync();
+            UserListInfoModel userListInfoModel = new UserListInfoModel(_userService);
+            await userListInfoModel.GetList(currentPage ?? 1, searchType, searchString);
 
-                return Ok(group);
-            }
-            return NotFound();
-        }
+            ViewBag.CurrentPage = currentPage ?? 1;
+            ViewBag.SearchType = String.IsNullOrEmpty(searchType) ? null : searchType;
+            ViewBag.SearchString = String.IsNullOrEmpty(searchString) ? null : searchString;
 
-        /// <summary>
-        /// 게시판 그룹 삭제
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost, Route("api/categoryGroupDelete")]
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> CategoryGroupDelete(string Gid)
-        {
-            var group = await _db.CatergoryGroups.FirstOrDefaultAsync(c => c.Gid.Equals(int.Parse(Gid)));
-
-            _db.CatergoryGroups.Remove(group);
-            if (_db.SaveChanges() > 0)
-            {
-                return Json(new { success = true, responseText = "삭제되었습니다." });
-            }
-            return Json(new { success = false, responseText = "오류 : 삭제되지 않았습니다." });
-        }
-
-        /// <summary>
-        /// 게시판 그룹 수정
-        /// </summary>
-        /// <param name="categoryGroup"></param>
-        /// <returns></returns>
-        [HttpPost, Route("api/categoryGroupModify")]
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> CategoryGroupModify(CategoryGroup categoryGroup)
-        {
-            _db.Entry(categoryGroup).State = EntityState.Modified;
-            if (await _db.SaveChangesAsync() > 0)
-            {
-                var group = await _db.CatergoryGroups.FirstOrDefaultAsync(c => c.Gid.Equals(categoryGroup.Gid));
-
-                return Ok(group);
-            }
-            return NotFound();
-        }
-
-        /// <summary>
-        /// 게시판 추가
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost, Route("api/categoryAdd")]
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> CategoryAdd(Category category)
-        {
-            category.Reg_Date = DateTime.Now;
-
-            await _db.Categorys.AddAsync(category);
-            if (await _db.SaveChangesAsync() > 0)
-            {
-                var cgory = await _db.Categorys.OrderByDescending(c => c.Id).FirstOrDefaultAsync();
-
-                return Ok(cgory);
-            }
-            return NotFound();
-        }
-
-        /// <summary>
-        /// 게시판 삭제
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost, Route("api/categoryDelete")]
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> CategoryDelete(string Id)
-        {
-            var cgory = await _db.Categorys.FirstOrDefaultAsync(c => c.Id.Equals(int.Parse(Id)));
-
-            _db.Categorys.Remove(cgory);
-            if (_db.SaveChanges() > 0)
-            {
-                return Json(new { success = true, responseText = "삭제되었습니다." });
-            }
-            return Json(new { success = false, responseText = "오류 : 삭제되지 않았습니다." });
-        }
-
-        /// <summary>
-        /// 게시판 수정
-        /// </summary>
-        /// <param name="categoryGroup"></param>
-        /// <returns></returns>
-        [HttpPost, Route("api/categoryModify")]
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> CategoryModify(Category category)
-        {
-            category.Reg_Date = DateTime.Now;
-
-            _db.Entry(category).State = EntityState.Modified;
-            if (await _db.SaveChangesAsync() > 0)
-            {
-                var cgory = await _db.Categorys.FirstOrDefaultAsync(c => c.Id.Equals(category.Id));
-
-                return Ok(cgory);
-            }
-            return NotFound();
-        }
-
-        /// <summary>
-        /// 게시판 그룹 갖고오기
-        /// </summary>
-        /// <param name="categoryGroup"></param>
-        /// <returns></returns>
-        [HttpPost, Route("api/getCategoryGroups")]
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> GetCategoryGroups()
-        {
-            var categoryGroupsList = await _db.CatergoryGroups.OrderBy(c => c.Gid).ToListAsync();
-
-            if(categoryGroupsList != null)
-            {
-                return Ok(categoryGroupsList);
-            }
-            return NotFound();
-        }
-
-        /// <summary>
-        /// 게시판 그룹 갖고오기
-        /// </summary>
-        /// <param name="categoryGroup"></param>
-        /// <returns></returns>
-        [HttpPost, Route("api/getCategorys")]
-        [CustomAuthorize(RoleEnum = UserLevel.Admin)]
-        public async Task<IActionResult> GetCategorys(string Gid)
-        {
-            var categoryList = await _db.Categorys.OrderBy(c => c.Id).ToListAsync();
-            categoryList = categoryList.Where(c => c.Gid.Equals(int.Parse(Gid))).ToList();
-
-            if (categoryList != null)
-            {
-                return Ok(categoryList);
-            }
-            return NotFound();
+            return View(userListInfoModel);
         }
     }
 }

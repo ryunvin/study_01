@@ -1,20 +1,22 @@
-﻿using RVCoreBoard.MVC.Models;
-using RVCoreBoard.MVC.Services;
+﻿using RVCoreBoard.MVC.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using RVCoreBoard.MVC.Attributes;
-using static RVCoreBoard.MVC.Models.BoardListInfoModel;
 
 namespace RVCoreBoard.MVC.Factorys
 {
     public class SearchFactory
     {
-        public static SearchBase GetSearchBoardList(int id, SearchType searchType, IBoardService boardService)
+        public static BoardSearchBase GetSearchBoardList(int id, RVCoreBoard.MVC.Models.BoardListInfoModel.SearchType searchType, IBoardService boardService)
         {
             Type baseType = searchType.GetEnumAttributeValue<Type>(0);
-            SearchBase searchBase = (SearchBase)Activator.CreateInstance(baseType, boardService);
+            BoardSearchBase searchBase = (BoardSearchBase)Activator.CreateInstance(baseType, boardService);
+            return searchBase;
+        }
+
+        public static UserSearchBase GetSearchUserList(RVCoreBoard.MVC.Models.UserListInfoModel.SearchType searchType, IUserService userService)
+        {
+            Type baseType = searchType.GetEnumAttributeValue<Type>(0);
+            UserSearchBase searchBase = (UserSearchBase)Activator.CreateInstance(baseType, userService);
             return searchBase;
         }
 

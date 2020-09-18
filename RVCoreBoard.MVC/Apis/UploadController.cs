@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using RVCoreBoard.MVC.Attributes;
 using static RVCoreBoard.MVC.Models.User;
 
-namespace RVCoreBoard.MVC.Controllers
+namespace RVCoreBoard.MVC.Apis
 {
     public class UploadController : Controller
     {
