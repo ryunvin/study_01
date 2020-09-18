@@ -15,8 +15,8 @@ namespace RVCoreBoard.MVC.Factorys
 
         public override async Task<List<Board>> Search(int id, string searchString)
         {
-            return await base.BoardService.GetBoardList(s => s.category.Id == id && s.user.Name.Contains(searchString) || s.Content.Contains(searchString)
-                                        || s.CommentList.Any(c => c.Content.Contains(searchString)) || s.Title.Contains(searchString));
+            return await base.BoardService.GetBoardList(s => s.category.Id == id && (s.user.Name.Contains(searchString) || s.Content.Contains(searchString)
+                                        || s.CommentList.Any(c => c.Content.Contains(searchString)) || s.Title.Contains(searchString)));
         }
     }
 }
