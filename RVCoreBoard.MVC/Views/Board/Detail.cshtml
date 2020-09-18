@@ -11,6 +11,103 @@
 
     <script>
         var currentUser = @Html.Raw(Json.Serialize(currentUser));
+        var commentTimer;
+
+        function CommentRealtimeUpdate() {
+            if (currentUser == null) {
+                return false;
+            }
+
+            var check = false;
+            var commentList = "";
+
+            var objParams = {
+                BNo : @Model.Data.BNo
+            };
+
+            $.ajax({
+                url: "/api/commentRealtime",
+                method: "post",
+                async: false,
+                data: objParams,
+                success: function (result) {
+                    commentList = result;
+                    check = true;
+                },
+                error: function (request, status, error) {
+                    console.log("AJAX_ERROR");
+                }
+            });
+
+            if (check) {
+                $('#commentList ul').empty();
+
+                $.each(commentList, function (index, comment) {
+                    var strCommentBtn = "";
+
+                    if (currentUser.id == comment.user.id) {
+                        strCommentBtn =
+                            '       <div class="col-lg-12 mb-3 text-right">' +
+                            '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
+                            '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
+                            '       </div>';
+                    }
+
+                    var strCommentAdd =
+                        '<li id="comment' + comment.cNo + '">' +
+                        '   <div class="row">' +
+                        '       <div class="col-lg-3 mb-3">' +
+                        '           <span class="text-dark font-weight-bold cname">' + comment.user.name + '</span><br />' +
+                        '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
+                        '       </div>' +
+                        '       <div class="col-lg-9 mb-3">' +
+                        '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
+                        '       </div>' +
+                        strCommentBtn +
+                        '   </div>' +
+                        '</li>';
+
+                    if ($('#commentList ul li').length == 0) {
+                        $('#commentList').children('ul').append(strCommentAdd);
+                    } else {
+                        $('#commentList ul li').last().after(strCommentAdd);
+                    }
+                });
+            }
+            commentTimer = setTimeout("CommentRealtimeUpdate()", 2000); // 2초 단위로 갱신 처리
+        }
+
+        function ClearCommentTimer() {
+            clearTimeout(commentTimer); // 타이머 중지
+        }
+
+        $('#execute').on('click', function (e) {
+            e.preventDefault();
+            CommentRealtimeUpdate();
+        });
+
+        $('#stop').on('click', function (e) {
+            e.preventDefault();
+            ClearCommentTimer();
+        });
+
+        $("#commentContent").on('focusin', function () {
+            ClearCommentTimer();
+        });
+
+        $("#commentContent").on('focusout', function () {
+            CommentRealtimeUpdate();
+        });
+
+        $(document).on('load', function (e) {
+            e.preventDefault();
+            $('#execute').click();
+        });
+
+        $(document).on('unload', function (e) {
+            e.preventDefault();
+            $('#stop').click();
+        });
 
         $("#commentSave").click(function () {
             var check = false;
@@ -166,6 +263,8 @@
                 prevLi.after(commentEditor);
                 //자기 자신 삭제
                 $(this).parent().parent().parent().remove();
+
+                ClearCommentTimer();
             }
         });
 
@@ -208,6 +307,8 @@
 
             //자기 자신 삭제
             $(this).parent().parent().parent().remove();
+
+            CommentRealtimeUpdate();
         });
 
         //댓글 수정 저장
@@ -283,6 +384,8 @@
 
                 //자기 자신 삭제
                 $(this).parent().parent().parent().remove();
+
+                CommentRealtimeUpdate();
             }
         });
     </script>
@@ -408,6 +511,8 @@
                 <a class="btn btn-primary" asp-controller="Board" asp-action="Index"
                    asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString" asp-route-Id="@ViewBag.Category.Id">목록</a>
             </div>
+            <input type="button" class="d-none" id="execute" value="실행" />
+            <input type="button" class="d-none" id="stop" value="중지" />
         </div>
     </div>
 </div>

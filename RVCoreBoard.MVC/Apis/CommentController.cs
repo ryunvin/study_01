@@ -66,5 +66,18 @@ namespace RVCoreBoard.MVC.Apis
             }
             return NotFound();
         }
+
+        [HttpPost, Route("api/commentRealtime")]
+        [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
+        public async Task<IActionResult> CommentRealtime(string BNo)
+        {
+            var commentList = await _db.Comments
+                                        .Include("user")
+                                        .Where(c => c.BNo.Equals(int.Parse(BNo)))
+                                        .OrderBy(c => c.Reg_Date)
+                                        .ToListAsync();
+
+            return Ok(commentList);
+        }
     }
 }
