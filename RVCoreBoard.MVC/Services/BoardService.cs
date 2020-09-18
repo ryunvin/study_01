@@ -112,5 +112,14 @@
                                     .FirstOrDefaultAsync();
             return nextBNo;
         }
+        public async Task<List<Comment>> GetCommnetList(int bNo)
+        {
+            var commentList = await _db.Comments
+                                        .Include("user")
+                                        .Where(c => c.BNo.Equals(bNo))
+                                        .OrderBy(c => c.Reg_Date)
+                                        .ToListAsync();
+            return commentList;
+        }
     }
 }

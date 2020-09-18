@@ -16,5 +16,6 @@ namespace RVCoreBoard.MVC.Services
         Task<List<Comment>> GetRecentComments(int count);
         Task<int> GetBoardPrevBNo(int bNo, int id);
         Task<int> GetBoardNextBNo(int bNo, int id);
+        Task<List<Comment>> GetCommnetList(int bNo);
     }
 }

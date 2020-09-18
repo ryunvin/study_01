@@ -13,6 +13,42 @@
         var currentUser = @Html.Raw(Json.Serialize(currentUser));
         var commentTimer;
 
+        function SetCommnetList(commentList) {
+            $('#commentList ul').empty();
+
+            $.each(commentList, function (index, comment) {
+                var strCommentBtn = "";
+
+                if (currentUser.id == comment.user.id) {
+                    strCommentBtn =
+                        '       <div class="col-lg-12 mb-3 text-right">' +
+                        '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
+                        '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
+                        '       </div>';
+                }
+
+                var strCommentAdd =
+                    '<li id="comment' + comment.cNo + '">' +
+                    '   <div class="row">' +
+                    '       <div class="col-lg-3 mb-3">' +
+                    '           <span class="text-dark font-weight-bold cname">' + comment.user.name + '</span><br />' +
+                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
+                    '       </div>' +
+                    '       <div class="col-lg-9 mb-3">' +
+                    '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
+                    '       </div>' +
+                    strCommentBtn +
+                    '   </div>' +
+                    '</li>';
+
+                if ($('#commentList ul li').length == 0) {
+                    $('#commentList').children('ul').append(strCommentAdd);
+                } else {
+                    $('#commentList ul li').last().after(strCommentAdd);
+                }
+            });
+        }
+
         function CommentRealtimeUpdate() {
             if (currentUser == null) {
                 return false;
@@ -40,39 +76,7 @@
             });
 
             if (check) {
-                $('#commentList ul').empty();
-
-                $.each(commentList, function (index, comment) {
-                    var strCommentBtn = "";
-
-                    if (currentUser.id == comment.user.id) {
-                        strCommentBtn =
-                            '       <div class="col-lg-12 mb-3 text-right">' +
-                            '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
-                            '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
-                            '       </div>';
-                    }
-
-                    var strCommentAdd =
-                        '<li id="comment' + comment.cNo + '">' +
-                        '   <div class="row">' +
-                        '       <div class="col-lg-3 mb-3">' +
-                        '           <span class="text-dark font-weight-bold cname">' + comment.user.name + '</span><br />' +
-                        '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
-                        '       </div>' +
-                        '       <div class="col-lg-9 mb-3">' +
-                        '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
-                        '       </div>' +
-                        strCommentBtn +
-                        '   </div>' +
-                        '</li>';
-
-                    if ($('#commentList ul li').length == 0) {
-                        $('#commentList').children('ul').append(strCommentAdd);
-                    } else {
-                        $('#commentList ul li').last().after(strCommentAdd);
-                    }
-                });
+                SetCommnetList(commentList);
             }
             commentTimer = setTimeout("CommentRealtimeUpdate()", 2000); // 2초 단위로 갱신 처리
         }
@@ -109,6 +113,7 @@
             $('#stop').click();
         });
 
+        // 댓글 추가
         $("#commentSave").click(function () {
             var check = false;
             if (currentUser == null) {
@@ -131,7 +136,7 @@
                 Content: CContent,
             };
 
-            var comment = null;
+            var commentList = null;
 
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
             $.ajax({
@@ -141,7 +146,7 @@
                 async: false, //동기: false, 비동기: ture
                 data: objParams,
                 success: function (result) {
-                    comment = result;
+                    commentList = result;
                     check = true;
                     alert("댓글이 등록되었습니다.");
                 },
@@ -151,36 +156,8 @@
             });
 
             if (check) {
-                var strCommentBtn = null;
-
-                if (currentUser != null) {
-                    strCommentBtn =
-                        '       <div class="col-lg-12 mb-3 text-right">' +
-                        '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
-                        '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
-                        '       </div>';
-                }
-
-                var strCommentAdd =
-                    '<li id="comment' + comment.cNo + '">' +
-                    '   <div class="row">' +
-                    '       <div class="col-lg-3 mb-3">' +
-                    '           <span class="text-dark font-weight-bold cname">' + currentUser.name + '</span><br />' +
-                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
-                    '       </div>' +
-                    '       <div class="col-lg-9 mb-3">' +
-                    '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
-                    '       </div>'+
-                    strCommentBtn +
-                    '   </div>' +
-                    '</li>';
-
-                if ($('#commentList ul li').length == 0) {
-                    $('#commentList').children('ul').append(strCommentAdd);
-                } else {
-                    $('#commentList ul li').last().after(strCommentAdd);
-                }
-
+                SetCommnetList(commentList);
+                
                 $("#commentContent").val("");
             }
         });

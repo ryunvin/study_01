@@ -63,5 +63,9 @@ namespace RVCoreBoard.MVC.Models
         {
             Data = await _boardService.GetRecentComments(RecentCount);
         }
+        public async Task GetCommentList(int bNo)
+        {
+            Data = await _boardService.GetCommnetList(bNo);
+        }
     }
 }
