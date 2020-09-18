@@ -45,6 +45,9 @@ namespace RVCoreBoard.MVC.DataContext
             modelBuilder.Entity<Category>()
                .HasIndex(c => new { c.Gid, c.Id });
 
+            modelBuilder.Entity<Board>()
+              .HasIndex(b => new { b.Gid, b.Id, b.BNo });
+
             modelBuilder.Entity<User>()
                 .Property(u => u.Level)
                 .HasDefaultValue(0);
