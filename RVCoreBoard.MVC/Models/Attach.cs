@@ -42,7 +42,13 @@ namespace RVCoreBoard.MVC.Models
         [Required]  // Not Null 설정
         public int BNo  { get; set; }
 
-        [ForeignKey("BNo")]
+        [Required]
+        public int Gid { get; set; }
+
+        [Required]
+        public int Id { get; set; }
+
+        [ForeignKey("Gid, Id, BNo")]
         public virtual Board board { get; set; }
     }
 }

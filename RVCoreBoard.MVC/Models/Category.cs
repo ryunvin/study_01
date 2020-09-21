@@ -1,28 +1,16 @@
-﻿using RVCoreBoard.MVC.Services;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RVCoreBoard.MVC.Models
 {
     public class Category
     {
-        private readonly IBoardService _boardService;
-
-        public Category() { }
-
-        public Category(IBoardService boardService)
-        {
-            _boardService = boardService;
-        }
-
         /// <summary>
         /// 카테고리 번호
         /// </summary>
-        [Key]
+        [Key, Column(Order = 1)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         /// <summary>
@@ -46,9 +34,9 @@ namespace RVCoreBoard.MVC.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime Reg_Date { get; set; }
 
-        [Required]
+        [Key, Column(Order = 0)]
         public int Gid { get; set; }
-        
+
         [ForeignKey("Gid")]
         public virtual CategoryGroup categoryGroup { get; set; }
     }

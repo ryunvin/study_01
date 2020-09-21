@@ -6,13 +6,17 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
+using RVCoreBoard.MVC.Hubs;
 using RVCoreBoard.MVC.Services;
 
 namespace RVCoreBoard.MVC
@@ -51,7 +55,7 @@ namespace RVCoreBoard.MVC
             services.AddTransient<IBoardService, BoardService>();
             // AccountService 서비스 컨테이너 등록 - 20.09.09
             services.AddTransient<IUserService, UserService>();
-          
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -63,6 +67,17 @@ namespace RVCoreBoard.MVC
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSession();
+
+            // Signal R 
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
+            }).AddJsonProtocol(options =>
+            {
+                options.PayloadSerializerSettings.ContractResolver = new DefaultContractResolver();
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,7 +95,6 @@ namespace RVCoreBoard.MVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //app.UseSession();
             app.UseCookiePolicy();
             app.UseAuthentication();
 
@@ -89,6 +103,18 @@ namespace RVCoreBoard.MVC
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseSignalR((configure) =>
+            {
+                var desiredTransports =
+                    HttpTransportType.WebSockets |
+                    HttpTransportType.LongPolling;
+
+                configure.MapHub<CommentHub>("/commentHub", (options) =>
+                {
+                    options.Transports = desiredTransports;
+                });
             });
         }
     }

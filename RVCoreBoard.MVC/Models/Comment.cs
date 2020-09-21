@@ -1,8 +1,10 @@
-﻿using RVCoreBoard.MVC.Services;
+﻿using RVCoreBoard.MVC.Hubs;
+using RVCoreBoard.MVC.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,15 +46,21 @@ namespace RVCoreBoard.MVC.Models
         public int UNo { get; set; }
 
         /// <summary>
-        /// 게시물 번호(FK_게시물번호)
+        /// 게시물 번호(FK_게시물 번호)
         /// </summary>
         [Required]  // Not Null 설정
         public int BNo { get; set; }
 
+        [Required]
+        public int Gid { get; set; }
+
+        [Required]
+        public int Id { get; set; }
+
         [ForeignKey("UNo")]
         public virtual User user { get; set; }
 
-        [ForeignKey("BNo")]
+        [ForeignKey("Gid, Id, BNo")]
         public virtual Board board { get; set; }
 
         public int RecentCount { get; set; } = 10;

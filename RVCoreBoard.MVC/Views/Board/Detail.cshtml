@@ -1,5 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
-@using RVCoreBoard.MVC.Helpers;
+﻿@using RVCoreBoard.MVC.Helpers;
 
 @model RVCoreBoard.MVC.Models.Board
 @{
@@ -9,109 +8,73 @@
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
-    <script>
+<script>
+        "use strict";
         var currentUser = @Html.Raw(Json.Serialize(currentUser));
-        var commentTimer;
 
-        function SetCommnetList(commentList) {
-            $('#commentList ul').empty();
+        var connection = new signalR.HubConnectionBuilder().withUrl("/commentHub").build();
 
-            $.each(commentList, function (index, comment) {
-                var strCommentBtn = "";
+        connection.start().catch(err => console.error(err));
 
-                if (currentUser.id == comment.user.id) {
-                    strCommentBtn =
-                        '       <div class="col-lg-12 mb-3 text-right">' +
-                        '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
-                        '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
-                        '       </div>';
-                }
+        connection.on("ReceiveCommentList", function () {
+            GetCommentRealtime();
+        });
 
-                var strCommentAdd =
-                    '<li id="comment' + comment.cNo + '">' +
-                    '   <div class="row">' +
-                    '       <div class="col-lg-3 mb-3">' +
-                    '           <span class="text-dark font-weight-bold cname">' + comment.user.name + '</span><br />' +
-                    '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
-                    '       </div>' +
-                    '       <div class="col-lg-9 mb-3">' +
-                    '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
-                    '       </div>' +
-                    strCommentBtn +
-                    '   </div>' +
-                    '</li>';
-
-                if ($('#commentList ul li').length == 0) {
-                    $('#commentList').children('ul').append(strCommentAdd);
-                } else {
-                    $('#commentList ul li').last().after(strCommentAdd);
-                }
-            });
-        }
-
-        function CommentRealtimeUpdate() {
-            if (currentUser == null) {
-                return false;
-            }
-
-            var check = false;
-            var commentList = "";
-
-            var objParams = {
-                BNo : @Model.Data.BNo
+        function GetCommentRealtime() {
+            var objParam = {
+                BNo:  @Html.Raw(Model.Data.BNo)
             };
 
             $.ajax({
-                url: "/api/commentRealtime",
-                method: "post",
-                async: false,
+                url: '/api/commentRealtime',
+                method : 'post',
+                datatype: 'json',
                 data: objParams,
-                success: function (result) {
-                    commentList = result;
-                    check = true;
-                },
-                error: function (request, status, error) {
-                    console.log("AJAX_ERROR");
+                success: function (commentList) {
+                    SetCommnetList(commentList);
                 }
             });
+        }
 
-            if (check) {
-                SetCommnetList(commentList);
+        function SetCommentList(commentList) {
+            $('#commentList ul').empty();
+
+            $.each(commentList, function (index, comment) {
+                SetCommnetAdd(comment);
+            });
+        }
+
+        function SetCommnetAdd(comment) {
+            var strCommentBtn = "";
+
+            if (currentUser.id == comment.user.id) {
+                strCommentBtn =
+                    '       <div class="col-lg-12 mb-3 text-right">' +
+                    '           <a class="btn btn-success text-white" name="commentModify">수정</a>' +
+                    '           <a class="btn btn-danger text-white" name="commentDelete">삭제</a>' +
+                    '       </div>';
             }
-            commentTimer = setTimeout("CommentRealtimeUpdate()", 2000); // 2초 단위로 갱신 처리
+
+            var strCommentAdd =
+                '<li id="comment' + comment.cNo + '">' +
+                '   <div class="row">' +
+                '       <div class="col-lg-3 mb-3">' +
+                '           <span class="text-dark font-weight-bold cname">' + comment.user.name + '</span><br />' +
+                '           <span class="text-dark cregdate">' + moment(comment.reg_Date).format('YYYY-MM-DD hh:mm') + '</span>' +
+                '       </div>' +
+                '       <div class="col-lg-9 mb-3">' +
+                '           <sapn class="text-dark ccontent">' + comment.content + '</sapn>' +
+                '       </div>' +
+                strCommentBtn +
+                '   </div>' +
+                '</li>';
+
+            if ($('#commentList ul li').length == 0) {
+                $('#commentList').children('ul').append(strCommentAdd);
+            } else {
+                $('#commentList ul li').last().after(strCommentAdd);
+            }
         }
-
-        function ClearCommentTimer() {
-            clearTimeout(commentTimer); // 타이머 중지
-        }
-
-        $('#execute').on('click', function (e) {
-            e.preventDefault();
-            CommentRealtimeUpdate();
-        });
-
-        $('#stop').on('click', function (e) {
-            e.preventDefault();
-            ClearCommentTimer();
-        });
-
-        $("#commentContent").on('focusin', function () {
-            ClearCommentTimer();
-        });
-
-        $("#commentContent").on('focusout', function () {
-            CommentRealtimeUpdate();
-        });
-
-        $(document).on('load', function (e) {
-            e.preventDefault();
-            $('#execute').click();
-        });
-
-        $(document).on('unload', function (e) {
-            e.preventDefault();
-            $('#stop').click();
-        });
 
         // 댓글 추가
         $("#commentSave").click(function () {
@@ -131,12 +94,14 @@
 
             //값 셋팅
             var objParams = {
+                Gid: @Html.Raw(Model.Data.Gid),
+                Id: @Html.Raw(Model.Data.Id),
                 BNo: @Html.Raw(Model.Data.BNo),
                 UNo: currentUser.uNo,
                 Content: CContent,
             };
 
-            var commentList = null;
+            var comment = null;
 
             //ajax 호출 (여기에 댓글을 저장하는 로직을 개발)
             $.ajax({
@@ -146,7 +111,7 @@
                 async: false, //동기: false, 비동기: ture
                 data: objParams,
                 success: function (result) {
-                    commentList = result;
+                    comment = result;
                     check = true;
                     alert("댓글이 등록되었습니다.");
                 },
@@ -156,8 +121,8 @@
             });
 
             if (check) {
-                SetCommnetList(commentList);
-                
+                SetCommnetAdd(comment);
+
                 $("#commentContent").val("");
             }
         });
@@ -239,8 +204,6 @@
                 prevLi.after(commentEditor);
                 //자기 자신 삭제
                 $(this).parent().parent().parent().remove();
-
-                ClearCommentTimer();
             }
         });
 
@@ -283,8 +246,6 @@
 
             //자기 자신 삭제
             $(this).parent().parent().parent().remove();
-
-            CommentRealtimeUpdate();
         });
 
         //댓글 수정 저장
@@ -306,6 +267,8 @@
             //값 셋팅
             var objParams = {
                 CNo: CNo,
+                Gid: @Html.Raw(Model.Data.Gid),
+                Id: @Html.Raw(Model.Data.Id),
                 BNo: @Html.Raw(Model.Data.BNo),
                 UNo: currentUser.uNo,
                 Content: CContent
@@ -360,11 +323,9 @@
 
                 //자기 자신 삭제
                 $(this).parent().parent().parent().remove();
-
-                CommentRealtimeUpdate();
             }
         });
-    </script>
+</script>
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
     <div class="col-lg-9 card">

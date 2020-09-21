@@ -125,7 +125,9 @@ namespace RVCoreBoard.MVC.Controllers
                                 FileSize = (int)file.Length,
                                 ContentType = contentType,
                                 BNo = Board.BNo,
-                                Reg_Date = Board.Reg_Date
+                                Reg_Date = Board.Reg_Date,
+                                Gid = Board.Gid,
+                                Id = Board.Id
                             };
 
                             // TODO : 파일 저장 이름 버그 수정    2020. 09. 02
@@ -191,7 +193,9 @@ namespace RVCoreBoard.MVC.Controllers
                                 FileSize = (int)file.Length,
                                 ContentType = contentType,
                                 BNo = Board.BNo,
-                                Reg_Date = Board.Reg_Date
+                                Reg_Date = Board.Reg_Date,
+                                Gid = Board.Gid,
+                                Id = Board.Id
                             };
 
                             using (var fileStream = new FileStream(attach.FileFullName, FileMode.Create))

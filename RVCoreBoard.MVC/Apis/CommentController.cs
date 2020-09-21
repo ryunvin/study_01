@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
+using RVCoreBoard.MVC.Hubs;
 using RVCoreBoard.MVC.Models;
 using RVCoreBoard.MVC.Services;
 using static RVCoreBoard.MVC.Models.User;
@@ -32,10 +33,11 @@ namespace RVCoreBoard.MVC.Apis
             await _db.Comments.AddAsync(comment);
             if (await _db.SaveChangesAsync() > 0)
             {
-                var commentList = new Comment(_boardService);
-                await commentList.GetCommentList(comment.BNo);
+                var cmnt = await _db.Comments
+                                       .Include("user")
+                                       .FirstOrDefaultAsync(c => c.CNo == comment.CNo);
 
-                return Ok(commentList.Data);
+                return Ok(cmnt);
             }
             return NotFound();
         }
@@ -74,12 +76,12 @@ namespace RVCoreBoard.MVC.Apis
 
         [HttpPost, Route("api/commentRealtime")]
         [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
-        public async Task<IActionResult> CommentRealtime(string BNo)
+        public async Task<IEnumerable<Comment>> CommentRealtime(string BNo)
         {
             var commentList = new Comment(_boardService);
             await commentList.GetCommentList(int.Parse(BNo));
 
-            return Ok(commentList.Data);
+            return commentList.Data;
         }
     }
 }
