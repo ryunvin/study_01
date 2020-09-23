@@ -9,8 +9,7 @@ namespace RVCoreBoard.MVC.Models
         /// <summary>
         /// 카테고리 번호
         /// </summary>
-        [Key, Column(Order = 1)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
 
         /// <summary>
@@ -34,7 +33,7 @@ namespace RVCoreBoard.MVC.Models
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}", ApplyFormatInEditMode = true)]
         public DateTime Reg_Date { get; set; }
 
-        [Key, Column(Order = 0)]
+        [Required]
         public int Gid { get; set; }
 
         [ForeignKey("Gid")]

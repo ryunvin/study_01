@@ -33,13 +33,9 @@ namespace RVCoreBoard.MVC.Apis
             await _db.Comments.AddAsync(comment);
             if (await _db.SaveChangesAsync() > 0)
             {
-                var cmnt = await _db.Comments
-                                       .Include("user")
-                                       .FirstOrDefaultAsync(c => c.CNo == comment.CNo);
-
-                return Ok(cmnt);
+                return Json(new { success = true, responseText = "댓글이 등록되었습니다." });
             }
-            return NotFound();
+            return Json(new { success = true, responseText = "댓글이 등록 되지 않았습니다." });
         }
 
         [HttpPost, Route("api/commentDelete")]
@@ -51,9 +47,9 @@ namespace RVCoreBoard.MVC.Apis
             _db.Comments.Remove(comment);
             if (_db.SaveChanges() > 0)
             {
-                return Json(new { success = true, responseText = "삭제되었습니다." });
+                return Json(new { success = true, responseText = "댓글이 삭제되었습니다." });
             }
-            return Json(new { success = false, responseText = "오류 : 삭제되지 않았습니다." });
+            return Json(new { success = false, responseText = "오류 : 댓글이 삭제되지 않았습니다." });
         }
 
         [HttpPost, Route("api/commentModify")]
@@ -65,23 +61,19 @@ namespace RVCoreBoard.MVC.Apis
             _db.Entry(comment).State = EntityState.Modified;
             if (await _db.SaveChangesAsync() > 0)
             {
-                var cment = await _db.Comments
-                                    .Include("user")
-                                    .FirstOrDefaultAsync(c => c.CNo.Equals(comment.CNo));
-
-                return Ok(cment);
+                return Json(new { success = true, responseText = "댓글이 수정되었습니다." });
             }
-            return NotFound();
+            return Json(new { success = true, responseText = "댓글이 수정되지 않았습니다." });
         }
 
-        [HttpPost, Route("api/commentRealtime")]
+        [HttpPost, Route("api/getCommentList")]
         [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
-        public async Task<IEnumerable<Comment>> CommentRealtime(string BNo)
+        public async Task<IActionResult> GetCommentList(string BNo)
         {
             var commentList = new Comment(_boardService);
             await commentList.GetCommentList(int.Parse(BNo));
 
-            return commentList.Data;
+            return Ok(commentList.Data);
         }
     }
 }

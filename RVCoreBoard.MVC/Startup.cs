@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
-using RVCoreBoard.MVC.Attributes;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Hubs;
 using RVCoreBoard.MVC.Services;
@@ -98,23 +92,23 @@ namespace RVCoreBoard.MVC
             app.UseCookiePolicy();
             app.UseAuthentication();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
-
-            app.UseSignalR((configure) =>
+            app.UseSignalR(config =>
             {
                 var desiredTransports =
                     HttpTransportType.WebSockets |
                     HttpTransportType.LongPolling;
 
-                configure.MapHub<CommentHub>("/commentHub", (options) =>
+                config.MapHub<CommentHub>("/commentHub", (options) =>
                 {
                     options.Transports = desiredTransports;
                 });
+            });
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

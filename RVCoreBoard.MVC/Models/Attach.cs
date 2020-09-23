@@ -40,15 +40,9 @@ namespace RVCoreBoard.MVC.Models
         /// 게시물 번호(FK_게시물 번호)
         /// </summary>
         [Required]  // Not Null 설정
-        public int BNo  { get; set; }
+        public int BNo { get; set; }
 
-        [Required]
-        public int Gid { get; set; }
-
-        [Required]
-        public int Id { get; set; }
-
-        [ForeignKey("Gid, Id, BNo")]
+        [ForeignKey("BNo")]
         public virtual Board board { get; set; }
     }
 }

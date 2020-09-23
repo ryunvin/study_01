@@ -21,8 +21,7 @@ namespace RVCoreBoard.MVC.Models
         /// <summary>
         /// 게시물 번호
         /// </summary>
-        [Key, Column(Order = 2)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int BNo { get; set; }
 
         /// <summary>
@@ -52,10 +51,7 @@ namespace RVCoreBoard.MVC.Models
         [Required]
         public int Cnt_Read { get; set; }
 
-        [Key, Column(Order = 0)]
-        public int Gid { get; set; }
-
-        [Key, Column(Order = 1)]
+        [Required]
         public int Id { get; set; }
 
         /// <summary>
@@ -67,7 +63,7 @@ namespace RVCoreBoard.MVC.Models
         [ForeignKey("UNo")]
         public virtual User user { get; set; }
 
-        [ForeignKey("Gid, Id")]
+        [ForeignKey("Id")]
         public virtual Category category { get; set; }
 
         // TODO : 첨부파일 정보 리스트 속성 추가     2020. 09. 02

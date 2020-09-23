@@ -51,16 +51,10 @@ namespace RVCoreBoard.MVC.Models
         [Required]  // Not Null 설정
         public int BNo { get; set; }
 
-        [Required]
-        public int Gid { get; set; }
-
-        [Required]
-        public int Id { get; set; }
-
         [ForeignKey("UNo")]
         public virtual User user { get; set; }
 
-        [ForeignKey("Gid, Id, BNo")]
+        [ForeignKey("BNo")]
         public virtual Board board { get; set; }
 
         public int RecentCount { get; set; } = 10;

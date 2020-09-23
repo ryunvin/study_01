@@ -94,7 +94,6 @@ namespace RVCoreBoard.MVC.Controllers
             model.UNo = User.Identity.GetSid();
             model.Reg_Date = DateTime.Now;
             model.Cnt_Read = 0;
-            model.Gid = category.Gid;
 
             // TODO : file 객체로 업로드된 파일정보도 저장 필요 [파일이름, 용량 등등]
             if (ModelState.IsValid)
@@ -125,9 +124,7 @@ namespace RVCoreBoard.MVC.Controllers
                                 FileSize = (int)file.Length,
                                 ContentType = contentType,
                                 BNo = Board.BNo,
-                                Reg_Date = Board.Reg_Date,
-                                Gid = Board.Gid,
-                                Id = Board.Id
+                                Reg_Date = Board.Reg_Date
                             };
 
                             // TODO : 파일 저장 이름 버그 수정    2020. 09. 02
@@ -193,9 +190,7 @@ namespace RVCoreBoard.MVC.Controllers
                                 FileSize = (int)file.Length,
                                 ContentType = contentType,
                                 BNo = Board.BNo,
-                                Reg_Date = Board.Reg_Date,
-                                Gid = Board.Gid,
-                                Id = Board.Id
+                                Reg_Date = Board.Reg_Date
                             };
 
                             using (var fileStream = new FileStream(attach.FileFullName, FileMode.Create))

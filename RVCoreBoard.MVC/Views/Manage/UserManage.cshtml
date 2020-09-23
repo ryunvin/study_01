@@ -36,7 +36,7 @@
 
             @if (!User.Identity.IsAuthenticated)
             {
-                    @:return false;
+                @:return false;
             }
 
             var userEditor =
@@ -54,8 +54,8 @@
             var prevTr = $(this).parent().parent();
             //자기 위에 붙이기
             prevTr.after(userEditor);
-                //자기 자신 삭제
-                $(this).parent().parent().remove();
+            //자기 자신 삭제
+            $(this).parent().parent().remove();
         });
 
         //사용자 등급 수정 취소
@@ -150,14 +150,14 @@
                     '   </td>' +
                     '</tr>';
 
-                        var prevTr = $(this).parent().parent();
-                        //자기 위에 붙이기
-                        prevTr.after(strUserLevelModify);
+                var prevTr = $(this).parent().parent();
+                //자기 위에 붙이기
+                prevTr.after(strUserLevelModify);
 
                 //자기 자신 삭제
                 $(this).parent().parent().remove();
-                    }
-                });
+            }
+        });
     </script>
 }
 <div class="d-flex justify-content-center align-items-start position-relative">
