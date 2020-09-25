@@ -10,5 +10,12 @@ namespace RVCoreBoard.MVC.Controllers
         {
             return View();
         }
+
+        [AllowAnonymous]
+        [Route("Error/404")]
+        public IActionResult PageNotFound()
+        {
+            return View();
+        }
     }
 }
