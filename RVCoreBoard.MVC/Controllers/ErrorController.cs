@@ -17,5 +17,12 @@ namespace RVCoreBoard.MVC.Controllers
         {
             return View();
         }
+
+        [AllowAnonymous]
+        [Route("Error/500")]
+        public IActionResult IntenalServerError()
+        {
+            return View();
+        }
     }
 }

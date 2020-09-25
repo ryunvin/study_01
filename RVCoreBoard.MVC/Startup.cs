@@ -96,6 +96,10 @@ namespace RVCoreBoard.MVC
                 {
                     ctx.Request.Path = "/Error/404";
                     await next();
+                }else if(ctx.Response.StatusCode == 500 && !ctx.Response.HasStarted)
+                {
+                    ctx.Request.Path = "/Error/500";
+                    await next();
                 }
             });
 
