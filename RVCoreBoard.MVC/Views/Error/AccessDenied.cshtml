@@ -2,4 +2,8 @@
     ViewData["Title"] = "AccessDenied";
 }
 
-<h1>권한 없슴.</h1>
+<div class="text-center">
+    <div class="error mx-auto" style="width:30rem;" data-text="권한 없음">권한 없음</div>
+    <p class="lead text-gray-800 mb-5">페이지에 대한 권한이 없습니다.</p>
+    <a asp-action="Index" asp-controller="Home">← 홈으로 돌아가기</a>
+</div>

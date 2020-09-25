@@ -87,6 +87,18 @@ namespace RVCoreBoard.MVC
                 app.UseHsts();
             }
 
+            // 404 Page Setting
+            app.Use(async (ctx, next) =>
+            {
+                await next();
+
+                if (ctx.Response.StatusCode == 404 && !ctx.Response.HasStarted)
+                {
+                    ctx.Request.Path = "/Error/404";
+                    await next();
+                }
+            });
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
