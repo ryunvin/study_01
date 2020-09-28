@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
 using RVCoreBoard.MVC.Services;
@@ -16,12 +17,12 @@ namespace RVCoreBoard.MVC.Controllers
     public class AccountController : Controller
     {
         private readonly RVCoreBoardDBContext _db;
-        private IUserService _accountService;
+        private IUserService _userService;
 
-        public AccountController(RVCoreBoardDBContext db, IUserService accountService)
+        public AccountController(RVCoreBoardDBContext db, IUserService userService)
         {
             _db = db;
-            _accountService = accountService;
+            _userService = userService;
         }
 
         // <summary>
@@ -51,7 +52,7 @@ namespace RVCoreBoard.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User(_accountService);
+                User user = new User(_userService);
                 await user.Login(model);
 
                 if (user.Data != null)
@@ -108,7 +109,7 @@ namespace RVCoreBoard.MVC.Controllers
                     return View(model);
                 }
 
-                User user = new User(_accountService);
+                User user = new User(_userService);
                 bool IsRegister = await user.Register(model);
 
                 if (IsRegister)
@@ -118,6 +119,74 @@ namespace RVCoreBoard.MVC.Controllers
                 
             }
             return View(model);
+        }
+
+        /// <summary>
+        ///  비밀번호 찾기
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// 비밀번호 찾기
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(string id, string name)
+        {
+            User user = new User(_userService);
+            await user.FindUser(id);
+
+            if (user.Data != null)
+            {
+                // 해당 유저가 있을 시
+                if (user.Data.Name.Equals(name))
+                    return Redirect($"ChangePassword?Id={id}");
+            }
+            // 로그인 실패 시
+            ModelState.AddModelError("UserIDorNameIncorrect", "사용자 ID 혹은 이름이 올바르지 않습니다.");
+            return View();
+        }
+
+        /// <summary>
+        ///  비밀번호 변경
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ChangePassword(string Id)
+        {
+            ViewBag.Id = Id;
+            return View();
+        }
+
+        /// <summary>
+        /// 비밀번호 찾기
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ChangePassword(string id, string password)
+        {
+            User user = new User(_userService);
+            await user.FindUser(id);
+
+            if (user.Data != null)
+            {
+                user.Data.Password = user.ConvertPassword(password);
+                _db.Entry(user.Data).State = EntityState.Modified;
+                if (_db.SaveChanges() > 0)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+            }
+            return Redirect($"ChangePassword?Id={id}"); 
         }
 
         private IActionResult RedirectToLocal(string returnUrl)

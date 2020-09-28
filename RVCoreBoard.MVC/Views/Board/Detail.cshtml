@@ -135,7 +135,6 @@
 
         //댓글 삭제
         $(document).on("click", "a[name='commentDelete']", function () {
-
             var check = false;
             var CNo = $(this).parent().parent().parent().attr('id').replace('comment', '');
 
@@ -173,7 +172,6 @@
 
         //댓글 수정 입력
         $(document).on("click", "a[name='commentModify']", function () {
-
             var check = false;
             var CLiId = $(this).parent().parent().parent().attr('id');
             var CNo = $(this).parent().parent().parent().attr('id').replace("comment", "");

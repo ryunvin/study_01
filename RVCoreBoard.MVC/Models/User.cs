@@ -140,5 +140,9 @@ namespace RVCoreBoard.MVC.Models
             user.Password = ConvertPassword(user.Password);
             return await _accountService.Register(user);
         }
+        public async Task FindUser(string id)
+        {
+            Data = await _accountService.FindUser(id);
+        }
     }
 }

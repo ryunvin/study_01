@@ -10,5 +10,6 @@ namespace RVCoreBoard.MVC.Services
         Task<User> Login(LoginModel model);
         Task<bool> Register(User user);
         Task<List<User>> GetUserList(System.Linq.Expressions.Expression<Func<User, bool>> predicate);
+        Task<User> FindUser(string id);
     }
 }

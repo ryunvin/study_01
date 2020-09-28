@@ -36,7 +36,6 @@
         }
         public async Task<List<User>> GetUserList(System.Linq.Expressions.Expression<Func<User, bool>> predicate)
         {
-
             var userList = predicate != null ? await _db.Users
                                                         .Where(predicate)
                                                         .OrderBy(p => p.UNo)
@@ -45,6 +44,13 @@
                                                         .OrderBy(p => p.UNo)
                                                         .ToListAsync();
             return userList;
+        }
+        public async Task<User> FindUser(string id)
+        {
+            var user = await _db.Users
+                                .Where(u => u.Id.Equals(id))
+                                .FirstOrDefaultAsync();
+            return user;
         }
     }
 }
