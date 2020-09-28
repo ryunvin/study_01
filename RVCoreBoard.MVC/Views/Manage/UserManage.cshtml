@@ -21,25 +21,25 @@
 
     <script>
         $('#searchType li').on('click', function () {
-        var newVal = $(this).data('value');
+        let newVal = $(this).data('value');
 
             $('#searchDropdown').text($(this).text());
             $('#inputSearchType').val(newVal);
         });
         //사용자 등급 수정 입력
         $(document).on("click", "a[name='userLevelModify']", function () {
-            var UTrid = $(this).parent().parent().attr('id');
-            var UUNo = UTrid.replace("user", "");
-            var UId = $(this).parent().parent().find('.uid').html().trim();
-            var UName = $(this).parent().parent().find('.uname').html().trim();
-            var ULevel = $(this).parent().parent().find('.ulevel').html().trim();
+            let UTrid = $(this).parent().parent().attr('id');
+            let UUNo = UTrid.replace("user", "");
+            let UId = $(this).parent().parent().find('.uid').html().trim();
+            let UName = $(this).parent().parent().find('.uname').html().trim();
+            let ULevel = $(this).parent().parent().find('.ulevel').html().trim();
 
             @if (!User.Identity.IsAuthenticated)
             {
                 @:return false;
             }
 
-            var userEditor =
+            let userEditor =
                 '<tr id="' + UTrid + '"> ' +
                 '   <td class="align-middle">' + UUNo + '</td>' +
                 '   <td class="align-middle text-left uid">' + UId + '</td>' +
@@ -51,7 +51,7 @@
                 '   </td>' +
                 '</tr>';
 
-            var prevTr = $(this).parent().parent();
+            let prevTr = $(this).parent().parent();
             //자기 위에 붙이기
             prevTr.after(userEditor);
             //자기 자신 삭제
@@ -61,18 +61,18 @@
         //사용자 등급 수정 취소
         $(document).on("click", "a[name='userLevelModifyCancel']", function () {
             //원래 데이터를 가져온다.
-            var UTrid = $(this).parent().parent().attr('id');
-            var UUNo = UTrid.replace("user", "");
-            var UId = $(this).parent().parent().find('.uid').html().trim();
-            var UName = $(this).parent().parent().find('.uname').html().trim();
-            var ULevel = $(this).attr("uLevel");
+            let UTrid = $(this).parent().parent().attr('id');
+            let UUNo = UTrid.replace("user", "");
+            let UId = $(this).parent().parent().find('.uid').html().trim();
+            let UName = $(this).parent().parent().find('.uname').html().trim();
+            let ULevel = $(this).attr("uLevel");
 
             @if (!User.Identity.IsAuthenticated)
             {
                 @:return false;
             }
 
-            var strUser =
+            let strUser =
                 '<tr id="' + UTrid + '"> ' +
                 '   <td class="align-middle">' + UUNo + '</td>' +
                 '   <td class="align-middle text-left uid">' + UId + '</td>' +
@@ -83,7 +83,7 @@
                 '   </td>' +
                 '</tr>';
 
-            var prevTr = $(this).parent().parent();
+            let prevTr = $(this).parent().parent();
             //자기 위에 붙이기
             prevTr.after(strUser);
             //자기 자신 삭제
@@ -92,9 +92,9 @@
 
         //사용자 등급 수정 저장
         $(document).on("click", "a[name='userLevelModifySave']", function () {
-            var check = false;
-            var UTrid = $(this).parent().parent().attr('id');
-            var UUNo = UTrid.replace("user", "");
+            let check = false;
+            let UTrid = $(this).parent().parent().attr('id');
+            let UUNo = UTrid.replace("user", "");
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -107,7 +107,7 @@
                 return false;
             }
 
-            var ULevel = $("#userLevelModifyLevel" + UUNo).val();
+            let ULevel = $("#userLevelModifyLevel" + UUNo).val();
 
             if (ULevel > 4 || ULevel < 0) {
                 alert("사용자 등급이 올바르지 않습니다.");
@@ -115,12 +115,12 @@
             }
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 UNo: UUNo,
                 Level: ULevel
             };
 
-            var user = null;
+            let user = null;
 
             $.ajax({
                 url         :   "/api/userLevelModify",
@@ -139,7 +139,7 @@
             });
 
             if (check) {
-                var strUserLevelModify =
+                let strUserLevelModify =
                     '<tr id="user' + user.uNo + '"> ' +
                     '   <td class="align-middle">' + user.uNo + '</td>' +
                     '   <td class="align-middle text-left uid">' + user.id + '</td>' +
@@ -150,7 +150,7 @@
                     '   </td>' +
                     '</tr>';
 
-                var prevTr = $(this).parent().parent();
+                let prevTr = $(this).parent().parent();
                 //자기 위에 붙이기
                 prevTr.after(strUserLevelModify);
 

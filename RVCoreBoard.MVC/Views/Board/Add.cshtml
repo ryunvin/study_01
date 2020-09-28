@@ -20,7 +20,7 @@
                 callbacks: {
                     // 이미지 업로드시 처리, 해당 처리가 없는 경우 기본적으로 이미지 업로드시 base64인코딩 되어 처리 된다.
                     onImageUpload: function (files, editor, weleditable) {
-                        for (var i = files.length - 1; i >= 0; i--) {
+                        for (let i = files.length - 1; i >= 0; i--) {
                             sendFile(files[i], this);
                         }
                     }
@@ -42,13 +42,13 @@
             });
 
             $("#inputForm").submit(function () {
-                var content = $("#summernote").summernote("code");
+                let content = $("#summernote").summernote("code");
                 $("#Contents").val(content);
             });
 
             // 이미지 업로드 /api/imageUpload 라우트 사용
             function sendFile(file, el) {
-                var form_data = new FormData();
+                let form_data = new FormData();
                 form_data.append('file', file);
                 $.ajax({
                     data: form_data,
@@ -65,7 +65,7 @@
                 });
             }
 
-            var myDropzone = new Dropzone("#inputForm", {
+            let myDropzone = new Dropzone("#inputForm", {
                 previewsContainer: '#previewDropContainer',
                 autoProcessQueue: false,
                 thumbnailHeight: 150,

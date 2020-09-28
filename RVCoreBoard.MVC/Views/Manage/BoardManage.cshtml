@@ -14,15 +14,15 @@
 
     <script>
         function RefreshComponent() {
-            var menuBarcontainer = $("#menuBarViewComponentContainer");
+            let menuBarcontainer = $("#menuBarViewComponentContainer");
             $.get("/Home/MenuBar", function (data) { menuBarcontainer.html(data); });
         }
 
         function RefreshDropdown() {
-            var check = false;
-            var dropdownUl = $('#categoryGid');
+            let check = false;
+            let dropdownUl = $('#categoryGid');
 
-            var groups = null;
+            let groups = null;
 
             $.ajax({
                 url: "/api/getCategoryGroups",
@@ -42,9 +42,9 @@
                 dropdownUl.empty();
 
                 if (dropdownUl.children().length == 0) {
-                    var strLi = '';
-                    var OrgGid = $('#categoryDropdown').attr('name');
-                    var NewGid = null;
+                    let strLi = '';
+                    let OrgGid = $('#categoryDropdown').attr('name');
+                    let NewGid = null;
                     $.each(groups, function (index, group) {
                         if (OrgGid == group.gid) {
                             NewGid = group.gid;
@@ -63,19 +63,19 @@
         })
 
         $(document).on("click", "li[name='dropdownCategoryLi']", function () {
-            var CGid = $(this).data('value');
+            let CGid = $(this).data('value');
 
             $('#categoryDropdown').text($(this).text());
             $('#categoryDropdown').attr("name", CGid);
             $('#inputCategoryGid').val(CGid);
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 Gid: CGid
             };
 
-            var check = false;
-            var categorys = null;
+            let check = false;
+            let categorys = null;
 
             $.ajax({
                 url: "/api/getCategorys",
@@ -93,11 +93,11 @@
             });
 
             if (check) {
-                var tbody = $('#categoryTable tbody');
+                let tbody = $('#categoryTable tbody');
 
                 tbody.empty();
                 if (tbody.children().length == 0) {
-                    var strCategoryTr = '';
+                    let strCategoryTr = '';
                     $.each(categorys, function (index, category) {
                         strCategoryTr +=
                             '<tr id="category' + category.id + '"> ' +
@@ -118,7 +118,7 @@
 
         // 카테고리 그룹 추가
         $(document).on("click", "#categoryGroupAdd", function () {
-            var check = false;
+            let check = false;
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -132,14 +132,14 @@
                 return false;
             }
 
-            var CGname = $("#inputCategoryGroupGname").val();
+            let CGname = $("#inputCategoryGroupGname").val();
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 Gname: CGname
             };
 
-            var group = null;
+            let group = null;
 
             $.ajax({
                 url: "/api/categoryGroupAdd",
@@ -158,7 +158,7 @@
             });
 
             if (check) {
-                var strCategoryGroupAdd =
+                let strCategoryGroupAdd =
                     '<tr id="categoryGroup' + group.gid + '"> ' +
                     '   <td>' + group.gid + '</td>' +
                     '   <td class="text-left gname">' + group.gname + '</td>' +
@@ -168,7 +168,7 @@
                     '   </td>' +
                     '</tr>';
 
-                var strCGDropddwonAdd =
+                let strCGDropddwonAdd =
                     '<button type="button" class="btn btn-link dropdown-toggle border w-auto" id="categoryDropdown" name="' + group.gid + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' + group.gname + '</button>' +
                     '<ul class="dropdown-menu animated--fade-in" id="categoryGid" aria-labelledby="categoryDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">' +
                     '   <li class="dropdown-item" name="dropdownCategoryLi" data-value="' + group.gid + '">' + group.gname + '</li>' +
@@ -193,8 +193,8 @@
 
         //카테고리 그룹 삭제
         $(document).on("click", "a[name='categoryGroupDelete']", function () {
-            var check = false;
-            var Gid = $(this).parent().parent().attr('id').replace('categoryGroup', '');
+            let check = false;
+            let Gid = $(this).parent().parent().attr('id').replace('categoryGroup', '');
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -202,7 +202,7 @@
             }
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 Gid: Gid
             };
 
@@ -239,16 +239,16 @@
 
         //카테고리 그룹 수정 입력
         $(document).on("click", "a[name='categoryGroupModify']", function () {
-            var CGtrid = $(this).parent().parent().attr('id');
-            var CGid = CGtrid.replace("categoryGroup", "");
-            var CGname = $(this).parent().parent().find('.gname').html().trim();
+            let CGtrid = $(this).parent().parent().attr('id');
+            let CGid = CGtrid.replace("categoryGroup", "");
+            let CGname = $(this).parent().parent().find('.gname').html().trim();
 
             @if (!User.Identity.IsAuthenticated)
             {
                 @:return false;
             }
 
-            var categoryGroupEditor =
+            let categoryGroupEditor =
                 '<tr id="' + CGtrid + '"> ' +
                 '   <td>' + CGid + '</td>' +
                 '   <td class="text-left gname"> <input type="text" class="form-control" id="categoryGroupModifyGname' + CGid + '" value="' + CGname + '"/></td>' +
@@ -258,7 +258,7 @@
                 '   </td>' +
                 '</tr>';
 
-            var prevTr = $(this).parent().parent();
+            let prevTr = $(this).parent().parent();
             //자기 위에 붙이기
             prevTr.after(categoryGroupEditor);
             //자기 자신 삭제
@@ -268,16 +268,16 @@
         //카테고리 그룹 수정 취소
         $(document).on("click", "a[name='categoryGroupModifyCancel']", function () {
             //원래 데이터를 가져온다.
-            var CGtrid = $(this).parent().parent().attr('id');
-            var CGid = CGtrid.replace("categoryGroup", "");
-            var CGname = $(this).attr("cGname");
+            let CGtrid = $(this).parent().parent().attr('id');
+            let CGid = CGtrid.replace("categoryGroup", "");
+            let CGname = $(this).attr("cGname");
 
             @if (!User.Identity.IsAuthenticated)
             {
                 @:return false;
             }
 
-            var strCategoryGroup =
+            let strCategoryGroup =
                 '<tr id="' + CGtrid + '"> ' +
                 '   <td>' + CGid + '</td>' +
                 '   <td class="text-left gname">' + CGname + '</td>' +
@@ -287,7 +287,7 @@
                 '   </td>' +
                 '</tr>';
 
-            var prevTr = $(this).parent().parent();
+            let prevTr = $(this).parent().parent();
             //자기 위에 붙이기
             prevTr.after(strCategoryGroup);
             //자기 자신 삭제
@@ -296,9 +296,9 @@
 
         //카테고리 그룹 수정 저장
         $(document).on("click", "a[name='categoryGroupModifySave']", function () {
-            var check = false;
-            var CGid = $(this).parent().parent().attr('id').replace("categoryGroup", "");
-            var OrgCGname = $(this).next().attr("cGname");
+            let check = false;
+            let CGid = $(this).parent().parent().attr('id').replace("categoryGroup", "");
+            let OrgCGname = $(this).next().attr("cGname");
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -311,15 +311,15 @@
                 return false;
             }
 
-            var CGname = $("#categoryGroupModifyGname" + CGid).val();
+            let CGname = $("#categoryGroupModifyGname" + CGid).val();
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 Gid: CGid,
                 Gname: CGname
             };
 
-            var group = null;
+            let group = null;
 
             $.ajax({
                 url         :   "/api/categoryGroupModify",
@@ -338,7 +338,7 @@
             });
 
             if (check) {
-                var strCategoryGroupModify =
+                let strCategoryGroupModify =
                     '<tr id="categoryGroup' + group.gid + '"> ' +
                     '   <td>' + group.gid + '</td>' +
                     '   <td class="text-left gname">' + group.gname + '</td>' +
@@ -348,7 +348,7 @@
                     '   </td>' +
                     '</tr>';
 
-                var prevTr = $(this).parent().parent();
+                let prevTr = $(this).parent().parent();
                 //자기 위에 붙이기
                 prevTr.after(strCategoryGroupModify);
 
@@ -358,7 +358,7 @@
                 RefreshComponent();
                 RefreshDropdown();
 
-                var categoryDropdown = $('#categoryDropdown');
+                let categoryDropdown = $('#categoryDropdown');
                 if (OrgCGname == categoryDropdown.text()) {
                     categoryDropdown.text(group.gname)
                 }
@@ -367,8 +367,8 @@
 
         // 카테고리 추가
         $(document).on("click", "#categoryAdd", function () {
-            var check = false;
-            var CGid = $('#inputCategoryGid').val();
+            let check = false;
+            let CGid = $('#inputCategoryGid').val();
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -389,17 +389,17 @@
                 return false;
             }
 
-            var Cname = $("#inputCategoryName").val();
-            var CLevel = $("#inputCategoryLevel").val();
+            let Cname = $("#inputCategoryName").val();
+            let CLevel = $("#inputCategoryLevel").val();
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 Gid: CGid,
                 Name: Cname,
                 Level: CLevel
             };
 
-            var category = null;
+            let category = null;
 
             $.ajax({
                 url: "/api/categoryAdd",
@@ -418,7 +418,7 @@
             });
 
             if (check) {
-                var strCategoryAdd =
+                let strCategoryAdd =
                     '<tr id="category' + category.id + '"> ' +
                     '   <td>' + category.id+ '</td>' +
                     '   <td class="text-left cgname">' + category.name + '</td>' +
@@ -446,8 +446,8 @@
 
         //카테고리 삭제
         $(document).on("click", "a[name='categoryDelete']", function () {
-            var check = false;
-            var Id = $(this).parent().parent().attr('id').replace('category', '');
+            let check = false;
+            let Id = $(this).parent().parent().attr('id').replace('category', '');
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -455,7 +455,7 @@
             }
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 Id: Id
             };
 
@@ -489,18 +489,18 @@
 
         //카테고리 수정 입력
         $(document).on("click", "a[name='categoryModify']", function () {
-            var CTrid = $(this).parent().parent().attr('id');
-            var CId = CTrid.replace("category", "");
-            var CName = $(this).parent().parent().find('.cgname').html().trim();
-            var CLevel = $(this).parent().parent().find('.cglevel').html().trim();
-            var CRegDate = $(this).parent().parent().find('.cgregdate').html().trim();
+            let CTrid = $(this).parent().parent().attr('id');
+            let CId = CTrid.replace("category", "");
+            let CName = $(this).parent().parent().find('.cgname').html().trim();
+            let CLevel = $(this).parent().parent().find('.cglevel').html().trim();
+            let CRegDate = $(this).parent().parent().find('.cgregdate').html().trim();
 
             @if (!User.Identity.IsAuthenticated)
             {
                 @:return false;
             }
 
-            var categoryEditor =
+            let categoryEditor =
                 '<tr id="' + CTrid + '"> ' +
                 '   <td>' + CId + '</td>' +
                 '   <td class="text-left cgname"><input type="text" class="form-control" id="categoryModifyName' + CId + '" value="' + CName + '"/></td>' +
@@ -512,7 +512,7 @@
                 '   </td>' +
                 '</tr>';
 
-            var prevTr = $(this).parent().parent();
+            let prevTr = $(this).parent().parent();
             //자기 위에 붙이기
             prevTr.after(categoryEditor);
             //자기 자신 삭제
@@ -522,18 +522,18 @@
         //카테고리 수정 취소
         $(document).on("click", "a[name='categoryModifyCancel']", function () {
             //원래 데이터를 가져온다.
-            var CTrid = $(this).parent().parent().attr('id');
-            var CId = CTrid.replace("category", "");
-            var CName = $(this).attr("cName");
-            var CLevel = $(this).attr("cLevel");
-            var CRegDate = $(this).attr("cRegDate");
+            let CTrid = $(this).parent().parent().attr('id');
+            let CId = CTrid.replace("category", "");
+            let CName = $(this).attr("cName");
+            let CLevel = $(this).attr("cLevel");
+            let CRegDate = $(this).attr("cRegDate");
 
             @if (!User.Identity.IsAuthenticated)
             {
                 @:return false;
             }
 
-            var strCategory =
+            let strCategory =
                 '<tr id="' + CTrid + '"> ' +
                 '   <td>' + CId + '</td>' +
                 '   <td class="text-left cgname">' + CName + '</td>' +
@@ -545,7 +545,7 @@
                 '   </td>' +
                 '</tr>';
 
-            var prevTr = $(this).parent().parent();
+            let prevTr = $(this).parent().parent();
             //자기 위에 붙이기
             prevTr.after(strCategory);
             //자기 자신 삭제
@@ -557,10 +557,10 @@
 
         //카테고리 수정 저장
         $(document).on("click", "a[name='categoryModifySave']", function () {
-            var check = false;
-            var CGid = $('#inputCategoryGid').val();
-            var CTrid = $(this).parent().parent().attr('id');
-            var CId = CTrid.replace("category", "");
+            let check = false;
+            let CGid = $('#inputCategoryGid').val();
+            let CTrid = $(this).parent().parent().attr('id');
+            let CId = CTrid.replace("category", "");
 
             @if (!User.Identity.IsAuthenticated)
             {
@@ -573,8 +573,8 @@
                 return false;
             }
 
-            var CName = $("#categoryModifyName" + CId).val();
-            var CLevel = $("#categoryModifyLevel" + CId).val();
+            let CName = $("#categoryModifyName" + CId).val();
+            let CLevel = $("#categoryModifyLevel" + CId).val();
 
             if (CLevel > 4 || CLevel < 0) {
                 alert("사용자 등급이 올바르지 않습니다.");
@@ -582,14 +582,14 @@
             }
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 Gid: CGid,
                 Id: CId,
                 Name: CName,
                 Level: CLevel
             };
 
-            var category = null;
+            let category = null;
 
             $.ajax({
                 url         :   "/api/categoryModify",
@@ -608,7 +608,7 @@
             });
 
             if (check) {
-                var strCategoryModify =
+                let strCategoryModify =
                     '<tr id="category' + category.id + '"> ' +
                     '   <td>' + category.id + '</td>' +
                     '   <td class="text-left cgname">' + category.name + '</td>' +
@@ -620,7 +620,7 @@
                     '   </td>' +
                     '</tr>';
 
-                var prevTr = $(this).parent().parent();
+                let prevTr = $(this).parent().parent();
                 //자기 위에 붙이기
                 prevTr.after(strCategoryModify);
 
