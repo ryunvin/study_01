@@ -1,0 +1,74 @@
+﻿@{
+    var containBoardList = ViewBag.ContainBoardList;
+    var containCommentList = ViewBag.ContainCommentList;
+
+    var totalSearchString = ViewBag.TotalSearchString;
+}
+
+<div class="text-left">
+    <h3 class="display-4">통합 검색</h3>
+</div>
+
+<hr class="mb-5" />
+
+<div class="d-flex justify-content-center align-items-start position-relative">
+    <div class="col-lg-12">
+        @if (containBoardList.Count > 0)
+        {
+            <div class="row">
+                <h6 class="m-0 font-weight-bold text-primary">글 검색</h6>
+                @foreach (var board in containBoardList)
+                {
+                    var isContainContent = false;
+                    if (board.Content.Contains(totalSearchString))
+                    {
+                        isContainContent = true;
+                    }
+                    var content = board.Content;
+
+                    var firstIndex = 0;
+                    var lastIndex = content.Length;
+
+                    if (isContainContent)
+                    {
+                        firstIndex = content.IndexOf(totalSearchString) > 50 ? content.IndexOf(totalSearchString) : firstIndex;
+                        lastIndex = content.IndexOf(totalSearchString) + 50 > 100 ? content.IndexOf(totalSearchString) + 50 : lastIndex;
+                    }
+                    <div class="col-lg-12 my-2">
+                        <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.category.Name-@board.Title</a></b></span>
+                    </div>
+                    <div class="col-lg-12 my-2">
+                        <span>@Html.Raw(content.Substring(firstIndex, lastIndex)) </span>
+                    </div>
+                }
+                <div class="col-lg-12 my-5 text-right">
+                    <span><a class="text-dark" asp-controller="Board" asp-action="Index" asp-route-searchType="TitleOrContent" asp-route-searchString="@totalSearchString">글 검색 더 보기 >></a></span>
+                </div>
+            </div>
+            <hr class="my-5" />
+        }
+        @if (containCommentList.Count > 0)
+        {
+            <div class="row">
+                <h6 class="m-0 font-weight-bold text-primary">댓글 검색</h6>
+                @foreach (var comment in containCommentList)
+                {
+                    var content = comment.Content;
+
+                    var firstIndex = content.IndexOf(totalSearchString) > 50 ? content.IndexOf(totalSearchString) : 0;
+                    var lastIndex = content.IndexOf(totalSearchString) + 50 > 100 ? content.IndexOf(totalSearchString) + 50 : content.Length;
+                    <div class="col-lg-12 my-2">
+                        <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@comment.BNo">@comment.board.category.Name-@comment.board.Title</a></b></span>
+                    </div>
+                    <div class="col-lg-12 my-2">
+                        <span>@Html.Raw(content.Substring(firstIndex, lastIndex)) </span>
+                    </div>
+                }
+                <div class="col-lg-12 my-5 text-right">
+                    <span><a class="text-dark" asp-controller="Board" asp-action="Index" asp-route-searchType="Comment" asp-route-searchString="@totalSearchString">글 검색 더 보기 >></a></span>
+                </div>
+            </div>
+            <hr class="my-5" />
+        }
+    </div>
+</div>

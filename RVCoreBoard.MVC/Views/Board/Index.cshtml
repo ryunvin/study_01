@@ -10,7 +10,7 @@
 
     <script>
         $('#searchType li').on('click', function () {
-            var newVal = $(this).data('value');
+            let newVal = $(this).data('value');
 
             $('#searchDropdown').text($(this).text());
             $('#inputSearchType').val(newVal);
@@ -117,8 +117,7 @@
                                     <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</button>
                                     <ul class="dropdown-menu animated--fade-in" id="searchType" aria-labelledby="searchDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
                                         <li class="dropdown-item" data-value="All">전체</li>
-                                        <li class="dropdown-item" data-value="Title">제목</li>
-                                        <li class="dropdown-item" data-value="Content">내용</li>
+                                        <li class="dropdown-item" data-value="TitleOrContent">제목 및 내용</li>
                                         <li class="dropdown-item" data-value="Writer">글쓴이</li>
                                         <li class="dropdown-item" data-value="Comment">댓글</li>
                                         <li class="dropdown-item" data-value="FileName">첨부파일명</li>

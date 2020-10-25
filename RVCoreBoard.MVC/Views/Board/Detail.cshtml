@@ -10,9 +10,9 @@
 
     <script>
         "use strict";
-        var currentUser = @Html.Raw(Json.Serialize(currentUser));
+        let currentUser = @Html.Raw(Json.Serialize(currentUser));
 
-        var connection = new signalR.HubConnectionBuilder().withUrl("/commentHub").build();
+        let connection = new signalR.HubConnectionBuilder().withUrl("/commentHub").build();
         connection.start().catch(err => console.error(err));
 
         connection.on("ReceiveCommentList", function (commentList) {
@@ -20,11 +20,11 @@
         });
 
         function GetCommentList() {
-            var objParam = {
+            let objParam = {
                 BNo:  @Html.Raw(Model.Data.BNo)
             };
 
-            var commnetList;
+            let commnetList;
             $.ajax({
                 url: '/api/getCommentList',
                 method : 'post',
@@ -50,7 +50,7 @@
         }
 
         function SetCommnetAdd(comment) {
-            var strCommentBtn = "";
+            let strCommentBtn = "";
 
             if (currentUser.id == comment.user.Id) {
                 strCommentBtn =
@@ -60,7 +60,7 @@
                     '       </div>';
             }
 
-            var strCommentAdd =
+            let strCommentAdd =
                 '<li id="comment' + comment.CNo + '">' +
                 '   <div class="row">' +
                 '       <div class="col-lg-3 mb-3">' +
@@ -83,7 +83,7 @@
 
         // 댓글 추가
         $(document).on("click", "#commentSave", function () {
-            var check = false;
+            let check = false;
             if (currentUser == null) {
                 return false;
             }
@@ -95,10 +95,10 @@
                 return false;
             }
 
-            var CContent = $("#commentContent").val().replace("\n", "<br>"); //개행처리
+            let CContent = $("#commentContent").val().replace("\n", "<br>"); //개행처리
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 BNo: @Html.Raw(Model.Data.BNo),
                 UNo: currentUser.uNo,
                 Content: CContent,
@@ -124,7 +124,7 @@
                 }
             });
 
-            var commentList = null;
+            let commentList = null;
             if (check) {
                 commentList = GetCommentList();
                 connection.invoke("BroadcastCommentList", commentList).catch(err => console.error(err));
@@ -135,11 +135,11 @@
 
         //댓글 삭제
         $(document).on("click", "a[name='commentDelete']", function () {
-            var check = false;
-            var CNo = $(this).parent().parent().parent().attr('id').replace('comment', '');
+            let check = false;
+            let CNo = $(this).parent().parent().parent().attr('id').replace('comment', '');
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 CNo: CNo
             };
 
@@ -163,7 +163,7 @@
                 }
             });
 
-            var commentList = null;
+            let commentList = null;
             if (check) {
                 commentList = GetCommentList();
                 connection.invoke("BroadcastCommentList", commentList).catch(err => console.error(err));
@@ -172,12 +172,12 @@
 
         //댓글 수정 입력
         $(document).on("click", "a[name='commentModify']", function () {
-            var check = false;
-            var CLiId = $(this).parent().parent().parent().attr('id');
-            var CNo = $(this).parent().parent().parent().attr('id').replace("comment", "");
-            var CName = $(this).parent().parent().parent().find('.cname').html().trim();
-            var CContent = $(this).parent().parent().parent().find('.ccontent').html().trim();
-            var CRegDate = $(this).parent().parent().parent().find('.cregdate').html().trim();
+            let check = false;
+            let CLiId = $(this).parent().parent().parent().attr('id');
+            let CNo = $(this).parent().parent().parent().attr('id').replace("comment", "");
+            let CName = $(this).parent().parent().parent().find('.cname').html().trim();
+            let CContent = $(this).parent().parent().parent().find('.ccontent').html().trim();
+            let CRegDate = $(this).parent().parent().parent().find('.cregdate').html().trim();
 
             if (currentUser == null) return false;
 
@@ -189,7 +189,7 @@
 
             if (check) {
                 //입력받는 창 등록
-                var commentEditor =
+                let commentEditor =
                     '<li id="' + CLiId + '">' +
                     '   <div class="row">' +
                     '       <div class="col-lg-3 mb-3">' +
@@ -205,7 +205,7 @@
                     '   </div>' +
                     '</li>';
 
-                var prevLi = $(this).parent().parent().parent();
+                let prevLi = $(this).parent().parent().parent();
                 //자기 위에 붙이기
                 prevLi.after(commentEditor);
                 //자기 자신 삭제
@@ -216,10 +216,10 @@
         //댓글 수정 취소
         $(document).on("click", "a[name='commentModifyCancel']", function () {
             //원래 데이터를 가져온다.
-            var CLiId = $(this).parent().parent().parent().attr('id');
-            var CName = $(this).parent().parent().parent().find('.cname').html().trim();
-            var CContent = $(this).attr("cContent");
-            var CRegDate = $(this).attr("cRegDate");
+            let CLiId = $(this).parent().parent().parent().attr('id');
+            let CName = $(this).parent().parent().parent().find('.cname').html().trim();
+            let CContent = $(this).attr("cContent");
+            let CRegDate = $(this).attr("cRegDate");
 
             if (currentUser == null) return false;
 
@@ -229,7 +229,7 @@
                 check = true;
             }
 
-            var strComment =
+            let strComment =
                 '<li id="' + CLiId + '">' +
                 '   <div class="row">'+
                 '       <div class="col-lg-3 mb-3">' +
@@ -246,7 +246,7 @@
                 '   </div>' +
                 '</li>';
 
-            var prevLi = $(this).parent().parent().parent();
+            let prevLi = $(this).parent().parent().parent();
             //자기 위에 붙이기
             prevLi.after(strComment);
 
@@ -257,8 +257,8 @@
         //댓글 수정 저장
         $(document).on("click", "a[name='commentModifySave']", function () {
 
-            var check = false;
-            var CNo = $(this).parent().parent().parent().attr('id').replace("comment", "");
+            let check = false;
+            let CNo = $(this).parent().parent().parent().attr('id').replace("comment", "");
 
             if (currentUser == null) return false;
 
@@ -268,10 +268,10 @@
                 return false;
             }
 
-            var CContent = $("#commentModifyContent" + CNo).val().replace("\n", "<br>"); //개행처리
+            let CContent = $("#commentModifyContent" + CNo).val().replace("\n", "<br>"); //개행처리
 
             //값 셋팅
-            var objParams = {
+            let objParams = {
                 CNo: CNo,
                 BNo: @Html.Raw(Model.Data.BNo),
                 UNo: currentUser.uNo,
@@ -297,7 +297,7 @@
                 }
             });
 
-            var commentList = null;
+            let commentList = null;
             if (check) {
                 commentList = GetCommentList();
                 connection.invoke("BroadcastCommentList", commentList).catch(err => console.error(err));

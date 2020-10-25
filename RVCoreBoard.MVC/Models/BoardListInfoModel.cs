@@ -14,12 +14,10 @@
         {
             [ExtensionEnum(typeof(All))]
             All,
-            [ExtensionEnum(typeof(Title))]
-            Title,
+            [ExtensionEnum(typeof(TitleOrContent))]
+            TitleOrContent,
             [ExtensionEnum(typeof(Writer))]
             Writer,
-            [ExtensionEnum(typeof(Content))]
-            Content,
             [ExtensionEnum(typeof(Comment))]
             Comment,
             [ExtensionEnum(typeof(FileName))]

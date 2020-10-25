@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,6 +45,33 @@ namespace RVCoreBoard.MVC.Controllers
             return ViewComponent("MenuBar");
         }
 
+        /// <summary>
+        /// 게시판 리스트
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        public async Task<IActionResult> TotalSearch(string totalSearchString)
+        {
+            var containBoardList = await _db.Boards
+                                            .Where(b => b.Title.Contains(totalSearchString) || b.Content.Contains(totalSearchString))
+                                            .Include(b => b.category)
+                                            .Take(5)
+                                            .ToListAsync();
+
+            var contatinCommentList = await _db.Comments
+                                                .Where(c => c.Content.Contains(totalSearchString))
+                                                .Include(c => c.board).ThenInclude(b => b.category)
+                                                .Take(5)
+                                                .ToListAsync();
+
+            ViewBag.ContainBoardList = containBoardList;
+            ViewBag.ContainCommentList = contatinCommentList;
+
+
+            ViewBag.TotalSearchString = String.IsNullOrEmpty(totalSearchString) ? null : totalSearchString;
+
+            return View();
+        }
 
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

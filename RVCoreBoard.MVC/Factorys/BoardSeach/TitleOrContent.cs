@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 
 namespace RVCoreBoard.MVC.Factorys
 {
-    internal class Content : BoardSearchBase
+    internal class TitleOrContent : BoardSearchBase
     {
-        public Content(IBoardService boardService) : base(boardService)
+        public TitleOrContent(IBoardService boardService) : base(boardService)
         {
         }
 
         public override async Task<List<Board>> Search(int id, string searchString)
         {
-            return await base.BoardService.GetBoardList(s => s.category.Id == id && s.Content.Contains(searchString));
+            return await base.BoardService.GetBoardList(s => s.category.Id == id && (s.Title.Contains(searchString) || s.Content.Contains(searchString)));
         }
     }
 }
