@@ -309,10 +309,10 @@
     <div class="col-lg-9 card">
         <div class="card-body m-3">
             <div class="row">
-                <div class="col-6 text-left mb-5">
+                <div class="col-5 text-left mb-5">
                     <h1 class="card-title">@Model.Data.Title</h1>
                 </div>
-                <div class="col-6">
+                <div class="col-7">
                     <div class="row text-right">
                         <div class="col-4">
                             <p><b>글쓴이 </b>@Model.Data.user.Name</p>
@@ -400,24 +400,25 @@
             </div>
         </div>
         <div class="row px-5 mb-3 align-items-center">
-            <div class="center-block">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6">
                 @* 이전글 다음글 구현*@
-                <ul class="pagination mt-3">
+                <ul class="pagination mt-3 justify-content-center">
                     @{
-                        var prevDisabled = Model.PrevBNo == 0 ? "disabled" : "";
-                        var nextDisabled = Model.NextBNo == 0 ? "disabled" : "";
+                        var prevDisabled = Model.Data.PrevBNo == 0 ? "disabled" : "";
+                        var nextDisabled = Model.Data.NextBNo == 0 ? "disabled" : "";
                     }
                     <li class="page-item @prevDisabled">
-                        <a class="page-link" tabindex="-1" asp-action="Detail" asp-controller="Board" asp-route-BNo="@Model.PrevBNo"
+                        <a class="page-link" tabindex="-1" asp-action="Detail" asp-controller="Board" asp-route-BNo="@Model.Data.PrevBNo"
                            asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">이전글</a>
                     </li>
                     <li class="page-item @nextDisabled">
-                        <a class="page-link" asp-action="Detail" asp-controller="Board" asp-route-BNo="@Model.NextBNo"
+                        <a class="page-link" asp-action="Detail" asp-controller="Board" asp-route-BNo="@Model.Data.NextBNo"
                            asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString">다음글</a>
                     </li>
                 </ul>
             </div>
-            <div class="text-right d-inline-block ">
+            <div class="text-right col-lg-3">
                 @if (User.Identity.IsAuthenticated && (Model.Data.UNo == User.Identity.GetSid()))
                 {
                     <a class="btn btn-success" asp-controller="Board" asp-action="Edit" asp-route-BNo="@Model.Data.BNo">수정</a>

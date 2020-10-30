@@ -78,8 +78,8 @@ namespace RVCoreBoard.MVC.Models
         {
             Data = await _boardService.GetBoardDetail(BNo, bDetail);
 
-            PrevBNo = await _boardService.GetBoardPrevBNo(BNo, Data.category.Id);
-            NextBNo = await _boardService.GetBoardNextBNo(BNo, Data.category.Id);
+            Data.PrevBNo = await _boardService.GetBoardPrevBNo(BNo, Data.category.Id);
+            Data.NextBNo = await _boardService.GetBoardNextBNo(BNo, Data.category.Id);
         }
     }
 }

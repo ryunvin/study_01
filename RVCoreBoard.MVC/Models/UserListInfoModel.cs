@@ -58,7 +58,11 @@
             {
                 SearchType sType = (SearchType)Enum.Parse(typeof(SearchType), searchType);
                 UserSearchBase searchBase = SearchFactory.GetSearchUserList(sType, _userService);
-                Data = await searchBase.Search(searchString);
+
+                if (sType == SearchType.Level && int.TryParse(searchString, out int searchLevel) == false)
+                    Data = new List<User>();
+                else
+                    Data = await searchBase.Search(searchString);
             }
             else
             {
