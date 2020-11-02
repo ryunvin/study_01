@@ -19,6 +19,12 @@
             SetCommentList(commentList);
         });
 
+        connection.on("disconnected", function () {
+            setTimeout(function () {
+                connection.start();
+            }, 5000); // Restart connection after 5 seconds.
+        });
+
         function GetCommentList() {
             let objParam = {
                 BNo:  @Html.Raw(Model.Data.BNo)
