@@ -33,7 +33,7 @@
             </ul>
 
         <div class="tab-content">
-            <div id="TitleOrContent" class="container tab-pane active">
+            <div id="TitleOrContent" class="tab-pane active">
                 @if (containBoardList.Count > 0)
                 {
                     @foreach (var category in containBoardCategoryList)
@@ -85,7 +85,7 @@
                     <h3 class="text-center my-5">검색 결과가 없습니다</h3>
                 }
             </div>
-            <div id="Comment" class="container tab-pane fade">
+            <div id="Comment" class="tab-pane fade">
                 @if (containCommentList.Count > 0)
                 {
                     @foreach (var category in containCommentCategoryList)
