@@ -104,14 +104,14 @@
                     <ul class="navbar-nav ml-auto">
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <!-- Nav Item - Alerts -->
+                            <!-- Nav Item - Login -->
                             <li class="nav-item dropdown no-arrow mx-1">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">
                                     로그인 해줘
                                 </a>
                             </li>
 
-                            <!-- Nav Item - Messages -->
+                            <!-- Nav Item - Register -->
                             <li class="nav-item dropdown no-arrow mx-1">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">
                                     회원가입 해줘
@@ -120,7 +120,7 @@
                         }
                         else
                         {
-                            <!-- Nav Item - Messages -->
+                            <!-- Nav Item - Logout -->
                             <li class="nav-item dropdown no-arrow mx-1">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">
                                     로그아웃 해줘
@@ -136,9 +136,7 @@
                                 문의는 여기로~~ (아빈@삼겹살.com)
                             </a>
                         </li>
-
                     </ul>
-
                 </nav>
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->

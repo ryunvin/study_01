@@ -8,10 +8,6 @@
     var totalSearchString = ViewBag.TotalSearchString;
 }
 
-@section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
-
 <div class="d-flex justify-content-center align-items-start position-relative container">
     <div class="col-lg-12">
         <h3>통합 검색</h3>
@@ -30,7 +26,7 @@
                     <a class="nav-link" data-toggle="tab" href="#Comment">댓글</a>
                 </li>
             }
-            </ul>
+        </ul>
 
         <div class="tab-content">
             <div id="TitleOrContent" class="tab-pane active">
@@ -78,7 +74,6 @@
                             </div>
                         </div>
                     }
-                    <hr class="my-5" />
                 }
                 else
                 {
