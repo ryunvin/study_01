@@ -4,6 +4,26 @@
     var category = ViewBag.Category;
     var currentUserLevel = User.Identity.GetRoleLevel();
     ViewData["Title"] = category.Name;
+    var sType = ViewBag.SearchType == null ? "All" : ViewBag.SearchType;
+    var sTypeTxt = (dynamic)null;
+    switch (sType)
+    {
+        case "All":
+            sTypeTxt = "전체";
+            break;
+        case "TitleOrContent":
+            sTypeTxt = "제목 및 내용";
+            break;
+        case "Writer":
+            sTypeTxt = "글쓴이";
+            break;
+        case "Comment":
+            sTypeTxt = "댓글";
+            break;
+        case "FileName":
+            sTypeTxt = "첨부파일명";
+            break;
+    }
 }
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -114,7 +134,7 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="dropdown mb-4 show">
-                                    <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">전체</button>
+                                    <button type="button" class="btn btn-link dropdown-toggle border w-auto" id="searchDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">@sTypeTxt</button>
                                     <ul class="dropdown-menu animated--fade-in" id="searchType" aria-labelledby="searchDropdown" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
                                         <li class="dropdown-item" data-value="All">전체</li>
                                         <li class="dropdown-item" data-value="TitleOrContent">제목 및 내용</li>
@@ -125,8 +145,8 @@
                                 </div>
                             </div>
                             <input type="text" class="d-none" name="Id" value="@category.Id" />
-                            <input type="text" class="d-none" name="searchType" id="inputSearchType" value="All" />
-                            <input type="text" class="form-control bg-light border-0" id="searchString" name="searchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2" />
+                            <input type="text" class="d-none" name="searchType" id="inputSearchType" value="@sType" />
+                            <input type="text" class="form-control bg-light border-0" id="searchString" name="searchString" placeholder="검색하기" aria-label="Search" aria-describedby="basic-addon2" value="@ViewBag.SearchString"/>
                             <div class="input-group-append d-inline">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-search fa-sm d-inline"></i>

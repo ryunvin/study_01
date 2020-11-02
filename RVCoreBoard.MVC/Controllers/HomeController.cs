@@ -49,24 +49,29 @@ namespace RVCoreBoard.MVC.Controllers
         /// 게시판 리스트
         /// </summary>
         /// <returns></returns>
-        [AllowAnonymous]
+        [AllowAnonymous, HttpGet]
         public async Task<IActionResult> TotalSearch(string totalSearchString)
         {
             var containBoardList = await _db.Boards
                                             .Where(b => b.Title.Contains(totalSearchString) || b.Content.Contains(totalSearchString))
                                             .Include(b => b.category)
-                                            .Take(5)
+                                            .Take(10)
                                             .ToListAsync();
+
+            var containBoardCategoryList = containBoardList.Select(b => b.category).Distinct().ToList();
 
             var contatinCommentList = await _db.Comments
                                                 .Where(c => c.Content.Contains(totalSearchString))
                                                 .Include(c => c.board).ThenInclude(b => b.category)
-                                                .Take(5)
+                                                .Take(10)
                                                 .ToListAsync();
+
+            var contatinCommentCatergoryList = contatinCommentList.Select(c => c.board.category).Distinct().ToList();
 
             ViewBag.ContainBoardList = containBoardList;
             ViewBag.ContainCommentList = contatinCommentList;
-
+            ViewBag.ContainBoardCategoryList = containBoardCategoryList;
+            ViewBag.ContainCommentCatergoryList = contatinCommentCatergoryList;
 
             ViewBag.TotalSearchString = String.IsNullOrEmpty(totalSearchString) ? null : totalSearchString;
 

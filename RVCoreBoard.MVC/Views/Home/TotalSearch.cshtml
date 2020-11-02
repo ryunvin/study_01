@@ -2,73 +2,125 @@
     var containBoardList = ViewBag.ContainBoardList;
     var containCommentList = ViewBag.ContainCommentList;
 
+    var containBoardCategoryList = ViewBag.ContainBoardCategoryList;
+    var containCommentCategoryList = ViewBag.ContainCommentCatergoryList;
+
     var totalSearchString = ViewBag.TotalSearchString;
 }
 
-<div class="text-left">
-    <h3 class="display-4">통합 검색</h3>
-</div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 
-<hr class="mb-5" />
-
-<div class="d-flex justify-content-center align-items-start position-relative">
+<div class="d-flex justify-content-center align-items-start position-relative container">
     <div class="col-lg-12">
-        @if (containBoardList.Count > 0)
-        {
-            <div class="row">
-                <h6 class="m-0 font-weight-bold text-primary">글 검색</h6>
-                @foreach (var board in containBoardList)
+        <h3>통합 검색</h3>
+        <br />
+        <!-- Nav tabs -->
+        <ul class="nav nav-pills" role="tablist">
+            @if (containBoardList.Count > 0)
+            {
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#TitleOrContent">글</a>
+                </li>
+            }
+            @if (containCommentList.Count > 0)
+            {
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#Comment">댓글</a>
+                </li>
+            }
+            </ul>
+
+        <div class="tab-content">
+            <div id="TitleOrContent" class="container tab-pane active">
+                @if (containBoardList.Count > 0)
                 {
-                    var isContainContent = false;
-                    if (board.Content.Contains(totalSearchString))
+                    @foreach (var category in containBoardCategoryList)
                     {
-                        isContainContent = true;
-                    }
-                    var content = board.Content;
+                        <div class="card shadow my-3">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">@category.Name</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach (var board in containBoardList)
+                                    {
+                                        if (board.category.Id == category.Id)
+                                        {
+                                            var isContainContent = false;
+                                            if (board.Content.Contains(totalSearchString))
+                                            {
+                                                isContainContent = true;
+                                            }
+                                            var content = board.Content;
 
-                    var firstIndex = 0;
-                    var lastIndex = content.Length;
+                                            var firstIndex = 0;
+                                            var lastIndex = content.Length;
 
-                    if (isContainContent)
-                    {
-                        firstIndex = content.IndexOf(totalSearchString) > 50 ? content.IndexOf(totalSearchString) : firstIndex;
-                        lastIndex = content.IndexOf(totalSearchString) + 50 > 100 ? content.IndexOf(totalSearchString) + 50 : lastIndex;
+                                            if (isContainContent)
+                                            {
+                                                firstIndex = content.IndexOf(totalSearchString) > 50 ? content.IndexOf(totalSearchString) : firstIndex;
+                                                lastIndex = content.IndexOf(totalSearchString) + 50 > 100 ? content.IndexOf(totalSearchString) + 50 : lastIndex;
+                                            }
+                                            <div class="col-lg-12 my-2">
+                                                <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.category.Name - @board.Title</a></b></span>
+                                            </div>
+                                            <div class="col-lg-12 my-2">
+                                                <span>@Html.Raw(content.Substring(firstIndex, lastIndex).Replace(totalSearchString, $"<b>{totalSearchString}</b>")) </span>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a class="text-dark" asp-controller="Board" asp-action="Index" asp-route-searchType="TitleOrContent" asp-route-searchString="@totalSearchString" asp-route-id="@category.Id">@category.Name 더보기 >></a>
+                            </div>
+                        </div>
                     }
-                    <div class="col-lg-12 my-2">
-                        <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.category.Name-@board.Title</a></b></span>
-                    </div>
-                    <div class="col-lg-12 my-2">
-                        <span>@Html.Raw(content.Substring(firstIndex, lastIndex)) </span>
-                    </div>
+                    <hr class="my-5" />
                 }
-                <div class="col-lg-12 my-5 text-right">
-                    <span><a class="text-dark" asp-controller="Board" asp-action="Index" asp-route-searchType="TitleOrContent" asp-route-searchString="@totalSearchString">글 검색 더 보기 >></a></span>
-                </div>
-            </div>
-            <hr class="my-5" />
-        }
-        @if (containCommentList.Count > 0)
-        {
-            <div class="row">
-                <h6 class="m-0 font-weight-bold text-primary">댓글 검색</h6>
-                @foreach (var comment in containCommentList)
+                else
                 {
-                    var content = comment.Content;
-
-                    var firstIndex = content.IndexOf(totalSearchString) > 50 ? content.IndexOf(totalSearchString) : 0;
-                    var lastIndex = content.IndexOf(totalSearchString) + 50 > 100 ? content.IndexOf(totalSearchString) + 50 : content.Length;
-                    <div class="col-lg-12 my-2">
-                        <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@comment.BNo">@comment.board.category.Name-@comment.board.Title</a></b></span>
-                    </div>
-                    <div class="col-lg-12 my-2">
-                        <span>@Html.Raw(content.Substring(firstIndex, lastIndex)) </span>
-                    </div>
+                    <h3 class="text-center my-5">검색 결과가 없습니다</h3>
                 }
-                <div class="col-lg-12 my-5 text-right">
-                    <span><a class="text-dark" asp-controller="Board" asp-action="Index" asp-route-searchType="Comment" asp-route-searchString="@totalSearchString">글 검색 더 보기 >></a></span>
-                </div>
             </div>
-            <hr class="my-5" />
-        }
+            <div id="Comment" class="container tab-pane fade">
+                @if (containCommentList.Count > 0)
+                {
+                    @foreach (var category in containCommentCategoryList)
+                    {
+                        <div class="card shadow my-3">
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">@category.Name</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach (var comment in containCommentList)
+                                    {
+                                        if (comment.board.category.Id == category.Id)
+                                        {
+                                            var content = comment.Content;
+
+                                            var firstIndex = content.IndexOf(totalSearchString) > 50 ? content.IndexOf(totalSearchString) : 0;
+                                            var lastIndex = content.IndexOf(totalSearchString) + 50 > 100 ? content.IndexOf(totalSearchString) + 50 : content.Length;
+                                            <div class="col-lg-12 my-2">
+                                                <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@comment.BNo">@comment.board.category.Name - @comment.board.Title</a></b></span>
+                                            </div>
+                                            <div class="col-lg-12 my-2">
+                                                <span>@Html.Raw(content.Substring(firstIndex, lastIndex).Replace(totalSearchString, $"<b>{totalSearchString}</b>")) </span>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="card-footer text-center">
+                                <a class="text-dark" asp-controller="Board" asp-action="Index" asp-route-searchType="Comment" asp-route-searchString="@totalSearchString" asp-route-id="@category.Id">@category.Name 더보기 >></a>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
     </div>
 </div>
