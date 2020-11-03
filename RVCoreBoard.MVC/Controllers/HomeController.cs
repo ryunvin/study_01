@@ -55,6 +55,7 @@ namespace RVCoreBoard.MVC.Controllers
             var containBoardList = await _db.Boards
                                             .Where(b => b.Title.Contains(totalSearchString) || b.Content.Contains(totalSearchString))
                                             .Include(b => b.category)
+                                            .OrderByDescending(b => b.Reg_Date)
                                             .Take(10)
                                             .ToListAsync();
 
@@ -63,6 +64,7 @@ namespace RVCoreBoard.MVC.Controllers
             var contatinCommentList = await _db.Comments
                                                 .Where(c => c.Content.Contains(totalSearchString))
                                                 .Include(c => c.board).ThenInclude(b => b.category)
+                                                .OrderByDescending(c => c.board.Reg_Date)
                                                 .Take(10)
                                                 .ToListAsync();
 

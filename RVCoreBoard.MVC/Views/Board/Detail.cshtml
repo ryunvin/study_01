@@ -315,8 +315,11 @@
     <div class="card col-12">
         <div class="card-body m-3">
             <div class="row">
+                <div class="col-12 text-left mb-5">
+                    <h3 class="card-title">@Model.Data.category.categoryGroup.Gname - @Model.Data.category.Name</h3>
+                </div>
                 <div class="col-5 text-left mb-5">
-                    <h1 class="card-title">@Model.Data.Title</h1>
+                    <h4 class="card-title">@Model.Data.Title</h4>
                 </div>
                 <div class="col-7">
                     <div class="row text-right">
@@ -433,8 +436,6 @@
                 <a class="btn btn-primary" asp-controller="Board" asp-action="Index"
                    asp-route-currentPage="@ViewBag.CurrentPage" asp-route-searchType="@ViewBag.SearchType" asp-route-searchString="@ViewBag.SearchString" asp-route-Id="@ViewBag.Category.Id">목록</a>
             </div>
-            <input type="button" class="d-none" id="execute" value="실행" />
-            <input type="button" class="d-none" id="stop" value="중지" />
         </div>
     </div>
 </div>

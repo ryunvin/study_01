@@ -40,7 +40,7 @@ namespace RVCoreBoard.MVC.Controllers
             BoardListInfoModel boardListInfoModel = new BoardListInfoModel(_boardService);
             await boardListInfoModel.GetList(Id, currentPage ?? 1, searchType, searchString);
 
-            Category category = await _db.Categorys.FirstOrDefaultAsync(c => c.Id == Id);
+            Category category = await _db.Categorys.Include(c => c.categoryGroup).FirstOrDefaultAsync(c => c.Id == Id);
             ViewBag.Category = category;
 
             ViewBag.CurrentPage = currentPage ?? 1;
