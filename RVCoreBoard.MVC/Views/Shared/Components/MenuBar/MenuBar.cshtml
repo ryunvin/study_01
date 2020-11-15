@@ -23,12 +23,13 @@
 
 @foreach (var categoryGroup in categoryGroupList)
 {
+    var htmlId = "d_" + categoryGroup.Gid;
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#@categoryGroup.Gname" aria-expanded="true" aria-controls="@categoryGroup.Gname">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#@htmlId" aria-expanded="true" aria-controls="@htmlId">
             <i class="fas fa-fw fa-folder"></i>
             <span>@categoryGroup.Gname</span>
         </a>
-        <div id="@categoryGroup.Gname" class="collapse " aria-labelledby="@categoryGroup.Gname" data-parent="#accordionSidebar">
+        <div id="@htmlId" class="collapse " aria-labelledby="@htmlId" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">@categoryGroup.Gname 입니당:</h6>
                 @foreach (var category in categoryList)
@@ -48,25 +49,23 @@
 
 <!-- Heading -->
 <div class="sidebar-heading">
-    Addons
+    기타 정보
 </div>
 
 <!-- Nav Item - Pages Collapse Menu -->
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
         <i class="fas fa-fw fa-folder"></i>
-        <span>먹방 기록 일지</span>
+        <span>호스팅 정보</span>
     </a>
     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">2020년:</h6>
-            <a class="collapse-item" href="login.html">8월</a>
-            <a class="collapse-item" href="register.html">9월</a>
-            <a class="collapse-item" href="forgot-password.html">10월</a>
+            <h6 class="collapse-header">호스팅 도움</h6>
+            <a class="collapse-item" href="blank.html">밍 Nas</a>
+            <a class="collapse-item" href="blank.html">쫑 도메인</a>
             <div class="collapse-divider"></div>
-            <h6 class="collapse-header">2021년:</h6>
-            <a class="collapse-item" href="404.html">1월</a>
-            <a class="collapse-item" href="blank.html">2월</a>
+            <h6 class="collapse-header">후원 정보</h6>
+            <a class="collapse-item" href="404.html">후원문의</a>
         </div>
     </div>
 </li>

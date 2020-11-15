@@ -154,59 +154,68 @@ namespace RVCoreBoard.MVC.Controllers
             Board board = new Board(_boardService);
             await board.GetDetail(BNo, false);
 
+            ViewBag.Category = board.Data.category;
+
             return View(board.Data);
         }
 
         [HttpPost, CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> EditProc(Board model, List<IFormFile> files)
         {
-            model.UNo = User.Identity.GetSid();
+            var targetBoard = _db.Boards.FirstOrDefault(b => b.BNo.Equals(model.BNo));
+            if (targetBoard == null ||
+                User.Identity.GetSid() != targetBoard.UNo)
+            {
+                // 자신 작성 글 아님
+                ModelState.AddModelError(string.Empty, "게시물을 수정할 수 없습니다.");
+            }
 
             if (ModelState.IsValid)
             {
-                _db.Entry(model).State = EntityState.Modified;
-                if (_db.SaveChanges() > 0)
+                targetBoard.Title = model.Title;
+                targetBoard.Content = model.Content;
+
+                _db.SaveChanges();
+                if (files.Count != 0)
                 {
-                    if (files.Count != 0)
+                    var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                    var path = Path.Combine(rootPath, @"upload\files");
+
+                    foreach (var file in files)
                     {
-                        var Board = await _db.Boards.Where(b => b.BNo.Equals(model.BNo)).FirstOrDefaultAsync();
-                        var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                        var path = Path.Combine(rootPath, @"upload\files");
+                        var filename = Path.GetFileName(file.FileName);
 
-                        foreach (var file in files)
+                        var provider = new FileExtensionContentTypeProvider();
+                        string contentType;
+                        if (!provider.TryGetContentType(file.FileName, out contentType))
                         {
-                            var filename = Path.GetFileName(file.FileName);
-
-                            var provider = new FileExtensionContentTypeProvider();
-                            string contentType;
-                            if (!provider.TryGetContentType(file.FileName, out contentType))
-                            {
-                                contentType = "application/octet-stream";
-                            }
-
-                            var attach = new Attach
-                            {
-                                FileFullName = $@"{path}\{Guid.NewGuid()}.{filename}",
-                                FileSize = (int)file.Length,
-                                ContentType = contentType,
-                                BNo = Board.BNo,
-                                Reg_Date = Board.Reg_Date
-                            };
-
-                            using (var fileStream = new FileStream(attach.FileFullName, FileMode.Create))
-                            {
-                                await file.CopyToAsync(fileStream);
-                            }
-
-                            _db.Attachs.Add(attach);
-                            _db.SaveChanges();
+                            contentType = "application/octet-stream";
                         }
+
+                        var attach = new Attach
+                        {
+                            FileFullName = $@"{path}\{Guid.NewGuid()}.{filename}",
+                            FileSize = (int)file.Length,
+                            ContentType = contentType,
+                            BNo = targetBoard.BNo,
+                            Reg_Date = targetBoard.Reg_Date
+                        };
+
+                        using (var fileStream = new FileStream(attach.FileFullName, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        _db.Attachs.Add(attach);
+                        _db.SaveChanges();
                     }
-                    return Redirect($"Detail?BNo={model.BNo}");
                 }
-                ModelState.AddModelError(string.Empty, "게시물을 수정할 수 없습니다.");
+                return Redirect($"Detail?BNo={model.BNo}");
             }
-            return View(model);
+            else
+            {
+                return View(model);
+            }
         }
 
         /// <summary>
@@ -214,14 +223,20 @@ namespace RVCoreBoard.MVC.Controllers
         /// </summary>
         /// <returns></returns>
         [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
-        public IActionResult Delete(int BNo)
+        public IActionResult Delete(int BNo, int id)
         {
-            var Board = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
+            var targetBoard = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
+            if (targetBoard == null ||
+                User.Identity.GetSid() != targetBoard.UNo)
+            {
+                // 자신 작성 글 아님
+                return Redirect($"Detail?BNo={BNo}");
+            }
 
-            _db.Boards.Remove(Board);
+            _db.Boards.Remove(targetBoard);
             if (_db.SaveChanges() > 0)
             {
-                return Redirect("Index");
+                return RedirectToAction("Index", "Board", new { id = id });
             }
             return Redirect($"Detail?BNo={BNo}");
         }

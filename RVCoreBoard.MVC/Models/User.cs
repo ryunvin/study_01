@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -38,28 +39,28 @@ namespace RVCoreBoard.MVC.Models
         /// <summary>
         /// 사용자 아이디
         /// </summary>
-        [Required(ErrorMessage = "아이디를 입력하세요.")]  // Not Null 설정
+        [Required(ErrorMessage = "아이디를 입력해주세요.")]  // Not Null 설정
         [StringLength(20)]
         public string Id { get; set; }
 
         /// <summary>
         /// 사용자 비밀번호
         /// </summary>
-        [Required(ErrorMessage = "비밀번호를 입력하세요.")]  // Not Null 설정
+        [Required(ErrorMessage = "비밀번호를 입력해주세요.")]  // Not Null 설정
         [StringLength(200)]
         public string Password { get; set; }
 
         /// <summary>
         /// 사용자 이름
         /// </summary>
-        [Required(ErrorMessage = "이름을 입력하세요.")]  // Not Null 설정
+        [Required(ErrorMessage = "이름을 입력해주세요.")]  // Not Null 설정
         [StringLength(15)]
         public string Name { get; set; }
 
         /// <summary>
         /// 사용자 생년월일
         /// </summary>
-        [Required(ErrorMessage = "생년월일을 입력하세요.")]  // Not Null 설정
+        [Required(ErrorMessage = "생년월일을 입력해주세요.")]  // Not Null 설정
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Birth { get; set; }
@@ -67,7 +68,6 @@ namespace RVCoreBoard.MVC.Models
         /// <summary>
         /// 사용자 휴대폰번호
         /// </summary>
-        [Required(ErrorMessage = "휴대폰 번호를 입력하세요.")]  // Not Null 설정
         [StringLength(20)]
         public string Phone { get; set; }
 
@@ -101,6 +101,10 @@ namespace RVCoreBoard.MVC.Models
         /// </summary>
         [Required]
         public short Level { get; set; }
+
+        [NotMapped]
+        [Required(ErrorMessage = "인증번호를 입력해주세요.")]
+        public string AuthenticationNumber { get; set; }
 
         public User Data { get; private set; }
         

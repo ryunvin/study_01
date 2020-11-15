@@ -1,11 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "홈홈홈홈";
+    ViewData["Title"] = "닷넷 C# 개발자 모임";
     var boardList = ViewBag.BoardList;
     var commentList = ViewBag.CommentList;
 }
 
 <div class="text-center">
-    <h3 class="display-4">Welcome</h3>
+    <h3 class="display-4">닷넷 C# 개발자 모임</h3>
 </div>
 
 <hr class="mb-5" />
@@ -22,7 +22,7 @@
                         @foreach (var board in boardList)
                         {
                             <div class="col-lg-3 my-2">
-                                <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.category.Name @board.BNo</a></b></span>
+                                <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.category.Name</a></b></span>
                             </div>
                             <div class="col-lg-6 my-2">
                                 <span>@board.Title</span>
@@ -47,7 +47,7 @@
                         @foreach (var comment in commentList)
                         {
                             <div class="col-lg-3 my-2">
-                                <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@comment.board.BNo">@comment.board.category.Name @comment.board.BNo</a></b></span>
+                                <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@comment.board.BNo">@comment.board.category.Name</a></b></span>
                             </div>
                             <div class="col-lg-6 my-2">
                                 <span>@comment.Content</span>

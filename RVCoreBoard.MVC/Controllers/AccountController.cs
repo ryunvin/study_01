@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -107,6 +108,23 @@ namespace RVCoreBoard.MVC.Controllers
                 {
                     ModelState.AddModelError("UserIDDuplicates", "이미 사용중인 아이디 입니다.");
                     return View(model);
+                }
+
+                // 인증번호 체크
+                string requestUrl = $"http://arooong.synology.me:8002/command/CheckAuthNum?authnum={model.AuthenticationNumber}";
+
+                WebClient wc = new WebClient();
+                string responseData = await wc.DownloadStringTaskAsync(requestUrl);
+                if (string.IsNullOrWhiteSpace(responseData) ||
+                    responseData != "{\"output\":\"OK\"}")
+                {
+                    ModelState.AddModelError("AuthenticationNumber", "인증에 실패했습니다.");
+                    return View();
+                }
+                else
+                {
+                    WebClient wc2 = new WebClient();
+                    wc2.DownloadStringTaskAsync($"http://arooong.synology.me:8002/command/DelAuthNum?authnum={model.AuthenticationNumber}");
                 }
 
                 User user = new User(_userService);

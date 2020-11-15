@@ -81,9 +81,8 @@
                                     <span class="text-danger" asp-validation-for="Name"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label class="text-dark d-inline">휴대폰 번호</label><label class="text-danger">*</label>
+                                    <label class="text-dark d-inline">휴대폰 번호</label>
                                     <input type="text" class="form-control form-control-user" asp-for="Phone" placeholder="예)010-1234-5678" />
-                                    <span class="text-danger" asp-validation-for="Phone"></span>
                                 </div>
                                 <div class="form-group">
                                     <label class="text-dark">전화번호</label>
@@ -104,6 +103,11 @@
                                     <label class="text-dark">이메일</label>
                                     <input type="email" class="form-control form-control-user" asp-for="Email" placeholder="이메일" />
                                     <span class="text-danger" asp-validation-for="Email"></span>
+                                </div>
+                                <div class="form-group">
+                                    <div>@Html.ValidationMessage("AuthenticationNumber", new { @class = "text-danger" })</div>
+                                    <label class="text-dark d-inline">인증번호(먼지 카카오Bot, 유효시간 1분)</label><label class="text-danger">*</label>
+                                    <input type="text" class="form-control form-control-user" asp-for="AuthenticationNumber" />
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-user btn-block mt-5">회원가입</button>
                             </form>

@@ -1,17 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Serialization;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Net;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.CodeAnalysis.Options;
+using Microsoft.AspNetCore.SignalR;
 using RVCoreBoard.MVC.DataContext;
-using RVCoreBoard.MVC.Hubs;
 using RVCoreBoard.MVC.Services;
+using RVCoreBoard.MVC.Hubs;
 
 namespace RVCoreBoard.MVC
 {
@@ -27,6 +35,15 @@ namespace RVCoreBoard.MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+
+            // SignalR 서비스 등록
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = true;
+                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
+            });
+
             // DBContext 서비스 등록 [DI]
             services.AddDbContext<RVCoreBoardDBContext>(options =>
             {
@@ -50,6 +67,18 @@ namespace RVCoreBoard.MVC
             // AccountService 서비스 컨테이너 등록 - 20.09.09
             services.AddTransient<IUserService, UserService>();
 
+            // ForwardedHeaders Remote IPAddress 가져오는부분 처리
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.RequireHeaderSymmetry = false;
+                options.ForwardLimit = null;
+                if (options.KnownNetworks != null)
+                {
+                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("::ffff:172.17.0.1"), 104));
+                }
+            });
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -57,25 +86,15 @@ namespace RVCoreBoard.MVC
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.AddSession();
-
-            // Signal R 
-            services.AddSignalR(options =>
+            services.AddDistributedMemoryCache();
+            services.AddSession(so =>
             {
-                options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
-            }).AddJsonProtocol(options =>
-            {
-                options.PayloadSerializerSettings.ContractResolver = new DefaultContractResolver();
+                so.IdleTimeout = TimeSpan.FromMinutes(60);
             });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -86,6 +105,24 @@ namespace RVCoreBoard.MVC
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            app.UseRouting();
+
+            app.UseSession();
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                // SignalR Hub 라우트 처리
+                endpoints.MapHub<CommentHub>("/commentHub");
+            });
 
             // 404 Page Setting
             app.Use(async (ctx, next) =>
@@ -96,35 +133,12 @@ namespace RVCoreBoard.MVC
                 {
                     ctx.Request.Path = "/Error/404";
                     await next();
-                }else if(ctx.Response.StatusCode == 500 && !ctx.Response.HasStarted)
+                }
+                else if (ctx.Response.StatusCode == 500 && !ctx.Response.HasStarted)
                 {
                     ctx.Request.Path = "/Error/500";
                     await next();
                 }
-            });
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
-            app.UseAuthentication();
-
-            app.UseSignalR(config =>
-            {
-                var desiredTransports =
-                    HttpTransportType.WebSockets |
-                    HttpTransportType.LongPolling;
-
-                config.MapHub<CommentHub>("/commentHub", (options) =>
-                {
-                    options.Transports = desiredTransports;
-                });
-            });
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
