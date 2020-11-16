@@ -25,7 +25,7 @@
             _environment = environment;
             _db = db;
 
-            _uploadPath = _environment.WebRootPath + @"\upload\files";
+            _uploadPath = _environment.WebRootPath + @"/upload/files";
         }
 
         // TODO : Download액션에서 하드코딩으로 작성된 파일 경로는 상수로 빼는게 좋습니다.  2020. 09. 02
@@ -56,7 +56,7 @@
             if (memory == null)
                 return NotFound();
 
-            return File(memory, "application/octet-stream", attach.FileFullName.Substring(attach.FileFullName.IndexOf(".", attach.FileFullName.LastIndexOf(@"\")) + 1));
+            return File(memory, "application/octet-stream", attach.FileFullName.Substring(attach.FileFullName.IndexOf(".", attach.FileFullName.LastIndexOf(@"/")) + 1));
         }
 
         // 압축파일로 한꺼번에 다운받기
@@ -74,7 +74,7 @@
                 return NotFound();
 
             //압축파일 경로
-            string zipPath = $@"\{id}.zip";
+            string zipPath = $@"/{id}.zip";
 
             foreach (var attach in attachs)
             {
@@ -120,7 +120,7 @@
                     {
                         foreach (var file in files)
                         {
-                            archive.CreateEntryFromFile(file, file.Substring(file.IndexOf(".", file.LastIndexOf(@"\")) + 1), CompressionLevel.Optimal);
+                            archive.CreateEntryFromFile(file, file.Substring(file.IndexOf(".", file.LastIndexOf(@"/")) + 1), CompressionLevel.Optimal);
                         }
                     }
 

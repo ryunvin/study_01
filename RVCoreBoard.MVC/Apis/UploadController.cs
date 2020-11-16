@@ -29,7 +29,7 @@ namespace RVCoreBoard.MVC.Apis
         [CustomAuthorize(RoleEnum = UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> ImageUpload(IFormFile file)
         {
-            var path = Path.Combine(_environment.WebRootPath, @"upload\images");
+            var path = Path.Combine(_environment.WebRootPath, @"upload/images");
 
             var fileFullName = file.FileName.Split('.');
             // TODO : 이미지 확장자를 tmp로 하면 웹서버에서 접근할 수 없음.

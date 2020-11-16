@@ -105,7 +105,7 @@ namespace RVCoreBoard.MVC.Controllers
                     {
                         var Board = _db.Boards.OrderByDescending(b => b.BNo).FirstOrDefault();
                         var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                        var path = Path.Combine(rootPath, @"upload\files");
+                        var path = Path.Combine(rootPath, @"upload/files");
 
                         foreach (var file in files)
                         {
@@ -120,7 +120,7 @@ namespace RVCoreBoard.MVC.Controllers
 
                             var attach = new Attach
                             {
-                                FileFullName = $@"{path}\{Guid.NewGuid()}.{filename}",
+                                FileFullName = $@"{path}/{Guid.NewGuid()}.{filename}",
                                 FileSize = (int)file.Length,
                                 ContentType = contentType,
                                 BNo = Board.BNo,
@@ -179,7 +179,7 @@ namespace RVCoreBoard.MVC.Controllers
                 if (files.Count != 0)
                 {
                     var rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                    var path = Path.Combine(rootPath, @"upload\files");
+                    var path = Path.Combine(rootPath, @"upload/files");
 
                     foreach (var file in files)
                     {
@@ -194,7 +194,7 @@ namespace RVCoreBoard.MVC.Controllers
 
                         var attach = new Attach
                         {
-                            FileFullName = $@"{path}\{Guid.NewGuid()}.{filename}",
+                            FileFullName = $@"{path}/{Guid.NewGuid()}.{filename}",
                             FileSize = (int)file.Length,
                             ContentType = contentType,
                             BNo = targetBoard.BNo,
