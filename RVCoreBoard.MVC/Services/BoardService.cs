@@ -71,6 +71,37 @@
             return categoryList;
         }
 
+        public async Task<List<Board>> GetNotNotiBoards()
+        {
+            var boardList = await _db.Boards
+                                    .Include("user")
+                                    .Include(cg => cg.category)
+                                    .Where(p => p.IsNoti == false)
+                                    .OrderByDescending(p => p.BNo)
+                                    .ToListAsync();
+
+            boardList.ForEach(item => item.IsNoti = true);
+            _db.SaveChangesAsync();
+
+            return boardList;
+        }
+
+        public async Task<List<Comment>> GetNotNotiComments()
+        {
+            var commentList = await _db.Comments
+                                       .Include("user")
+                                       .Include(c => c.board)
+                                       .ThenInclude(cg => cg.category)
+                                       .Where(p => p.IsNoti == false)
+                                       .OrderByDescending(c => c.CNo)
+                                       .ToListAsync();
+
+            commentList.ForEach(item => item.IsNoti = true);
+            _db.SaveChangesAsync();
+
+            return commentList;
+        }
+
         public async Task<List<Board>> GetRecentBoards(int count)
         {
             var boardList = await _db.Boards

@@ -38,6 +38,25 @@ namespace RVCoreBoard.MVC.Controllers
             return View();
         }
 
+        [HttpGet, Route("api/GetNotNotiBoards")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetNotNotiBoards()
+        {
+            var boardListInfoModel = new BoardListInfoModel(_boardService);
+            var notNotiBoards = await boardListInfoModel.GetNotNotiBoards();
+
+            return Json(notNotiBoards);
+        }
+
+        [HttpGet, Route("api/GetNotNotiComments")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetNotNotiComments()
+        {
+            var boardListInfoModel = new BoardListInfoModel(_boardService);
+            var notNotiBoards = await boardListInfoModel.GetNotNotiComments();
+
+            return Json(notNotiBoards);
+        }
 
         [AllowAnonymous]
         public IActionResult MenuBar()

@@ -149,5 +149,15 @@
         {
             Data = await _boardService.GetRecentBoards(RecentCount);
         }
+
+        public async Task<List<Board>> GetNotNotiBoards()
+        {
+            return await _boardService.GetNotNotiBoards();
+        }
+
+        public async Task<List<Comment>> GetNotNotiComments()
+        {
+            return await _boardService.GetNotNotiComments();
+        }
     }
 }

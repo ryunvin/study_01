@@ -13,6 +13,8 @@ namespace RVCoreBoard.MVC.Services
         Task<Board> GetBoardDetail(int BNo, bool bDetail);
         Task<List<Category>> GetCategoryList();
         Task<List<Board>> GetRecentBoards(int count);
+        Task<List<Board>> GetNotNotiBoards();
+        Task<List<Comment>> GetNotNotiComments();
         Task<List<Comment>> GetRecentComments(int count);
         Task<int> GetBoardPrevBNo(int bNo, int id);
         Task<int> GetBoardNextBNo(int bNo, int id);

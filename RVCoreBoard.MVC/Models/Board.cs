@@ -60,11 +60,17 @@ namespace RVCoreBoard.MVC.Models
         [Required]  // Not Null 설정
         public int UNo { get; set; }
 
+        /// <summary>
+        /// 알림 여부
+        /// </summary>
+        public bool IsNoti { get; set; }
+
         [ForeignKey("UNo")]
         public virtual User user { get; set; }
 
         [ForeignKey("Id")]
         public virtual Category category { get; set; }
+
 
         // TODO : 첨부파일 정보 리스트 속성 추가     2020. 09. 02
         public ICollection<Attach> AttachInfoList { get; set; }

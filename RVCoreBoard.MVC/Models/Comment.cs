@@ -51,6 +51,11 @@ namespace RVCoreBoard.MVC.Models
         [Required]  // Not Null 설정
         public int BNo { get; set; }
 
+        /// <summary>
+        /// 알림 여부
+        /// </summary>
+        public bool IsNoti { get; set; }
+
         [ForeignKey("UNo")]
         public virtual User user { get; set; }
 
