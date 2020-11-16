@@ -107,6 +107,7 @@
                                 <div class="form-group">
                                     <div>@Html.ValidationMessage("AuthenticationNumber", new { @class = "text-danger" })</div>
                                     <label class="text-dark d-inline">인증번호(먼지 카카오Bot, 유효시간 1분)</label><label class="text-danger">*</label>
+                                    <a class="text text-info" data-toggle="modal" data-target="#modalAuthInfo">인증번호?</a>
                                     <input type="text" class="form-control form-control-user" asp-for="AuthenticationNumber" />
                                 </div>
                                 <button type="submit" class="btn btn-primary btn-user btn-block mt-5">회원가입</button>
@@ -126,3 +127,22 @@
         </div>
     </div>
 </div>
+
+<div id="modalAuthInfo" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="danger-header-modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>
+                    채팅방에서 @@닷넷인증<br/>명령으로 인증번호를 부여 받을 수 있습니다. 
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light"
+                        data-dismiss="modal">
+                    확인
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
