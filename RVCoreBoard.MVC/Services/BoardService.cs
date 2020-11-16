@@ -86,7 +86,8 @@
         {
             var commentList = await _db.Comments
                                        .Include("user")
-                                       .Include("board")
+                                       .Include(c => c.board)
+                                       .ThenInclude(cg => cg.category)
                                        .Take(count)
                                        .OrderByDescending(c => c.CNo)
                                        .ToListAsync();
