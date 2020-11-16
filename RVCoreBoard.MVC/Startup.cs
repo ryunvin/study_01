@@ -41,11 +41,7 @@ namespace RVCoreBoard.MVC
             services.AddControllersWithViews();
 
             // SignalR 서비스 등록
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-                options.KeepAliveInterval = TimeSpan.FromMinutes(1);
-            });
+            services.AddSignalR();
 
             // DBContext 서비스 등록 [DI]
             services.AddDbContext<RVCoreBoardDBContext>(options =>
