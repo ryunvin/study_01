@@ -69,6 +69,7 @@ namespace RVCoreBoard.MVC.Controllers
                {
                    No = p.board.BNo,
                    Category = p.board.category.Name,
+                   Title = p.board.Title,
                    UserName = p.user.Name
                });
 
