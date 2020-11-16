@@ -20,6 +20,9 @@ using Microsoft.AspNetCore.SignalR;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Services;
 using RVCoreBoard.MVC.Hubs;
+using Microsoft.Extensions.WebEncoders;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace RVCoreBoard.MVC
 {
@@ -90,6 +93,12 @@ namespace RVCoreBoard.MVC
             services.AddSession(so =>
             {
                 so.IdleTimeout = TimeSpan.FromMinutes(60);
+            });
+
+            services.Configure<WebEncoderOptions>(option =>
+            {
+                // 한글 인코딩 처리    [2020. 11. 16 엄태영]
+                option.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
         }
 
