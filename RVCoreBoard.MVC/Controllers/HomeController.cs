@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using RVCoreBoard.MVC.DataContext;
 using RVCoreBoard.MVC.Models;
 using RVCoreBoard.MVC.Services;
@@ -44,8 +45,15 @@ namespace RVCoreBoard.MVC.Controllers
         {
             var boardListInfoModel = new BoardListInfoModel(_boardService);
             var notNotiBoards = await boardListInfoModel.GetNotNotiBoards();
+            var result = notNotiBoards.Select(p =>
+               new
+               {
+                   Category = p.category.Name,
+                   Title = p.Title,
+                   UserName = p.user.Name
+               });
 
-            return Json(notNotiBoards);
+            return Content(JsonConvert.SerializeObject(result));
         }
 
         [HttpGet, Route("api/GetNotNotiComments")]
@@ -53,9 +61,16 @@ namespace RVCoreBoard.MVC.Controllers
         public async Task<IActionResult> GetNotNotiComments()
         {
             var boardListInfoModel = new BoardListInfoModel(_boardService);
-            var notNotiBoards = await boardListInfoModel.GetNotNotiComments();
+            var notNotiComments = await boardListInfoModel.GetNotNotiComments();
 
-            return Json(notNotiBoards);
+            var result = notNotiComments.Select(p =>
+               new
+               {
+                   Category = p.board.category.Name,
+                   UserName = p.user.Name
+               });
+
+            return Content(JsonConvert.SerializeObject(result));
         }
 
         [AllowAnonymous]
