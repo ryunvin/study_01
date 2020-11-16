@@ -25,7 +25,14 @@
                                 <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@board.BNo">@board.category.Name</a></b></span>
                             </div>
                             <div class="col-lg-6 my-2">
-                                <span>@board.Title</span>
+                                @if (board.Title.Length >= 19)
+                                {
+                                    <span>@board.Title.Substring(0, 20)...</span>
+                                }
+                                else
+                                {
+                                    <span>@board.Title</span>
+                                }
                             </div>
                             <div class="col-lg-3 my-2 text-right">
                                 <span>@board.user.Name</span>
@@ -50,7 +57,14 @@
                                 <span><b><a class="text-dark" asp-controller="Board" asp-action="Detail" asp-route-BNo="@comment.board.BNo">@comment.board.category.Name</a></b></span>
                             </div>
                             <div class="col-lg-6 my-2">
-                                <span>@comment.Content</span>
+                                @if (comment.Content.Length >= 19)
+                                {
+                                    <span>@comment.Content.Substring(0, 20)...</span>
+                                }
+                                else
+                                {
+                                    <span>@comment.Content</span>
+                                }
                             </div>
                             <div class="col-lg-3 my-2 text-right">
                                 <span>@comment.user.Name</span>
