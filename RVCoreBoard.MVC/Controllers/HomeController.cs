@@ -48,6 +48,7 @@ namespace RVCoreBoard.MVC.Controllers
             var result = notNotiBoards.Select(p =>
                new
                {
+                   No = p.BNo,
                    Category = p.category.Name,
                    Title = p.Title,
                    UserName = p.user.Name
@@ -66,6 +67,7 @@ namespace RVCoreBoard.MVC.Controllers
             var result = notNotiComments.Select(p =>
                new
                {
+                   No = p.board.BNo,
                    Category = p.board.category.Name,
                    UserName = p.user.Name
                });
