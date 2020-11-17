@@ -31,7 +31,7 @@ namespace RVCoreBoard.MVC.Models
         /// 게시물 내용
         /// </summary>
         [Required(ErrorMessage = "내용을 입력하세요.")]  // Not Null 설정
-        [StringLength(400)]
+        //[StringLength(4000)]
         public string Content { get; set; }
 
         [Required]
