@@ -305,27 +305,25 @@
         });
     </script>
 }
-<div class="justify-content-center align-items-start position-relative container">
+<div class="row justify-content-center align-items-start position-relative">
     <div class="card col-12">
         <div class="card-body m-3">
             <div class="row">
-                <div class="col-12 text-left mb-5">
+                <div class="col--sm-12 text-left">
                     <h3 class="card-title">@Model.Data.category.categoryGroup.Gname - @Model.Data.category.Name</h3>
                 </div>
-                <div class="col-5 text-left mb-5">
+                <div class="col-sm-12 text-left">
                     <h4 class="card-title">@Model.Data.Title</h4>
                 </div>
-                <div class="col-7">
-                    <div class="row text-right">
-                        <div class="col-4">
-                            <p><b>글쓴이 </b>@Model.Data.user.Name</p>
-                        </div>
-                        <div class="col-6">
-                            <p><b>등록일시 </b>@Model.Data.Reg_Date.ToString("yyyy-MM-dd HH:mm")</p>
-                        </div>
-                        <div class="col-2">
-                            <p><b>조회수 </b>@Model.Data.Cnt_Read</p>
-                        </div>
+                <div class="row text-left">
+                    <div class="col-7">
+                        <p><b>글쓴이 </b>@Model.Data.user.Name</p>
+                    </div>
+                    <div class="col-7">
+                        <p><b>등록일시 </b>@Model.Data.Reg_Date.ToString("yyyy-MM-dd HH:mm")</p>
+                    </div>
+                    <div class="col-5">
+                        <p><b>조회수 </b>@Model.Data.Cnt_Read</p>
                     </div>
                 </div>
             </div>
@@ -350,7 +348,19 @@
                     </div>
                 }
             </div>
-            <p class="card-text mb-5">@Html.Raw(Model.Data.Content)</p>
+            <div class="row text-left" style="width: 100%">
+                <p class="card">
+                    <table class="table table-bordered" style="font-size: 1rem;">
+                        <tbody>
+                            <tr>
+                                <td style="overflow: auto;">
+                                    @Html.Raw(Model.Data.Content)
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </p>
+            </div>
             <p class="text-dark font-weight-bold mt-5">댓글</p>
             @*댓글 구현*@
             <div id="commentArea">

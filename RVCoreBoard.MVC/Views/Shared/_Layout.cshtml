@@ -140,14 +140,14 @@
                 </nav>
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container">
                     <!-- Page Heading -->
                     <!--<div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">@ViewData["Title"]</h1>
                     </div>-->
                     <!-- End of Page Heading -->
-                    <div style="white-space: nowrap; overflow: auto;" class="row">
-                        <main role="main" class="p-5 center-block w-100">
+                    <div class="row">
+                        <main role="main">
                             @RenderBody()
                         </main>
                     </div>
@@ -155,7 +155,7 @@
                 </div>
                 <!-- End of Main Content -->
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
+                <footer class="sticky-footer bg-white" style="position: inherit; left: 0; bottom: 0; width: 100%">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
                             <span>Copyright &copy; DotNet Dev Community 2020</span>

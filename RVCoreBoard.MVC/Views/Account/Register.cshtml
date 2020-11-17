@@ -45,81 +45,79 @@
 }
 
 <!-- Outer Row -->
-<div class="justify-content-center align-items-start position-relative container">
-    <div class="col-8">
-        <div class="card o-hidden border-0 shadow-lg my-5">
-            <div class="card-body p-0">
+<div class="row justify-content-center align-items-start position-relative">
+    <div class="col-lg-12">
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            <div class="card-body">
                 <!-- Nested Row within Card Body -->
-                <div class="row">
+                <div class="form-row">
                     <div class="col-lg-12">
-                        <div class="p-5">
-                            <div class="text-center">
-                                <h4 class="text-gray-900 mb-4">회원가입</h4>
+                        <div class="text-center">
+                            <h4 class="text-gray-900 mb-4">회원가입</h4>
+                        </div>
+                        <form class="mt-xl-5 form-horizontal" method="post" asp-controller="Account" asp-action="Register">
+                            <div class="form-group col-xs-12">
+                                <div>@Html.ValidationMessage("UserIDDuplicates", new { @class = "text-danger" })</div>
+                                <label class="text-dark d-inline">아이디</label><label class="text-danger">*</label>
+                                <input type="text" class="form-control form-control-user" asp-for="Id" placeholder="아이디" />
+                                <span class="text-danger" asp-validation-for="Id"></span>
                             </div>
-                            <form class="mt-4 form-horizontal user" method="post" asp-controller="Account" asp-action="Register">
-                                <div class="form-group">
-                                    <div>@Html.ValidationMessage("UserIDDuplicates", new { @class = "text-danger" })</div>
-                                    <label class="text-dark d-inline">아이디</label><label class="text-danger">*</label>
-                                    <input type="text" class="form-control form-control-user" asp-for="Id" placeholder="아이디" />
-                                    <span class="text-danger" asp-validation-for="Id"></span>
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <label class="text-dark d-inline">비밀번호</label><label class="text-danger">*</label>
+                                    <input type="password" id="PWD" class="form-control form-control-user" asp-for="Password" placeholder="비밀번호" />
+                                    <span class="text-danger" asp-validation-for="Password"></span>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-6 mb-3 mb-sm-0">
-                                        <label class="text-dark d-inline">비밀번호</label><label class="text-danger">*</label>
-                                        <input type="password" id="PWD" class="form-control form-control-user" asp-for="Password" placeholder="비밀번호" />
-                                        <span class="text-danger" asp-validation-for="Password"></span>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="text-dark d-inline">비밀번호 확인</label><label class="text-danger">*</label>
-                                        <input type="password" id="CHKPWD" class="form-control form-control-user" placeholder="비밀번호 확인" />
-                                        <span class="text-danger"></span>
-                                    </div>
+                                <div class="col-sm-6">
+                                    <label class="text-dark d-inline">비밀번호 확인</label><label class="text-danger">*</label>
+                                    <input type="password" id="CHKPWD" class="form-control form-control-user" placeholder="비밀번호 확인" />
+                                    <span class="text-danger"></span>
                                 </div>
-                                <div class="form-group">
-                                    <label class="text-dark d-inline">이름</label><label class="text-danger">*</label>
-                                    <input type="text" class="form-control form-control-user" asp-for="Name" placeholder="이름" />
-                                    <span class="text-danger" asp-validation-for="Name"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-dark d-inline">휴대폰 번호</label>
-                                    <input type="text" class="form-control form-control-user" asp-for="Phone" placeholder="예)010-1234-5678" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-dark">전화번호</label>
-                                    <input type="text" class="form-control form-control-user" asp-for="Tel" placeholder="예)051-123-5678" />
-                                    <span class="text-danger" asp-validation-for="Tel"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-dark">주소</label>
-                                    <input type="text" class="form-control form-control-user" asp-for="Address" placeholder="주소" />
-                                    <span class="text-danger" asp-validation-for="Address"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-dark">상세주소</label>
-                                    <input type="text" class="form-control form-control-user" asp-for="DetailAddress" placeholder="상세주소" />
-                                    <span class="text-danger" asp-validation-for="DetailAddress"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label class="text-dark">이메일</label>
-                                    <input type="email" class="form-control form-control-user" asp-for="Email" placeholder="이메일" />
-                                    <span class="text-danger" asp-validation-for="Email"></span>
-                                </div>
-                                <div class="form-group">
-                                    <div>@Html.ValidationMessage("AuthenticationNumber", new { @class = "text-danger" })</div>
-                                    <label class="text-dark d-inline">인증번호(먼지 카카오Bot, 유효시간 1분)</label><label class="text-danger">*</label>
-                                    <a class="text text-info" data-toggle="modal" data-target="#modalAuthInfo">인증번호?</a>
-                                    <input type="text" class="form-control form-control-user" asp-for="AuthenticationNumber" />
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-user btn-block mt-5">회원가입</button>
-                            </form>
-                            <hr class="my-5">
-                            <div class="text-center my-3">
-                                <a asp-controller="Account" asp-action="ForgotPassword">비밀번호를 잊으셨습니까?</a>
                             </div>
-                            <div class="text-center">
-                                아이디가 있으신가요 ?
-                                <a class="text-danger" asp-controller="Account" asp-action="Log">로그인</a>
+                            <div class="form-group">
+                                <label class="text-dark d-inline">이름</label><label class="text-danger">*</label>
+                                <input type="text" class="form-control form-control-user" asp-for="Name" placeholder="이름" />
+                                <span class="text-danger" asp-validation-for="Name"></span>
                             </div>
+                            <div class="form-group">
+                                <label class="text-dark d-inline">휴대폰 번호</label>
+                                <input type="text" class="form-control form-control-user" asp-for="Phone" placeholder="예)010-1234-5678" />
+                            </div>
+                            <div class="form-group">
+                                <label class="text-dark">전화번호</label>
+                                <input type="text" class="form-control form-control-user" asp-for="Tel" placeholder="예)051-123-5678" />
+                                <span class="text-danger" asp-validation-for="Tel"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-dark">주소</label>
+                                <input type="text" class="form-control form-control-user" asp-for="Address" placeholder="주소" />
+                                <span class="text-danger" asp-validation-for="Address"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-dark">상세주소</label>
+                                <input type="text" class="form-control form-control-user" asp-for="DetailAddress" placeholder="상세주소" />
+                                <span class="text-danger" asp-validation-for="DetailAddress"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="text-dark">이메일</label>
+                                <input type="email" class="form-control form-control-user" asp-for="Email" placeholder="이메일" />
+                                <span class="text-danger" asp-validation-for="Email"></span>
+                            </div>
+                            <div class="form-group">
+                                <div>@Html.ValidationMessage("AuthenticationNumber", new { @class = "text-danger" })</div>
+                                <label class="text-dark d-inline">인증번호(먼지 카카오Bot, 유효시간 1분)</label><label class="text-danger">*</label>
+                                <a class="text text-info" data-toggle="modal" data-target="#modalAuthInfo">인증번호?</a>
+                                <input type="text" class="form-control form-control-user" asp-for="AuthenticationNumber" />
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-user btn-block mt-5">회원가입</button>
+                        </form>
+                        <hr class="my-5">
+                        <div class="text-center my-3">
+                            <a asp-controller="Account" asp-action="ForgotPassword">비밀번호를 잊으셨습니까?</a>
+                        </div>
+                        <div class="text-center">
+                            아이디가 있으신가요 ?
+                            <a class="text-danger" asp-controller="Account" asp-action="Log">로그인</a>
                         </div>
                     </div>
                 </div>
