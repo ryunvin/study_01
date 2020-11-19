@@ -44,7 +44,8 @@ namespace RVCoreBoard.MVC.Apis
         public async Task<IActionResult> CommentDelete(string CNo)
         {
             var comment = await _db.Comments.FirstOrDefaultAsync(c => c.CNo.Equals(int.Parse(CNo)));
-            if (comment == null || User.Identity.GetSid() != comment.UNo)
+            if ( (comment == null || User.Identity.GetSid() != comment.UNo) &&
+                User.Identity.GetRole() != "Admin")
             {
                 return Json(new { success = false, responseText = "자신의 댓글만 삭제 할 수 있습니다." });
             }
@@ -61,14 +62,15 @@ namespace RVCoreBoard.MVC.Apis
         [CustomAuthorize(RoleEnum = UserLevel.Junior | UserLevel.Senior | UserLevel.Manager | UserLevel.Admin)]
         public async Task<IActionResult> CommentModify(Comment comment)
         {
-            if(comment == null || User.Identity.GetSid() != comment.UNo)
+            //comment.Reg_Date = DateTime.Now;
+            var originComment = await _db.Comments.FirstOrDefaultAsync(p => p.CNo == comment.CNo);
+            if ((originComment == null || User.Identity.GetSid() != originComment.UNo) &&
+                User.Identity.GetRole() != "Admin")
             {
                 return Json(new { success = true, responseText = "자신의 댓글만 수정할 수 있습니다." });
             }
 
-            //comment.Reg_Date = DateTime.Now;
-            var originComment = await _db.Comments.FirstOrDefaultAsync(p => p.CNo == comment.CNo);
-            if(originComment == null)
+            if (originComment == null)
                 return Json(new { success = true, responseText = "댓글이 수정되지 않았습니다." });
 
             originComment.Content = comment.Content;

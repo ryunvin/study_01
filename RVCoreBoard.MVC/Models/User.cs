@@ -127,7 +127,10 @@ namespace RVCoreBoard.MVC.Models
                 new Claim(ClaimTypes.Sid, $"{user.UNo}"),
                 new Claim("Id", user.Id),
                 new Claim("Name", user.Name),
-                new Claim(ClaimTypes.Role, roles)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, roles),
+                new Claim("RoleLevel", user.Level.ToString())
             };
 
             return claims;

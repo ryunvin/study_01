@@ -21,7 +21,9 @@
         {
             var user = await _db.Users
                             .FirstOrDefaultAsync(u => u.Id.Equals(model.Id) && u.Password.Equals(model.Password));
-            
+
+            if (user != null)
+                user.Password = null;
             return user;
         }
 

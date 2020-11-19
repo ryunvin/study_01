@@ -64,6 +64,8 @@ namespace RVCoreBoard.MVC.Controllers
             ViewBag.Category = board.Data.category;
 
             User currentUser = await _db.Users.FirstOrDefaultAsync(u => u.UNo == User.Identity.GetSid());
+            if (currentUser != null)
+                currentUser.Password = null;
             ViewBag.User = currentUser;
 
             ViewBag.CurrentPage = currentPage ?? 1;
@@ -164,10 +166,11 @@ namespace RVCoreBoard.MVC.Controllers
         {
             var targetBoard = _db.Boards.FirstOrDefault(b => b.BNo.Equals(model.BNo));
             if (targetBoard == null ||
-                User.Identity.GetSid() != targetBoard.UNo)
+                User.Identity.GetSid() != targetBoard.UNo && User.Identity.GetRole() != "Admin")
             {
                 // 자신 작성 글 아님
                 ModelState.AddModelError(string.Empty, "게시물을 수정할 수 없습니다.");
+                return View(model);
             }
 
             if (ModelState.IsValid)
@@ -227,7 +230,7 @@ namespace RVCoreBoard.MVC.Controllers
         {
             var targetBoard = _db.Boards.FirstOrDefault(b => b.BNo.Equals(BNo));
             if (targetBoard == null ||
-                User.Identity.GetSid() != targetBoard.UNo)
+                User.Identity.GetSid() != targetBoard.UNo && User.Identity.GetRole() != "Admin")
             {
                 // 자신 작성 글 아님
                 return Redirect($"Detail?BNo={BNo}");
